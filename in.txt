@@ -1,17 +1,4 @@
--pos
-    <lora:HYPv1-4:0.5> (HD eyes: 1.2), perfect eyes, eye focus, masterpiece, best quality, amazing quality, very aesthetic, high resolution,
-    ultra-detailed, absurdres, newest, sensitive, scenery, 1woman,solo, detailed eyes, depth of field, volumetric lighting, cinematic angle,
-    soft light , color detail, backlighting, long exposure, light steps, intricate colors, vibrant colors, (EyesHD:1.2), ultra-detailed,
-    sharp focus, vibrant colors, ray tracing, best lighting, detailed illustration, detailed background, beautiful face, beautiful eyes,
-    amazing quality, highres, score_9, score_8_up, score_7_up, 1girl, adult female,cave background, big breasts,big belly,hair over one eye,
-    curvy,((dragon)), fat arms, fat breasts,fat rolls,big love handles,messy curly long hair,big ass, huge breasts, long hair, looking at
-    viewer, mature female,(morbidly obese),anthro,furry navel, solo, thick thighs, thighs, wide hips,(((sharp detailed scales))),blue makeup,
-    standing up motherly shy pose, simple background, multicolored background, white background, black background, gold background,roundersofter,
-    sharp claws, sharp fangs,huge belly,saggy belly,crystal gauntlets,crystals fangs,crystal scales,glowing,crystal growths, armored belly,nude,
-    suggestive,big claws, big fangs, open mouth, feral like,<lora:DetailedFur:0.6>,<lora:Mega_Scally_for_Illustrious_XL:0.6>
--neg worst quality, worst aesthetic, low quality, bad quality, lowres, unfinished, undetailed, bad detailed, bad face, bad eyes, undetailed eyes,
-    missing pupil, bad teeth, bad hands, bad feet, extra hands, extra digits, fewer digits, extra arms, extra legs, extra feet, extra head, long chin,
-    deformed, disfigured, malformed, amputee, several limbs, missing limbs, blurry, blurry face, monochrome, abstract, watermark, text, scan artifacts,
-    jpeg artifacts, lossy-lossless, ai generated, print
+-pos masterpiece, best quality, amazing quality, very aesthetic, high resolution,
+    ultra-detailed, absurdres, newest, soft light , color detail, light steps, intricate colors, vibrant colors, (EyesHD:1.2), ultra-detailed, sharp focus, vibrant colors, ray tracing, best lighting, detailed illustration, detailed background, cinematic,1woman, amazing quality, highres, score_9, score_8_up, score_7_up, newest,motherly standing_pose,hand on lips,drooling, full_body,bedroom background,((looking_at_viewer)),solo,1woman,longest_hair,eye_focus,(((saint bernard))),standing_on_room,jaykuma,(((huge breasts))),big love handles,big belly,(morbidly obese),Detailed,FUR,FLUFFY,TUFT,DETAILED FUR,BODY FUR,tall,bowl cut,hair over eyes, jeans,lifted shirt,brown hair,breasts out
 -count 1
 -size 1200x1200

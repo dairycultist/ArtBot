@@ -153,7 +153,7 @@ function getCommandArgument(command, flag) {
         }
     }
 
-    return command.substring(flagIndex, terminalIndex).trim();
+    return command.substring(flagIndex, terminalIndex).trim().replaceAll("\n", " "); //.replaceAll("\t", "");
 }
 
 async function generateImage(gradioID, prompt) {
