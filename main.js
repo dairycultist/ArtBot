@@ -1,42 +1,48 @@
+const fs = require("fs");
 const ask = require("readline-sync"); // npm install readline-sync
 
-// draw -gradio ID -pos "POSITIVE PROMPT" [-neg "NEGATIVE PROMPT"] [-size WIDTHxHEIGHT] [-count COUNT] [-seed SEED]
+// help
+
+// list [loras|models]
+
+// draw -gradio ID -pos "POSITIVE PROMPT" [-neg "NEGATIVE PROMPT"] [-size WIDTHxHEIGHT] [-count COUNT] [-seed SEED] [-bg]
 // size default is 1200x1200
 // count default is 1
 // seed default is -1 (random)
+// -bg means it runs in the background, doesn't announce when it finishes, and you can continue to queue more
 
 // https://${ gradioID }.gradio.live/
 
 // const seed = Math.floor(Math.random() * 999999);
 
-// images.push((await generateImage({
-//     pos: getArgValue("pos").replaceAll("BELLY", "flat stomach").replaceAll("HIPS", "narrow hips").replaceAll("THIGHS", "thin thighs").replaceAll("BOOBS", "flat chest") + ", (relaxed, smile, looking at viewer:0.5)",
-//     neg: getArgValue("neg"),
-//     seed: seed,
-//     width: w,
-//     height: h
-// })));
+(async () => {
 
-while (true) {
-    console.log(ask.question("> "));
-}
+    while (true) {
 
-// queues the generation and fetches when it's its turn. await on this!
-async function generateImage(prompt) {
+        const command = ask.question("\x1b[32mArtBot$ \x1b[0m");
 
-    // instead of polling the API immediately for every drawing request (and overwhelming it/having requests dropped), we have a queueing system
-    // since the API fetch automatically drops (after the time it takes to gen ~3.5 images) if it's open for too long (even if we extend the fetch's timeout)
+        console.log(command);
 
-    // queue this prompt
-    genQueue.push(prompt);
-
-    // wait until nothing it currently being generated AND we're next in queue
-    while (genCurrent || genQueue[0] != prompt) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // replace with queueGenerateImage
+        await generateImage(
+            "ad79c6cb45caa4643f",
+            {
+                pos: "catgirl, big breasts, smile, looking at viewer",
+                neg: undefined,
+                seed: -1,
+                width: 1200,
+                height: 1200
+            }
+        );
     }
 
-    // set ourselves as what's currently being generated
-    genCurrent = genQueue.shift();
+})();
+
+function getCommandParameter(command, flag) {
+
+}
+
+async function generateImage(gradioID, prompt) {
 
     // do API request (text to image endpoint <GRADIO_LIVE_URL>/docs#/default/text2imgapi_sdapi_v1_txt2img_post)
     // we don't batch multiple since it has a chance of returning 504
@@ -59,9 +65,6 @@ async function generateImage(prompt) {
         })
     });
 
-    // show we're done generating so the next in queue can start
-    genCurrent = undefined;
-
     // process response
     if (!response.ok) {
         throw new Error(response.status);
@@ -69,9 +72,11 @@ async function generateImage(prompt) {
 
     const json = await response.json();
 
-    // TODO include json.info as metadata in the image
+    // json.info = metadata
 
-    return new AttachmentBuilder(Buffer.from(json.images[0], "base64"), { name: "image.png" });
+    console.log(json.images[0]);
+
+    fs.writeFileSync("out.png", Buffer.from(json.images[0], "base64"));
 }
 
 // code for getting loras
