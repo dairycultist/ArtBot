@@ -18,7 +18,7 @@ draw -gradio ID -pos POSITIVE_PROMPT [-neg NEGATIVE_PROMPT] [-size WIDTHxHEIGHT]
     -count  | default is 1
     -seed   | default is -1 (random)
     -steps  | (not implemented yet) default is 50
-    -in     | (not implemented yet) if specified, ignores all other parameters except -gradio and instead reads parameters from a file (following the same argument structure)
+    -in     | if specified, reads additional arguments from a file and behaves as if appending the content of the file to the end of the command (i.e. the file follows the same argument structure)
     -out    | (not implemented yet) output folder to put generated images into. default is ./ (current directory)
     -bg     | (not implemented yet) run generator in the background, doesn't announce when it finishes, and you can continue to queue more
             `);
@@ -30,13 +30,21 @@ draw -gradio ID -pos POSITIVE_PROMPT [-neg NEGATIVE_PROMPT] [-size WIDTHxHEIGHT]
 
         } else if (commandName == "draw" && command.includes("-gradio") && command.includes("-pos")) {
 
-            // get parameters
-            const gradio = getCommandParameter(command, "gradio");
-            const pos = getCommandParameter(command, "pos");
-            const neg = getCommandParameter(command, "neg");
+            // check for -in (done first because it may add new arguments)
+            const inFile = getCommandArgument(command, "in");
+
+            if (inFile && fs.existsSync(inFile)) {
+
+                command += " " + fs.readFileSync(inFile, "utf8");
+            }
+
+            // get arguments
+            const gradio = getCommandArgument(command, "gradio");
+            const pos = getCommandArgument(command, "pos");
+            const neg = getCommandArgument(command, "neg");
             
             const [ width, height ] = (() => {
-                let size = getCommandParameter(command, "size");
+                let size = getCommandArgument(command, "size");
 
                 if (!size) {
                     return [ 1200, 1200 ];
@@ -52,12 +60,12 @@ draw -gradio ID -pos POSITIVE_PROMPT [-neg NEGATIVE_PROMPT] [-size WIDTHxHEIGHT]
             })();
 
             const count = (() => {
-                let count = getCommandParameter(command, "count");
+                let count = getCommandArgument(command, "count");
                 return count && Number(count) != NaN && Number(count) >= 1 ? Math.floor(Number(count)) : 1;
             })();
 
             const seed = (() => {
-                let seed = getCommandParameter(command, "seed");
+                let seed = getCommandArgument(command, "seed");
                 return seed ? seed : -1;
             })();
 
@@ -97,13 +105,13 @@ draw -gradio ID -pos POSITIVE_PROMPT [-neg NEGATIVE_PROMPT] [-size WIDTHxHEIGHT]
             }
 
         } else {
-            console.log("Unrecognized command/missing parameters. Type \"help\" for help.");
+            console.log("Unrecognized command/missing arguments. Type \"help\" for help.");
         }
     }
 
 })();
 
-function getCommandParameter(command, flag) {
+function getCommandArgument(command, flag) {
 
     if (!command.includes(" -" + flag)) {
         return undefined;
