@@ -123,16 +123,34 @@ const ask = require("readline-sync"); // npm install readline-sync
 
 function getCommandArgument(command, flag) {
 
-    if (!command.includes(" -" + flag)) {
+    // the prefix can either be " -" or "\n-" which makes this a bit annoying
+
+    let prefixFlag;
+
+    if (command.includes(" -" + flag)) {
+
+        prefixFlag = " -" + flag;
+
+    } else if (command.includes("\n-" + flag)) {
+
+        prefixFlag = "\n-" + flag;
+
+    } else {
+
         return undefined;
     }
 
-    let flagIndex = command.indexOf(" -" + flag) + flag.length + 3; // +3 to accomodate " -" and the space following the flag
+    let flagIndex = command.indexOf(prefixFlag) + flag.length + 3; // +3 to accomodate " -" and the space following the flag
 
     let terminalIndex = command.indexOf(" -", flagIndex);
 
     if (terminalIndex == -1) {
-        terminalIndex = command.length;
+
+        terminalIndex = command.indexOf("\n-", flagIndex);
+
+        if (terminalIndex == -1) {
+            terminalIndex = command.length;
+        }
     }
 
     return command.substring(flagIndex, terminalIndex).trim();
