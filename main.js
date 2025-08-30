@@ -6,18 +6,20 @@ const ask = require("readline-sync"); // npm install readline-sync
     while (true) {
 
         const command = ask.question("\x1b[32mArtBot$ \x1b[0m").trim();
-
         const commandName = command.substring(0, command.includes(" ") ? command.indexOf(" ") : command.length);
 
         if (commandName == "help") {
 
             // log helpful message on commands
             console.log(`
-draw -gradio ID -pos POSITIVE_PROMPT [-neg NEGATIVE_PROMPT] [-size WIDTHxHEIGHT] [-count COUNT] [-seed SEED] [-bg]
+draw -gradio ID -pos POSITIVE_PROMPT [-neg NEGATIVE_PROMPT] [-size WIDTHxHEIGHT] [-count COUNT] [-seed SEED] [-steps STEPS] [-in FILE] [-out DIRECTORY] [-bg]
     -gradio | the gradio id of your gradio link (i.e. https://<THIS_PART>.gradio.live/)
     -size   | default is 1200x1200. minimum size is 640x640
     -count  | default is 1
     -seed   | default is -1 (random)
+    -steps  | (not implemented yet) default is 50
+    -in     | (not implemented yet) if specified, ignores all other parameters except -gradio and instead reads parameters from a file (following the same argument structure)
+    -out    | (not implemented yet) output folder to put generated images into. default is ./ (current directory)
     -bg     | (not implemented yet) run generator in the background, doesn't announce when it finishes, and you can continue to queue more
             `);
 
@@ -58,6 +60,15 @@ draw -gradio ID -pos POSITIVE_PROMPT [-neg NEGATIVE_PROMPT] [-size WIDTHxHEIGHT]
                 let seed = getCommandParameter(command, "seed");
                 return seed ? seed : -1;
             })();
+
+            console.log(`
+\x1b[2mgradio link:\x1b[0m https://${ gradio }.gradio.live/
+\x1b[2mpositive:   \x1b[0m ${ pos }
+\x1b[2mnegative:   \x1b[0m ${ neg }
+\x1b[2msize:       \x1b[0m ${ width }x${ height }
+\x1b[2mcount:      \x1b[0m ${ count }
+\x1b[2mseed:       \x1b[0m ${ seed }
+            `);
 
             // attempt to generate (will fail if API cannot be polled)
             try {
@@ -122,7 +133,7 @@ async function generateImage(gradioID, prompt) {
             "seed":             prompt.seed,
             // sampler_name: null,
             // scheduler: null,
-            "steps":            30,
+            "steps":            50,
             // cfg_scale: 7,
             "width":            prompt.width,
             "height":           prompt.height,
