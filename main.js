@@ -14,14 +14,17 @@ const ask = require("readline-sync"); // npm install readline-sync
             // log helpful message on commands
             console.log(`
 draw -gradio ID -pos POSITIVE_PROMPT [-neg NEGATIVE_PROMPT] [-size WIDTHxHEIGHT] [-count COUNT] [-seed SEED] [-bg]
-    -size  | default is 1200x1200
-    -count | default is 1
-    -seed  | default is -1 (random)
-    -bg    | (not implemented yet) run generator in the background, doesn't announce when it finishes, and you can continue to queue more
+    -gradio | the gradio id of your gradio link (i.e. https://<THIS_PART>.gradio.live/)
+    -size   | default is 1200x1200. minimum size is 640x640
+    -count  | default is 1
+    -seed   | default is -1 (random)
+    -bg     | (not implemented yet) run generator in the background, doesn't announce when it finishes, and you can continue to queue more
             `);
 
             // loras (lists loras)
             // model [list|use MODEL]
+            // stash DIRECTORY | uploads all images in the DIRECTORY to stash as separate posts with tags automatically added based on the prompt (what about description? title?)
+            // analyze IMAGE_PATH | reconstruct a draw command based on the image's metadata
 
         } else if (commandName == "draw" && command.includes("-gradio") && command.includes("-pos")) {
 
@@ -29,18 +32,35 @@ draw -gradio ID -pos POSITIVE_PROMPT [-neg NEGATIVE_PROMPT] [-size WIDTHxHEIGHT]
             const gradio = getCommandParameter(command, "gradio");
             const pos = getCommandParameter(command, "pos");
             const neg = getCommandParameter(command, "neg");
+            
+            const [ width, height ] = (() => {
+                let size = getCommandParameter(command, "size");
+
+                if (!size) {
+                    return [ 1200, 1200 ];
+                }
+
+                size = size.split("x");
+
+                if (size.length != 2 || Number(size[0]) == NaN || Number(size[1]) == NaN) {
+                    return [ 1200, 1200 ];
+                }
+
+                return [ Math.max(640, Number(size[0])),  Math.max(640, Number(size[1])) ];
+            })();
+
             const count = (() => {
                 let count = getCommandParameter(command, "count");
                 return count && Number(count) != NaN && Number(count) >= 1 ? Math.floor(Number(count)) : 1;
             })();
+
             const seed = (() => {
                 let seed = getCommandParameter(command, "seed");
                 return seed ? seed : -1;
             })();
 
+            // attempt to generate (will fail if API cannot be polled)
             try {
-
-                console.log(count);
 
                 for (let i = 0; i < count; i++) {
 
@@ -49,11 +69,11 @@ draw -gradio ID -pos POSITIVE_PROMPT [-neg NEGATIVE_PROMPT] [-size WIDTHxHEIGHT]
                     await generateImage(
                         gradio,
                         {
-                            pos: pos,
-                            neg: neg,
-                            seed: seed,
-                            width: 1200,
-                            height: 1200
+                            pos:    pos,
+                            neg:    neg,
+                            seed:   seed,
+                            width:  width,
+                            height: height
                         }
                     );
                 }
@@ -86,7 +106,7 @@ function getCommandParameter(command, flag) {
         terminalIndex = command.length;
     }
 
-    return command.substring(flagIndex, terminalIndex);
+    return command.substring(flagIndex, terminalIndex).trim();
 }
 
 async function generateImage(gradioID, prompt) {
