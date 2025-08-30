@@ -91,13 +91,11 @@ async function generateImage(gradioID, prompt) {
         throw new Error(response.status);
     };
 
-    const json = await response.json();
+    const json = await response.json(); // json.info = metadata
+    const seed = json.info.match(/"seed": ([0-9]+),/)[1];
 
-    // json.info = metadata
-
-    console.log(json.images[0]);
-
-    fs.writeFileSync("out.png", Buffer.from(json.images[0], "base64"));
+    // save file with name based on seed
+    fs.writeFileSync(`img_${ seed }.png`, Buffer.from(json.images[0], "base64"));
 }
 
 // code for getting loras
