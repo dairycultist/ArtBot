@@ -5,7 +5,7 @@ const ask = require("readline-sync"); // npm install readline-sync
 
 // list [loras|models]
 
-// draw -gradio ID -pos "POSITIVE PROMPT" [-neg "NEGATIVE PROMPT"] [-size WIDTHxHEIGHT] [-count COUNT] [-seed SEED] [-bg]
+// draw -gradio ID -pos POSITIVE PROMPT [-neg NEGATIVE PROMPT] [-size WIDTHxHEIGHT] [-count COUNT] [-seed SEED] [-bg]
 // size default is 1200x1200
 // count default is 1
 // seed default is -1 (random)
@@ -17,29 +17,50 @@ const ask = require("readline-sync"); // npm install readline-sync
 
 (async () => {
 
+    // draw -gradio ad79c6cb45caa4643f -pos catgirl, big breasts, smile, looking at viewer -neg ugly, blurry
+
     while (true) {
 
         const command = ask.question("\x1b[32mArtBot$ \x1b[0m");
 
-        console.log(command);
+        const gradio = getCommandParameter(command, "gradio");
+        const pos = getCommandParameter(command, "pos");
+        const neg = getCommandParameter(command, "neg");
 
-        // replace with queueGenerateImage
+        // for (let i = 0; i < count; i++)
+        // console.log(`${ i }/${ count } images complete.`);
+
         await generateImage(
-            "ad79c6cb45caa4643f",
+            gradio,
             {
-                pos: "catgirl, big breasts, smile, looking at viewer",
-                neg: undefined,
+                pos: pos,
+                neg: neg,
                 seed: -1,
                 width: 1200,
                 height: 1200
             }
         );
+
+        // console.log(`${ count }/${ count } images complete.`);
     }
 
 })();
 
 function getCommandParameter(command, flag) {
 
+    if (!command.includes(" -" + flag)) {
+        return undefined;
+    }
+
+    let flagIndex = command.indexOf(" -" + flag) + flag.length + 3; // +3 to accomodate " -" and the space following the flag
+
+    let terminalIndex = command.indexOf(" -", flagIndex);
+
+    if (terminalIndex == -1) {
+        terminalIndex = command.length;
+    }
+
+    return command.substring(flagIndex, terminalIndex);
 }
 
 async function generateImage(gradioID, prompt) {
