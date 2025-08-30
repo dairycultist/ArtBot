@@ -1,47 +1,73 @@
 const fs = require("fs");
 const ask = require("readline-sync"); // npm install readline-sync
 
-// help
-
-// list [loras|models]
-
-// draw -gradio ID -pos POSITIVE PROMPT [-neg NEGATIVE PROMPT] [-size WIDTHxHEIGHT] [-count COUNT] [-seed SEED] [-bg]
-// size default is 1200x1200
-// count default is 1
-// seed default is -1 (random)
-// -bg means it runs in the background, doesn't announce when it finishes, and you can continue to queue more
-
-// https://${ gradioID }.gradio.live/
-
-// const seed = Math.floor(Math.random() * 999999);
-
 (async () => {
-
-    // draw -gradio ad79c6cb45caa4643f -pos catgirl, big breasts, smile, looking at viewer -neg ugly, blurry
 
     while (true) {
 
-        const command = ask.question("\x1b[32mArtBot$ \x1b[0m");
+        const command = ask.question("\x1b[32mArtBot$ \x1b[0m").trim();
 
-        const gradio = getCommandParameter(command, "gradio");
-        const pos = getCommandParameter(command, "pos");
-        const neg = getCommandParameter(command, "neg");
+        const commandName = command.substring(0, command.includes(" ") ? command.indexOf(" ") : command.length);
 
-        // for (let i = 0; i < count; i++)
-        // console.log(`${ i }/${ count } images complete.`);
+        if (commandName == "help") {
 
-        await generateImage(
-            gradio,
-            {
-                pos: pos,
-                neg: neg,
-                seed: -1,
-                width: 1200,
-                height: 1200
+            // log helpful message on commands
+            console.log(`
+draw -gradio ID -pos POSITIVE_PROMPT [-neg NEGATIVE_PROMPT] [-size WIDTHxHEIGHT] [-count COUNT] [-seed SEED] [-bg]
+    -size  | default is 1200x1200
+    -count | default is 1
+    -seed  | default is -1 (random)
+    -bg    | (not implemented yet) run generator in the background, doesn't announce when it finishes, and you can continue to queue more
+            `);
+
+            // loras (lists loras)
+            // model [list|use MODEL]
+
+        } else if (commandName == "draw" && command.includes("-gradio") && command.includes("-pos")) {
+
+            // get parameters
+            const gradio = getCommandParameter(command, "gradio");
+            const pos = getCommandParameter(command, "pos");
+            const neg = getCommandParameter(command, "neg");
+            const count = (() => {
+                let count = getCommandParameter(command, "count");
+                return count && Number(count) != NaN && Number(count) >= 1 ? Math.floor(Number(count)) : 1;
+            })();
+            const seed = (() => {
+                let seed = getCommandParameter(command, "seed");
+                return seed ? seed : -1;
+            })();
+
+            try {
+
+                console.log(count);
+
+                for (let i = 0; i < count; i++) {
+
+                    console.log(`${ i }/${ count } images complete.`);
+
+                    await generateImage(
+                        gradio,
+                        {
+                            pos: pos,
+                            neg: neg,
+                            seed: seed,
+                            width: 1200,
+                            height: 1200
+                        }
+                    );
+                }
+
+                console.log(`${ count }/${ count } images complete.`);
+
+            } catch (err) {
+
+                console.log("Error while generating: " + err);
             }
-        );
 
-        // console.log(`${ count }/${ count } images complete.`);
+        } else {
+            console.log("Unrecognized command/missing parameters. Type \"help\" for help.");
+        }
     }
 
 })();
