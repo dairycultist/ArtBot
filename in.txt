@@ -1,17 +1,12 @@
 -pos
-	<lora:DetailedFur:0.2> <lora:well_hello_there:0.2> <lora:HYPv1-4:0.5>
+	<lora:HYPv1-4:0.5>
 
-	masterpiece, best quality, amazing quality, very aesthetic, high resolution,
-	ultra-detailed, absurdres, newest, color detail, ((soft light, soft shading, pastel)),
-	ultra-detailed, (EyesHD:1.2),
-	perfect eyes, eye focus, ray tracing, best lighting, detailed illustration,
-	detailed background, cinematic, amazing quality, highres, score_9,
-	score_8_up, score_7_up, solo, 1woman, outline, eyeliner,
+	masterpiece, best quality, amazing quality, very aesthetic, high resolution, absurdres, newest, (smooth shading, soft light, soft shading, pastel, soft colors:1.4), (EyesHD:1.2), eye_focus, perfect eyes, mascara, bedroom eyes, tsurime, best lighting, detailed illustration, detailed background,1woman, amazing quality, highres, score_9, score_8_up, score_7_up,
+dark outline, newest, resting hands on breasts,belly resting on ground, three quarters view, dutch angle, view from above, full_body, ((looking_at_viewer)),solo,1woman,shiny skin,jaykuma,
+big breasts, hyper hips, hyper ass, leaning forward, ass in air, (round ass, round breasts),bursting ass,breasts out,slim body,
 
-	motherly, park, outside, sitting on bench, fall, autumn, stormy , smile, open mouth, panting, happy, holding coffee, blowing coffee, steam, ((side view)), (medium shot, upper body),
-	longest_hair, (((anthro, loona))), shiny skin, shiny belly, red sclera, tareme, tan sweater, red scarf
-	Detailed,TUFT, (bbw, obese, fat, huge belly, round belly:1.4), (gigantic breasts, round breasts), nipple outline, wide hips
--neg naked, grainy, noisy, jeans, glasses, crop top, light steps
+tall,black bikini,white fur, tongue out, ponytail, purple hair dye,((fox)), smirk, outside, forest, sakura trees, night,black pupils
+-neg light steps, worst quality, worst aesthetic, detailed fur, harsh shading, rough shading, low quality, bad quality, lowres, unfinished, undetailed, bad detailed, bad face, bad eyes, undetailed eyes, missing pupil, bad teeth, bad hands, bad feet, extra hands, extra digits, fewer digits, extra arms, extra legs, extra feet, extra head, long chin, deformed, disfigured, malformed, amputee, several limbs, missing limbs, blurry, blurry face, monochrome, abstract, watermark, text, scan artifacts, jpeg artifacts, lossy-lossless, ai generated, print,nipples, genitals
 -count 1
 -size 1800x1440
 -steps 45
