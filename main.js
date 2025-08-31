@@ -23,6 +23,7 @@ const ask = require("readline-sync"); // npm install readline-sync
         [-count COUNT]          \x1b[2mdefault is 1\x1b[0m
         [-seed SEED]            \x1b[2mdefault is -1 (random)\x1b[0m
         [-steps STEPS]          \x1b[2mdefault is 50\x1b[0m
+        [-cfg CFG]              \x1b[2mdefault is 7\x1b[0m
         [-in FILE]              \x1b[2mif specified, reads additional arguments from a file and behaves as if appending the content of the file to the end of the command (i.e. the file follows the same argument structure)\x1b[0m
         [-out DIRECTORY]        \x1b[2m(not implemented yet) output folder to put generated images into. default is ./ (current directory)\x1b[0m
         [-bg]                   \x1b[2m(not implemented yet) run generator in the background, doesn't announce when it finishes, and you can continue to queue more\x1b[0m
@@ -53,7 +54,16 @@ const ask = require("readline-sync"); // npm install readline-sync
                 const gradio = getCommandArgument(command, "gradio");
                 const pos = getCommandArgument(command, "pos");
                 const neg = getCommandArgument(command, "neg");
-                const steps = getCommandArgument(command, "steps");
+
+                const steps = (() => {
+                    let steps = getCommandArgument(command, "steps");
+                    return steps && Number(steps) != NaN && Number(steps) >= 1 ? Math.floor(Number(steps)) : 50;
+                })();
+
+                const cfg = (() => {
+                    let cfg = getCommandArgument(command, "cfg");
+                    return cfg && Number(cfg) != NaN && Number(cfg) >= 1 ? Math.floor(Number(cfg)) : 7;
+                })();
                 
                 const [ width, height ] = (() => {
                     let size = getCommandArgument(command, "size");
@@ -81,6 +91,7 @@ const ask = require("readline-sync"); // npm install readline-sync
                     return seed ? seed : -1;
                 })();
 
+                // pretty print all arguments
                 console.log(`
 \x1b[2mgradio link:\x1b[0m https://${ gradio }.gradio.live/
 \x1b[2mpositive:   \x1b[0m ${ pos }
@@ -89,6 +100,7 @@ const ask = require("readline-sync"); // npm install readline-sync
 \x1b[2mcount:      \x1b[0m ${ count }
 \x1b[2mseed:       \x1b[0m ${ seed }
 \x1b[2msteps:      \x1b[0m ${ steps }
+\x1b[2mcfg:        \x1b[0m ${ cfg }
                 `);
 
                 // attempt to generate (will fail if API cannot be polled)
@@ -103,6 +115,7 @@ const ask = require("readline-sync"); // npm install readline-sync
                             neg:    neg,
                             seed:   seed,
                             steps:  steps,
+                            cfg:    cfg,
                             width:  width,
                             height: height
                         }
@@ -127,7 +140,6 @@ const ask = require("readline-sync"); // npm install readline-sync
 function getCommandArgument(command, flag) {
 
     // the prefix can either be " -" or "\n-" which makes this a bit annoying
-
     let prefixFlag;
 
     if (command.includes(" -" + flag)) {
@@ -173,7 +185,7 @@ async function generateImage(gradioID, prompt) {
             // sampler_name: null,
             // scheduler: null,
             "steps":            prompt.steps,
-            // cfg_scale: 7,
+            cfg_scale:          prompt.cfg,
             "width":            prompt.width,
             "height":           prompt.height,
             // "sampler_index": "Euler",
