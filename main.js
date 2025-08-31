@@ -22,7 +22,7 @@ const ask = require("readline-sync"); // npm install readline-sync
         [-size WIDTHxHEIGHT]    \x1b[2mdefault is 1200x1200. minimum size is 640x640\x1b[0m
         [-count COUNT]          \x1b[2mdefault is 1\x1b[0m
         [-seed SEED]            \x1b[2mdefault is -1 (random)\x1b[0m
-        [-steps STEPS]          \x1b[2m(not implemented yet) default is 50\x1b[0m
+        [-steps STEPS]          \x1b[2mdefault is 50\x1b[0m
         [-in FILE]              \x1b[2mif specified, reads additional arguments from a file and behaves as if appending the content of the file to the end of the command (i.e. the file follows the same argument structure)\x1b[0m
         [-out DIRECTORY]        \x1b[2m(not implemented yet) output folder to put generated images into. default is ./ (current directory)\x1b[0m
         [-bg]                   \x1b[2m(not implemented yet) run generator in the background, doesn't announce when it finishes, and you can continue to queue more\x1b[0m
@@ -53,6 +53,7 @@ const ask = require("readline-sync"); // npm install readline-sync
                 const gradio = getCommandArgument(command, "gradio");
                 const pos = getCommandArgument(command, "pos");
                 const neg = getCommandArgument(command, "neg");
+                const steps = getCommandArgument(command, "steps");
                 
                 const [ width, height ] = (() => {
                     let size = getCommandArgument(command, "size");
@@ -87,6 +88,7 @@ const ask = require("readline-sync"); // npm install readline-sync
 \x1b[2msize:       \x1b[0m ${ width }x${ height }
 \x1b[2mcount:      \x1b[0m ${ count }
 \x1b[2mseed:       \x1b[0m ${ seed }
+\x1b[2msteps:      \x1b[0m ${ steps }
                 `);
 
                 // attempt to generate (will fail if API cannot be polled)
@@ -100,6 +102,7 @@ const ask = require("readline-sync"); // npm install readline-sync
                             pos:    pos,
                             neg:    neg,
                             seed:   seed,
+                            steps:  steps,
                             width:  width,
                             height: height
                         }
@@ -169,7 +172,7 @@ async function generateImage(gradioID, prompt) {
             "seed":             prompt.seed,
             // sampler_name: null,
             // scheduler: null,
-            "steps":            50,
+            "steps":            prompt.steps,
             // cfg_scale: 7,
             "width":            prompt.width,
             "height":           prompt.height,

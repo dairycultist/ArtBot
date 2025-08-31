@@ -1,4 +1,16 @@
--pos masterpiece, best quality, amazing quality, very aesthetic, high resolution,
-    ultra-detailed, absurdres, newest, soft light , color detail, light steps, intricate colors, vibrant colors, (EyesHD:1.2), ultra-detailed, sharp focus, vibrant colors, ray tracing, best lighting, detailed illustration, detailed background, cinematic,1woman, amazing quality, highres, score_9, score_8_up, score_7_up, newest,motherly standing_pose,hand on lips,drooling, full_body,bedroom background,((looking_at_viewer)),solo,1woman,longest_hair,eye_focus,(((saint bernard))),standing_on_room,jaykuma,(((huge breasts))),big love handles,big belly,(morbidly obese),Detailed,FUR,FLUFFY,TUFT,DETAILED FUR,BODY FUR,tall,bowl cut,hair over eyes, jeans,lifted shirt,brown hair,breasts out
+-pos
+	<lora:DetailedFur:0.2> <lora:well_hello_there:0.2> <lora:HYPv1-4:0.5>
+
+	masterpiece, best quality, amazing quality, very aesthetic, high resolution,
+	ultra-detailed, absurdres, newest, color detail, ((soft light, soft shading, pastel)),
+	ultra-detailed, (EyesHD:1.2),
+	perfect eyes, eye focus, ray tracing, best lighting, detailed illustration,
+	detailed background, cinematic, amazing quality, highres, score_9,
+	score_8_up, score_7_up, solo, 1woman, outline, eyeliner,
+
+	motherly, park, outside, sitting on bench, fall, autumn, stormy , smile, open mouth, panting, happy, holding coffee, blowing coffee, steam, ((side view)), (medium shot, upper body),
+	longest_hair, (((anthro, loona))), shiny skin, shiny belly, red sclera, tareme, tan sweater, red scarf
+	Detailed,TUFT, (bbw, obese, fat, huge belly, round belly:1.4), (gigantic breasts, round breasts), nipple outline, wide hips
+-neg naked, grainy, noisy, jeans, glasses, crop top, light steps
 -count 1
--size 1200x1200
+-size 1800x1440
