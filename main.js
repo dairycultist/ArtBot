@@ -55,19 +55,31 @@ analyze
 
                     let text = parameters[0].text;
 
-                    text = text.split("\nNegative prompt: ");
+                    text = text.split("\nNegative prompt: ", 2);
 
                     const pos = text[0];
 
-                    text = text[1].split("\nSteps: ");
+                    text = text[1].split("\nSteps: ", 2);
 
                     const neg = text[0];
 
-                    text = text[1].split(", Sampler: Euler, Schedule type: Automatic, CFG scale: ");
+                    text = text[1].split(", Sampler: Euler, Schedule type: Automatic, CFG scale: ", 2);
 
                     const steps = text[0];
 
-                    console.log(`draw -pos ${ pos } -neg ${ neg } -size -count -seed -steps ${ steps } -cfg`);
+                    text = text[1].split(", Seed: ", 2);
+
+                    const cfg = Number(text[0]); // conveniently converts 7.0 to 7 for us
+
+                    text = text[1].split(", Size: ", 2);
+
+                    const seed = text[0];
+
+                    text = text[1].split(", Model hash:", 2);
+
+                    const size = text[0];
+
+                    console.log(`draw -pos ${ pos } -neg ${ neg } -size ${ size } -seed ${ seed } -steps ${ steps } -cfg ${ cfg }`);
                 }
 
             } else if (commandName == "draw") {
