@@ -53,7 +53,21 @@ analyze
 
                 if (parameters.length > 0) {
 
-                    console.log(parameters[0].text);
+                    let text = parameters[0].text;
+
+                    text = text.split("\nNegative prompt: ");
+
+                    const pos = text[0];
+
+                    text = text[1].split("\nSteps: ");
+
+                    const neg = text[0];
+
+                    text = text[1].split(", Sampler: Euler, Schedule type: Automatic, CFG scale: ");
+
+                    const steps = text[0];
+
+                    console.log(`draw -pos ${ pos } -neg ${ neg } -size -count -seed -steps ${ steps } -cfg`);
                 }
 
             } else if (commandName == "draw") {
@@ -84,7 +98,7 @@ analyze
 
                 const cfg = (() => {
                     let cfg = getCommandArgument(command, "cfg");
-                    return cfg && Number(cfg) != NaN && Number(cfg) >= 1 ? Math.floor(Number(cfg)) : 7;
+                    return cfg && Number(cfg) != NaN && Number(cfg) >= 1 ? Number(cfg) : 7.0;
                 })();
                 
                 const [ width, height ] = (() => {
