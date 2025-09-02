@@ -29,7 +29,9 @@ draw
     [-out DIRECTORY]        \x1b[2m(not implemented yet) output folder to put generated images into. default is ./ (current directory)\x1b[0m
     [-bg]                   \x1b[2m(not implemented yet) run generator in the background, doesn't announce when it finishes, and you can continue to queue more\x1b[0m
 
-analyze IMAGE_PATH          \x1b[2m(not FINISHED yet) reconstruct a draw command based on the image's metadata\x1b[0m
+analyze
+    -in IMAGE_PATH          \x1b[2mprints a draw command reconstructed from this image's metadata\x1b[0m
+    [-out PATH.txt]         \x1b[2m(not implemented yet) if provided, instead of printing the draw command, outputs it into the specified file
                 `);
 
                 // loras (lists loras)
@@ -38,7 +40,12 @@ analyze IMAGE_PATH          \x1b[2m(not FINISHED yet) reconstruct a draw command
 
             } else if (commandName == "analyze") {
 
-                const metadata = await sharp(command.substring(8)).metadata();
+                if (!command.includes("-in")) {
+
+                    throw new Error("Missing -in argument.");
+                }
+
+                const metadata = await sharp(getCommandArgument(command, "in")).metadata();
 
                 const parameters = metadata.comments.filter((value) => { return value.keyword == "parameters"; });
 
