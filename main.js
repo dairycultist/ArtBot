@@ -25,13 +25,15 @@ draw
     [-seed SEED]            \x1b[2mdefault is -1 (random)\x1b[0m
     [-steps STEPS]          \x1b[2mdefault is 50\x1b[0m
     [-cfg CFG]              \x1b[2mdefault is 7\x1b[0m
-    [-in FILE]              \x1b[2mif specified, reads additional arguments from a file and behaves as if appending the content of the file to the end of the command (i.e. the file follows the same argument structure)\x1b[0m
+    [-in FILE]              \x1b[2mif specified, reads additional arguments from a file and behaves as if appending the content of the
+                            file to the end of the command (i.e. the file follows the same argument structure)\x1b[0m
     [-out DIRECTORY]        \x1b[2m(not implemented yet) output folder to put generated images into. default is ./ (current directory)\x1b[0m
-    [-bg]                   \x1b[2m(not implemented yet) run generator in the background, doesn't announce when it finishes, and you can continue to queue more\x1b[0m
+    [-bg]                   \x1b[2m(not implemented yet) run generator in the background, doesn't announce when it finishes, and you can
+                            continue to queue more\x1b[0m
 
 analyze
     -in IMAGE_PATH          \x1b[2mprints a draw command reconstructed from this image's metadata\x1b[0m
-    [-out PATH.txt]         \x1b[2m(not implemented yet) if provided, instead of printing the draw command, outputs it into the specified file
+    [-out PATH.txt]         \x1b[2m(not implemented yet) if provided, instead of printing the draw command, outputs it into the specified file\x1b[0m
                 `);
 
                 // loras (lists loras)
