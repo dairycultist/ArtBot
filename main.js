@@ -187,29 +187,19 @@ analyze
 
 function getCommandArgument(command, flag) {
 
-    // the prefix can either be " -" or "\n-" which makes this a bit annoying
-    let prefixFlag;
-
-    if (command.includes(" -" + flag)) {
-
-        prefixFlag = " -" + flag;
-
-    } else if (command.includes("\n-" + flag)) {
-
-        prefixFlag = "\n-" + flag;
-
-    } else {
-
+    if (!command.match(new RegExp("[ \n]-" + flag)))
         return undefined;
-    }
 
-    let flagIndex = command.indexOf(prefixFlag) + flag.length + 3; // +3 to accomodate " -" and the space following the flag
+    let flagIndex = command.match(new RegExp("[ \n]-" + flag)).index + flag.length + 3; // +3 to accomodate "[ \n]-" and the space following the flag
 
-    let terminalIndex = command.indexOf(" -", flagIndex);
-    terminalIndex = terminalIndex == -1 ? command.indexOf("\n-", flagIndex) : Math.min(terminalIndex, command.indexOf("\n-", flagIndex));
+    // find the next argument after this one
+    let terminalIndex = command.substring(flagIndex).match(new RegExp("[ \n]-"));
 
-    if (terminalIndex == -1)
+    if (terminalIndex) {
+        terminalIndex = terminalIndex.index + flagIndex;
+    } else {
         terminalIndex = command.length;
+    }
 
     return command.substring(flagIndex, terminalIndex).trim().replaceAll("\n", " "); //.replaceAll("\t", "");
 }
