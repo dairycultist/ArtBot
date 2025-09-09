@@ -1,0 +1,11 @@
+-pos <lora:HYPv1-4:0.5> <lora:jaykuma_style:0.5> masterpiece, best quality, amazing quality, very aesthetic, high resolution, ultra-detailed, absurdres, newest, soft light, color detail, light steps, intricate colors, vibrant colors, (EyesHD:1.2), ultra-detailed, sharp focus, vibrant colors, ray tracing, best lighting, detailed illustration, detailed background, cinematic,1woman, amazing quality, highres, score_9, score_8_up, score_7_up newest, detailed, pastel,
+
+<lora:Mega_Scally_for_Illustrious_XL:0.5> ((anthro, scalie, crocodile, black scales, milf, black fishnet stockings, black tshirt, huge diamond necklace, cleavage, jean shorts, tight jean shorts, long hair, ponytail, wavy hair, red hair roots, goth, black hair, long tail, heavy eyeliner)), (bedroom, on bed),
+
+full body, (view from above), on all fours, kneeling, resting breasts on ground, hands on ground, breasts together, solo, 1woman, eye_focus, Jaykuma, (gigantic breasts, hyper ass), skindentation, (looking up at viewer), tsurime, eyeliner, grin, smile, happy, smug, dutch angle, side view, front view
+
+-neg worst quality, worst aesthetic, low quality, bad quality, lowres, unfinished, undetailed, bad detailed, bad face, bad eyes, undetailed eyes, missing pupil, bad teeth, bad hands, bad feet, extra hands, extra digits, fewer digits, extra arms, extra legs, extra feet, extra head, long chin, deformed, disfigured, malformed, amputee, several limbs, missing limbs, blurry, blurry face, monochrome, abstract, watermark, text, scan artifacts, jpeg artifacts, lossy-lossless, ai generated, print, nipples, genitals, naked, sweat, arms going through breasts, bracelet, piercings
+
+-steps 30
+-cfg 5.5
+-size 1600x1200

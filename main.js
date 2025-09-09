@@ -206,15 +206,10 @@ function getCommandArgument(command, flag) {
     let flagIndex = command.indexOf(prefixFlag) + flag.length + 3; // +3 to accomodate " -" and the space following the flag
 
     let terminalIndex = command.indexOf(" -", flagIndex);
+    terminalIndex = terminalIndex == -1 ? command.indexOf("\n-", flagIndex) : Math.min(terminalIndex, command.indexOf("\n-", flagIndex));
 
-    if (terminalIndex == -1) {
-
-        terminalIndex = command.indexOf("\n-", flagIndex);
-
-        if (terminalIndex == -1) {
-            terminalIndex = command.length;
-        }
-    }
+    if (terminalIndex == -1)
+        terminalIndex = command.length;
 
     return command.substring(flagIndex, terminalIndex).trim().replaceAll("\n", " "); //.replaceAll("\t", "");
 }
