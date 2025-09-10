@@ -2,18 +2,12 @@ const fs = require("fs");
 const { createServer } = require("node:http");
 const sharp = require("sharp");                 // npm install sharp
 
+// [SAVE PROMPT] button + [LOAD PROMPT] dropdown + saved_prompts/ directory
+// images/ directory
+
 createServer((req, res) => {
 
     console.log(req.method + " " + req.url);
-
-    //     -gradio ID              \x1b[2mthe gradio id of your gradio link (i.e. https://<THIS_PART>.gradio.live/)\x1b[0m
-    //     -pos POSITIVE_PROMPT
-    //     [-neg NEGATIVE_PROMPT]
-    //     [-size WIDTHxHEIGHT]    \x1b[2mdefault is 1200x1200. minimum size is 640x640\x1b[0m
-    //     [-count COUNT]          \x1b[2mdefault is 1\x1b[0m
-    //     [-seed SEED]            \x1b[2mdefault is -1 (random)\x1b[0m
-    //     [-steps STEPS]          \x1b[2mdefault is 50\x1b[0m
-    //     [-cfg CFG]              \x1b[2mdefault is 7\x1b[0m
 
     if (req.method == "GET" && req.url.startsWith("/draw")) {
 
@@ -93,6 +87,14 @@ createServer((req, res) => {
         });
 
     } else {
+
+        //     -pos POSITIVE_PROMPT
+        //     [-neg NEGATIVE_PROMPT]
+        //     [-size WIDTHxHEIGHT]    \x1b[2mdefault is 1200x1200. minimum size is 640x640\x1b[0m
+        //     [-count COUNT]          \x1b[2mdefault is 1\x1b[0m
+        //     [-seed SEED]            \x1b[2mdefault is -1 (random)\x1b[0m
+        //     [-steps STEPS]          \x1b[2mdefault is 50\x1b[0m
+        //     [-cfg CFG]              \x1b[2mdefault is 7\x1b[0m
 
         res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
         res.end(`
