@@ -119,9 +119,9 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
         body { font-family: sans-serif; }
         th { text-align: left; }
         img { height: 400px; min-width: 100px; background: #eee; border: 1px solid #aaa; }
-        button { border-radius: 4px; border: none; cursor: pointer; background: green; font: inherit; color: white; font-weight: 700; padding: 1em 2em; }
+        #queuegeneration { border-radius: 4px; border: none; cursor: pointer; background: green; font: inherit; color: white; font-weight: 700; padding: 1em 2em; }
         table { width: 50em; }
-        textarea, input[type="text"] { padding: 4px 8px; border-radius: 4px; width: 100%; box-sizing: border-box; }
+        table textarea, table input[type="text"] { padding: 4px 8px; border-radius: 4px; width: 100%; box-sizing: border-box; }
     </style>
     <script>
 
@@ -142,6 +142,18 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
     </script>
 </head>
 <body>
+
+    <select id="loadprompt">
+        <option value="option1">Option 1</option>
+        <option value="option2">Option 2</option>
+        <option value="option3">Option 3</option>
+    </select>
+    <button type="button" onclick="">Load prompt</button>
+
+    <span style="display: inline-block; width: 1px; height: 2em; background: grey; vertical-align: middle;"></span>
+
+    <input type="text" id="saveprompt" placeholder="prompt_name">
+    <button type="button" onclick="">Save prompt as</button>
 
     <table>
         <tr>
@@ -173,7 +185,7 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
     </table>
 
     <br>
-    <button type="button" onclick="queueGeneration();">Queue Generation</button>
+    <button id="queuegeneration" type="button" onclick="queueGeneration();">Queue Generation</button>
 
     <div id="insert"></div>
 
