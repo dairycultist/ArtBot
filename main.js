@@ -1,6 +1,7 @@
 const fs = require("fs");
 const { createServer } = require("node:http");
 const sharp = require("sharp");                 // npm install sharp
+const open = require("opener");                 // npm install opener
 
 // [SAVE PROMPT] button + [LOAD PROMPT] dropdown + saved_prompts/ directory
 // images/ directory
@@ -12,6 +13,8 @@ const sharp = require("sharp");                 // npm install sharp
 // stash DIRECTORY | uploads all images in the DIRECTORY to stash as separate posts with tags automatically added based on the prompt (what about description? title?)
 
 const gradioID = require("readline-sync").question("Enter gradio ID: ");
+
+// verify gradioID is valid by pinging, if not valid then quit program
 
 console.log(`\x1b[2mgradio link:\x1b[0m https://${ gradioID }.gradio.live/`);
 
@@ -125,7 +128,7 @@ createServer((req, res) => {
                 cfg: undefined
             }).toString();
         
-            document.getElementById("insert").innerHTML += \`<img src="/draw?\${ query }">\`;
+            document.getElementById("insert").innerHTML = \`<img src="/draw?\${ query }">\` + document.getElementById("insert").innerHTML;
         }
 
     </script>
@@ -158,7 +161,12 @@ createServer((req, res) => {
         `);
     }
 
-}).listen(3000, "localhost", () => { console.log(`Copy this into your browser => http://localhost:3000/`); });
+}).listen(3000, "localhost", () => {
+
+    // open page automatically
+    console.log(`Opening in browser... (if nothing happened, copy this: http://localhost:3000/)`);
+    open("http://localhost:3000/");
+});
 
 async function generateImage(prompt) {
 
