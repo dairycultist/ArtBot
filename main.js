@@ -4,10 +4,6 @@ const sharp = require("sharp");                 // npm install sharp
 
 createServer((req, res) => {
 
-    // GET /
-
-    // GET /draw?pos=_&neg=_&...
-
     //     -gradio ID              \x1b[2mthe gradio id of your gradio link (i.e. https://<THIS_PART>.gradio.live/)\x1b[0m
     //     -pos POSITIVE_PROMPT
     //     [-neg NEGATIVE_PROMPT]
@@ -17,11 +13,87 @@ createServer((req, res) => {
     //     [-steps STEPS]          \x1b[2mdefault is 50\x1b[0m
     //     [-cfg CFG]              \x1b[2mdefault is 7\x1b[0m
 
-    const request = req.method + " " + req.url;
+    if (req.method == "GET" && req.url.startsWith("/draw")) {
 
-    res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" }); // image/png 
+        const params = new URLSearchParams(req.url.split("?", 2)[1]);
 
-    res.end(`
+        // validate
+        if (!params.get("gradio") || !params.get("pos")) {
+
+            // missing gradio or pos arguments
+            return;
+        }
+
+        // get arguments
+        const gradio = params.get("gradio");
+        const pos = params.get("pos");
+        const neg = params.get("neg") ? params.get("neg") : undefined;
+
+        const steps = params.get("steps") && Number(params.get("steps")) != NaN && Number(params.get("steps")) >= 1 ? Math.floor(Number(params.get("steps"))) : 50;
+
+        const cfg = params.get("cfg") && Number(params.get("cfg")) != NaN && Number(params.get("cfg")) >= 1 ? Number(params.get("cfg")) : 7.0;
+        
+        const [ width, height ] = (() => {
+
+            let size = params.get("size");
+
+            if (!size) {
+                return [ 1200, 1200 ];
+            }
+
+            size = size.split("x");
+
+            if (size.length != 2 || Number(size[0]) == NaN || Number(size[1]) == NaN) {
+                return [ 1200, 1200 ];
+            }
+
+            return [ Math.max(640, Number(size[0])),  Math.max(640, Number(size[1])) ];
+        })();
+
+        const seed = params.get("seed") ? params.get("seed") : -1;
+
+        // pretty print all arguments
+        console.log(`
+\x1b[2mgradio link:\x1b[0m https://${ gradio }.gradio.live/
+\x1b[2mpositive:   \x1b[0m ${ pos }
+\x1b[2mnegative:   \x1b[0m ${ neg }
+\x1b[2msize:       \x1b[0m ${ width }x${ height }
+\x1b[2mseed:       \x1b[0m ${ seed }
+\x1b[2msteps:      \x1b[0m ${ steps }
+\x1b[2mcfg:        \x1b[0m ${ cfg }
+        `);
+
+        // TODO queue gen instead of launching it right away
+
+        // attempt to generate (will fail if API cannot be polled)
+        generateImage(
+            gradio,
+            {
+                pos:    pos,
+                neg:    neg,
+                seed:   seed,
+                steps:  steps,
+                cfg:    cfg,
+                width:  width,
+                height: height
+            }
+        ).then((buffer) => {
+
+            res.writeHead(200, { "Content-Type": "image/png" });
+            res.end(buffer);
+            console.log("Success");
+
+        }).catch((e) => {
+
+            res.writeHead(404, { "Content-Type": "text/plain" });
+            res.end("error");
+            console.log("Error: " + e);
+        });
+
+    } else {
+
+        res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+        res.end(`
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,10 +101,19 @@ createServer((req, res) => {
     <title>ArtBot</title>
 </head>
 <body>
-    <label for="gradio">Gradio ID:</label> https://<input type="text" id="gradio" name="gradio">.gradio.live/
+
+    <table>
+        <tr>
+            <th><label for="gradio">Gradio ID:</label></th>
+            <td>https://<input type="text" id="gradio" name="gradio">.gradio.live/</td>
+        </tr>
+    </table>
+    <img src="/draw?gradio=873d9c2a1cd81f30c5&pos=catgirl, obese">
+
 </body>
 </html>
-    `);
+        `);
+    }
 
 }).listen(3000, "localhost", () => { console.log(`Copy this into your browser => http://localhost:3000/`); });
 
@@ -97,81 +178,6 @@ createServer((req, res) => {
 
 
 
-
-
-
-                // // validate
-                // if (!command.includes("-gradio") || !command.includes("-pos")) {
-
-                //     throw new Error("Missing -gradio or -pos arguments.");
-                // }
-
-                // // get arguments
-                // const gradio = getCommandArgument(command, "gradio");
-                // const pos = getCommandArgument(command, "pos");
-                // const neg = getCommandArgument(command, "neg");
-
-                // const steps = (() => {
-                //     let steps = getCommandArgument(command, "steps");
-                //     return steps && Number(steps) != NaN && Number(steps) >= 1 ? Math.floor(Number(steps)) : 50;
-                // })();
-
-                // const cfg = (() => {
-                //     let cfg = getCommandArgument(command, "cfg");
-                //     return cfg && Number(cfg) != NaN && Number(cfg) >= 1 ? Number(cfg) : 7.0;
-                // })();
-                
-                // const [ width, height ] = (() => {
-                //     let size = getCommandArgument(command, "size");
-
-                //     if (!size) {
-                //         return [ 1200, 1200 ];
-                //     }
-
-                //     size = size.split("x");
-
-                //     if (size.length != 2 || Number(size[0]) == NaN || Number(size[1]) == NaN) {
-                //         return [ 1200, 1200 ];
-                //     }
-
-                //     return [ Math.max(640, Number(size[0])),  Math.max(640, Number(size[1])) ];
-                // })();
-
-                // const count = (() => {
-                //     let count = getCommandArgument(command, "count");
-                //     return count && Number(count) != NaN && Number(count) >= 1 ? Math.floor(Number(count)) : 1;
-                // })();
-
-                // const seed = (() => {
-                //     let seed = getCommandArgument(command, "seed");
-                //     return seed ? seed : -1;
-                // })();
-
-                // // attempt to generate (will fail if API cannot be polled)
-                // for (let i = 0; i < count; i++) {
-
-                //     console.log(`${ i }/${ count } images complete.`);
-
-                //     await generateImage(
-                //         gradio,
-                //         {
-                //             pos:    pos,
-                //             neg:    neg,
-                //             seed:   seed,
-                //             steps:  steps,
-                //             cfg:    cfg,
-                //             width:  width,
-                //             height: height
-                //         }
-                //     );
-                // }
-
-                // console.log(`${ count }/${ count } images complete.`);
-
-
-
-
-
 async function generateImage(gradioID, prompt) {
 
     // do API request (text to image endpoint <GRADIO_LIVE_URL>/docs#/default/text2imgapi_sdapi_v1_txt2img_post)
@@ -202,9 +208,12 @@ async function generateImage(gradioID, prompt) {
 
     const json = await response.json(); // json.info = metadata
     const seed = json.info.match(/"seed": ([0-9]+),/)[1];
+    const image_buffer = Buffer.from(json.images[0], "base64");
 
     // save file with name based on seed
-    fs.writeFileSync(`img_${ seed }.png`, Buffer.from(json.images[0], "base64"));
+    fs.writeFileSync(`img_${ seed }.png`, image_buffer);
+
+    return image_buffer;
 }
 
 // code for getting loras
