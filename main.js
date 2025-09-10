@@ -15,19 +15,17 @@ const opener = require("opener");               // npm install opener
 const gradioID = require("readline-sync").question("Enter gradio ID: ");
 
 // verify gradioID is valid by pinging, if not valid then quit program
-fetch(`https://${ gradioID }.gradio.live/internal/ping`).then((res) => {
+fetch(`https://${ gradioID }.gradio.live/internal/ping`)
+.then((res) => {
 
-    if (res.status != 200) {
-
-        console.error("Invalid gradio ID!");
-        return;
-    }
+    if (res.status != 200)
+        throw new Error("");
 
     console.log(`\x1b[2mgradio link:\x1b[0m https://${ gradioID }.gradio.live/`);
 
     createServer((req, res) => {
 
-        console.log(req.method + " " + req.url);
+        console.log("\x1b[32m" + req.method + "\x1b[0m \x1b[2m" + req.url + "\x1b[0m");
 
         if (req.method == "GET" && req.url.startsWith("/draw")) {
 
@@ -51,8 +49,6 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`).then((res) => {
             const [ width, height ] = (() => {
 
                 let size = params.get("size");
-
-                console.log(size);
 
                 if (!size) {
                     return [ 1200, 1200 ];
@@ -78,14 +74,12 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`).then((res) => {
             const seed = params.get("seed") ? params.get("seed") : -1;
 
             // pretty print all arguments
-            console.log(`
-\x1b[2mpositive:   \x1b[0m ${ pos }
+            console.log(`\x1b[2mpositive:   \x1b[0m ${ pos }
 \x1b[2mnegative:   \x1b[0m ${ neg }
 \x1b[2msize:       \x1b[0m ${ width }x${ height }
 \x1b[2mseed:       \x1b[0m ${ seed }
 \x1b[2msteps:      \x1b[0m ${ steps }
-\x1b[2mcfg:        \x1b[0m ${ cfg }
-            `);
+\x1b[2mcfg:        \x1b[0m ${ cfg }`);
 
             // TODO queue gen instead of launching it right away
 
@@ -192,9 +186,13 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`).then((res) => {
     }).listen(3000, "localhost", () => {
 
         // open page automatically
-        console.log(`Opening in browser... (if nothing happened, copy this: http://localhost:3000/)`);
+        console.log(`\nOpening in browser... (if nothing happened, copy this: http://localhost:3000/)\n`);
         opener("http://localhost:3000/");
     });
+})
+.catch((e) => {
+
+    console.error("Invalid gradio ID!");
 });
 
 async function generateImage(prompt) {
