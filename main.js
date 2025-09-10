@@ -4,6 +4,8 @@ const sharp = require("sharp");                 // npm install sharp
 
 createServer((req, res) => {
 
+    console.log(req.method + " " + req.url);
+
     //     -gradio ID              \x1b[2mthe gradio id of your gradio link (i.e. https://<THIS_PART>.gradio.live/)\x1b[0m
     //     -pos POSITIVE_PROMPT
     //     [-neg NEGATIVE_PROMPT]
@@ -101,9 +103,23 @@ createServer((req, res) => {
     <title>ArtBot</title>
     <style>
         th { text-align: left; }
-        img { height: 400px; }
-        button { border-radius: 4px; border: none; background: green; color: white; font-weight: 700; font: inherit; padding: 1em 2em; }
+        img { height: 400px; min-width: 100px; background: #eee; border: 1px solid #aaa; }
+        button { border-radius: 4px; border: none; cursor: pointer; background: green; color: white; font-weight: 700; font: inherit; padding: 1em 2em; }
     </style>
+    <script>
+
+        function queueGeneration() {
+
+            const query = new URLSearchParams({
+                gradio: document.getElementById("gradio").value,
+                pos: "otter, anthro, obese, exhausted",
+                seed: Math.floor(Math.random() * 10000000)
+            }).toString();
+        
+            document.getElementById("insert").innerHTML += \`<img src="/draw?\${ query }">\`;
+        }
+
+    </script>
 </head>
 <body>
 
@@ -115,11 +131,14 @@ createServer((req, res) => {
         <tr>
             <th></th>
             <td>
-                <button type="button" onclick="alert('no');">Queue Generation</button>
+                <button type="button" onclick="queueGeneration();">Queue Generation</button>
             </td>
         </tr>
     </table>
-    <img src="/draw?gradio=873d9c2a1cd81f30c5&pos=catgirl, obese">
+
+    <div id="insert">
+
+    </div>
 
 </body>
 </html>
