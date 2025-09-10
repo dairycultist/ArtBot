@@ -123,9 +123,12 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`).then((res) => {
     <meta charset="UTF-8">
     <title>ArtBot</title>
     <style>
+        body { font-family: sans-serif; }
         th { text-align: left; }
         img { height: 400px; min-width: 100px; background: #eee; border: 1px solid #aaa; }
-        button { border-radius: 4px; border: none; cursor: pointer; background: green; color: white; font-weight: 700; font: inherit; padding: 1em 2em; }
+        button { border-radius: 4px; border: none; cursor: pointer; background: green; font: inherit; color: white; font-weight: 700; padding: 1em 2em; }
+        table { width: 50em; }
+        textarea, input[type="text"] { padding: 4px 8px; border-radius: 4px; width: 100%; box-sizing: border-box; }
     </style>
     <script>
 
