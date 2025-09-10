@@ -1,7 +1,7 @@
 const fs = require("fs");
 const { createServer } = require("node:http");
 const sharp = require("sharp");                 // npm install sharp
-const open = require("opener");                 // npm install opener
+const opener = require("opener");               // npm install opener
 
 // [SAVE PROMPT] button + [LOAD PROMPT] dropdown + saved_prompts/ directory
 // images/ directory
@@ -15,96 +15,103 @@ const open = require("opener");                 // npm install opener
 const gradioID = require("readline-sync").question("Enter gradio ID: ");
 
 // verify gradioID is valid by pinging, if not valid then quit program
+fetch(`https://${ gradioID }.gradio.live/internal/ping`).then((res) => {
 
-console.log(`\x1b[2mgradio link:\x1b[0m https://${ gradioID }.gradio.live/`);
+    if (res.status != 200) {
 
-createServer((req, res) => {
+        console.error("Invalid gradio ID!");
+        return;
+    }
 
-    console.log(req.method + " " + req.url);
+    console.log(`\x1b[2mgradio link:\x1b[0m https://${ gradioID }.gradio.live/`);
 
-    if (req.method == "GET" && req.url.startsWith("/draw")) {
+    createServer((req, res) => {
 
-        const params = new URLSearchParams(req.url.split("?", 2)[1]);
+        console.log(req.method + " " + req.url);
 
-        // validate
-        if (!params.get("pos")) {
+        if (req.method == "GET" && req.url.startsWith("/draw")) {
 
-            // missing pos argument
-            return;
-        }
+            const params = new URLSearchParams(req.url.split("?", 2)[1]);
 
-        // get arguments
-        const pos = params.get("pos");
-        const neg = params.get("neg") ? params.get("neg") : undefined;
+            // validate
+            if (!params.get("pos")) {
 
-        const steps = params.get("steps") && Number(params.get("steps")) != NaN && Number(params.get("steps")) >= 1 ? Math.floor(Number(params.get("steps"))) : 50;
-
-        const cfg = params.get("cfg") && Number(params.get("cfg")) != NaN && Number(params.get("cfg")) >= 1 ? Number(params.get("cfg")) : 7.0;
-        
-        const [ width, height ] = (() => {
-
-            let size = params.get("size");
-
-            if (!size) {
-                return [ 1200, 1200 ];
+                // missing pos argument
+                return;
             }
 
-            size = size.split("x");
+            // get arguments
+            const pos = params.get("pos");
+            const neg = params.get("neg") ? params.get("neg") : undefined;
 
-            if (size.length != 2 || Number(size[0]) == NaN || Number(size[1]) == NaN) {
-                return [ 1200, 1200 ];
-            }
+            const steps = params.get("steps") && Number(params.get("steps")) != NaN && Number(params.get("steps")) >= 1 ? Math.floor(Number(params.get("steps"))) : 50;
 
-            return [ Math.max(640, Number(size[0])),  Math.max(640, Number(size[1])) ];
-        })();
+            const cfg = params.get("cfg") && Number(params.get("cfg")) != NaN && Number(params.get("cfg")) >= 1 ? Number(params.get("cfg")) : 7.0;
+            
+            const [ width, height ] = (() => {
 
-        const seed = params.get("seed") ? params.get("seed") : -1;
+                let size = params.get("size");
 
-        // pretty print all arguments
-        console.log(`
+                if (!size) {
+                    return [ 1200, 1200 ];
+                }
+
+                size = size.split("x");
+
+                if (size.length != 2 || Number(size[0]) == NaN || Number(size[1]) == NaN) {
+                    return [ 1200, 1200 ];
+                }
+
+                return [ Math.max(640, Number(size[0])),  Math.max(640, Number(size[1])) ];
+            })();
+
+            const seed = params.get("seed") ? params.get("seed") : -1;
+
+            // pretty print all arguments
+            console.log(`
 \x1b[2mpositive:   \x1b[0m ${ pos }
 \x1b[2mnegative:   \x1b[0m ${ neg }
 \x1b[2msize:       \x1b[0m ${ width }x${ height }
 \x1b[2mseed:       \x1b[0m ${ seed }
 \x1b[2msteps:      \x1b[0m ${ steps }
 \x1b[2mcfg:        \x1b[0m ${ cfg }
-        `);
+            `);
 
-        // TODO queue gen instead of launching it right away
+            // TODO queue gen instead of launching it right away
 
-        // attempt to generate (will fail if API cannot be polled)
-        generateImage(
-            {
-                pos:    pos,
-                neg:    neg,
-                seed:   seed,
-                steps:  steps,
-                cfg:    cfg,
-                width:  width,
-                height: height
-            }
-        ).then((buffer) => {
+            // attempt to generate (will fail if API cannot be polled)
+            generateImage(
+                {
+                    pos:    pos,
+                    neg:    neg,
+                    seed:   seed,
+                    steps:  steps,
+                    cfg:    cfg,
+                    width:  width,
+                    height: height
+                }
+            ).then((buffer) => {
 
-            res.writeHead(200, { "Content-Type": "image/png" });
-            res.end(buffer);
-            console.log("Success");
+                res.writeHead(200, { "Content-Type": "image/png" });
+                res.end(buffer);
+                console.log("Success");
 
-        }).catch((e) => {
+            }).catch((e) => {
 
-            res.writeHead(404, { "Content-Type": "text/plain" });
-            res.end("error");
-            console.log("Error: " + e);
-        });
+                res.writeHead(404, { "Content-Type": "text/plain" });
+                res.end("error");
+                console.log("Error: " + e);
+            });
 
-    } else {
+        } else {
 
-        // size (blank for 1200x1200, minimum 640x640)
-        // seed (blank for random)
-        // steps (blank for 50)
-        // cfg (blank for 7)
+            // size (blank for 1200x1200, minimum 640x640)
+            // seed (blank for random)
+            // steps (blank for 50)
+            // cfg (blank for 7)
 
-        res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
-        res.end(`
+            res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+            res.end(`
 <!DOCTYPE html>
 <html>
 <head>
@@ -158,14 +165,15 @@ createServer((req, res) => {
 
 </body>
 </html>
-        `);
-    }
+            `);
+        }
 
-}).listen(3000, "localhost", () => {
+    }).listen(3000, "localhost", () => {
 
-    // open page automatically
-    console.log(`Opening in browser... (if nothing happened, copy this: http://localhost:3000/)`);
-    open("http://localhost:3000/");
+        // open page automatically
+        console.log(`Opening in browser... (if nothing happened, copy this: http://localhost:3000/)`);
+        opener("http://localhost:3000/");
+    });
 });
 
 async function generateImage(prompt) {
