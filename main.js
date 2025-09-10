@@ -99,6 +99,11 @@ createServer((req, res) => {
 <head>
     <meta charset="UTF-8">
     <title>ArtBot</title>
+    <style>
+        th { text-align: left; }
+        img { height: 400px; }
+        button { border-radius: 4px; border: none; background: green; color: white; font-weight: 700; font: inherit; padding: 1em 2em; }
+    </style>
 </head>
 <body>
 
@@ -106,6 +111,12 @@ createServer((req, res) => {
         <tr>
             <th><label for="gradio">Gradio ID:</label></th>
             <td>https://<input type="text" id="gradio" name="gradio">.gradio.live/</td>
+        </tr>
+        <tr>
+            <th></th>
+            <td>
+                <button type="button" onclick="alert('no');">Queue Generation</button>
+            </td>
         </tr>
     </table>
     <img src="/draw?gradio=873d9c2a1cd81f30c5&pos=catgirl, obese">
