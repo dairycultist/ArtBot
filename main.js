@@ -52,17 +52,27 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`).then((res) => {
 
                 let size = params.get("size");
 
+                console.log(size);
+
                 if (!size) {
                     return [ 1200, 1200 ];
                 }
 
                 size = size.split("x");
 
-                if (size.length != 2 || Number(size[0]) == NaN || Number(size[1]) == NaN) {
+                if (size.length != 2) {
                     return [ 1200, 1200 ];
                 }
 
-                return [ Math.max(640, Number(size[0])),  Math.max(640, Number(size[1])) ];
+                let w = 1200, h = 1200;
+
+                if (size[0].trim() != "" && Number(size[0]) != NaN)
+                    w = Math.max(640, Number(size[0]));
+
+                if (size[1].trim() != "" && Number(size[1]) != NaN)
+                    h = Math.max(640, Number(size[1]));
+
+                return [ w, h ];
             })();
 
             const seed = params.get("seed") ? params.get("seed") : -1;
@@ -105,11 +115,6 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`).then((res) => {
 
         } else {
 
-            // size (blank for 1200x1200, minimum 640x640)
-            // seed (blank for random)
-            // steps (blank for 50)
-            // cfg (blank for 7)
-
             res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
             res.end(`
 <!DOCTYPE html>
@@ -128,9 +133,9 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`).then((res) => {
 
             const query = new URLSearchParams({
                 pos: document.getElementById("pos").value,
-                neg: undefined,
-                size: undefined,
-                seed: Math.floor(Math.random() * 10000000),
+                neg: document.getElementById("neg").value,
+                size: document.getElementById("width").value + "x" + document.getElementById("height").value,
+                seed: document.getElementById("seed").value.trim() == "" ? Math.floor(Math.random() * 10000000) : document.getElementById("seed").value,
                 steps: undefined,
                 cfg: undefined
             }).toString();
@@ -145,23 +150,35 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`).then((res) => {
     <table>
         <tr>
             <th><label for="pos">Positive:</label></th>
-            <td><textarea id="pos" name="pos" rows="4" cols="50"></textarea></td>
+            <td><textarea id="pos" rows="4" cols="50"></textarea></td>
         </tr>
-        <!--
         <tr>
-            <th><label for="gradio">Gradio ID:</label></th>
-            <td>https://<input type="text" id="gradio" name="gradio">.gradio.live/</td>
+            <th><label for="neg">Negative:</label></th>
+            <td><textarea id="neg" rows="4" cols="50"></textarea></td>
         </tr>
-        -->
+    </table>
+    <table>
         <tr>
-            <th></th>
-            <td>
-                <button type="button" onclick="queueGeneration();">Queue Generation</button>
-            </td>
+            <th><label for="width">Width:</label></th>
+            <td><input type="text" id="width" placeholder="1200 (min 640)"></td>
+            <th><label for="height">Height:</label></th>
+            <td><input type="text" id="height" placeholder="1200 (min 640)"></td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <th><label for="seed">Seed:</label></th>
+            <td><input type="text" id="seed" placeholder="random"></td>
         </tr>
     </table>
 
+    <br>
+    <button type="button" onclick="queueGeneration();">Queue Generation</button>
+
     <div id="insert"></div>
+
+    // steps (blank for 50)
+    // cfg (blank for 7)
 
 </body>
 </html>
