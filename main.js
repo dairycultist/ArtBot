@@ -1,208 +1,176 @@
 const fs = require("fs");
-const ask = require("readline-sync"); // npm install readline-sync
-const sharp = require("sharp"); // npm install sharp
+const { createServer } = require("node:http");
+const sharp = require("sharp");                 // npm install sharp
 
-(async () => {
+createServer((req, res) => {
 
-    while (true) {
+    // GET /
 
-        let command = ask.question("\x1b[32mArtBot$ \x1b[0m").trim();
+    // GET /draw?pos=_&neg=_&...
 
-        const commandName = command.substring(0, command.includes(" ") ? command.indexOf(" ") : command.length);
+    //     -gradio ID              \x1b[2mthe gradio id of your gradio link (i.e. https://<THIS_PART>.gradio.live/)\x1b[0m
+    //     -pos POSITIVE_PROMPT
+    //     [-neg NEGATIVE_PROMPT]
+    //     [-size WIDTHxHEIGHT]    \x1b[2mdefault is 1200x1200. minimum size is 640x640\x1b[0m
+    //     [-count COUNT]          \x1b[2mdefault is 1\x1b[0m
+    //     [-seed SEED]            \x1b[2mdefault is -1 (random)\x1b[0m
+    //     [-steps STEPS]          \x1b[2mdefault is 50\x1b[0m
+    //     [-cfg CFG]              \x1b[2mdefault is 7\x1b[0m
 
-        try {
+    const request = req.method + " " + req.url;
 
-            if (commandName == "help") {
+    res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" }); // image/png 
 
-                // log helpful message on commands
-                console.log(`
-draw
-    -gradio ID              \x1b[2mthe gradio id of your gradio link (i.e. https://<THIS_PART>.gradio.live/)\x1b[0m
-    -pos POSITIVE_PROMPT
-    [-neg NEGATIVE_PROMPT]
-    [-size WIDTHxHEIGHT]    \x1b[2mdefault is 1200x1200. minimum size is 640x640\x1b[0m
-    [-count COUNT]          \x1b[2mdefault is 1\x1b[0m
-    [-seed SEED]            \x1b[2mdefault is -1 (random)\x1b[0m
-    [-steps STEPS]          \x1b[2mdefault is 50\x1b[0m
-    [-cfg CFG]              \x1b[2mdefault is 7\x1b[0m
-    [-in FILE]              \x1b[2mif specified, reads additional arguments from a file and behaves as if appending the content of the
-                            file to the end of the command (i.e. the file follows the same argument structure)\x1b[0m
-    [-out DIRECTORY]        \x1b[2m(not implemented yet) output folder to put generated images into. default is ./ (current directory)\x1b[0m
-    [-bg]                   \x1b[2m(not implemented yet) run generator in the background, doesn't announce when it finishes, and you can
-                            continue to queue more\x1b[0m
+    res.end(`
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ArtBot</title>
+</head>
+<body>
+    <label for="gradio">Gradio ID:</label> https://<input type="text" id="gradio" name="gradio">.gradio.live/
+</body>
+</html>
+    `);
 
-analyze
-    -in IMAGE_PATH          \x1b[2mprints a draw command reconstructed from this image's metadata\x1b[0m
-    [-out PATH.txt]         \x1b[2m(not implemented yet) if provided, instead of printing the draw command, outputs it into the specified file\x1b[0m
-                `);
+}).listen(3000, "localhost", () => { console.log(`Copy this into your browser => http://localhost:3000/`); });
 
-                // loras (lists loras)
-                // model [list|use MODEL]
-                // stash DIRECTORY | uploads all images in the DIRECTORY to stash as separate posts with tags automatically added based on the prompt (what about description? title?)
 
-            } else if (commandName == "analyze") {
 
-                if (!command.includes("-in")) {
 
-                    throw new Error("Missing -in argument.");
-                }
 
-                const metadata = await sharp(getCommandArgument(command, "in")).metadata();
+// analyze
+//     -in IMAGE_PATH          \x1b[2mprints a draw command reconstructed from this image's metadata\x1b[0m
+//     [-out PATH.txt]         \x1b[2m(not implemented yet) if provided, instead of printing the draw command, outputs it into the specified file\x1b[0m
 
-                const parameters = metadata.comments.filter((value) => { return value.keyword == "parameters"; });
+// loras (lists loras)
+// model [list|use MODEL]
+// stash DIRECTORY | uploads all images in the DIRECTORY to stash as separate posts with tags automatically added based on the prompt (what about description? title?)
 
-                if (parameters.length > 0) {
 
-                    let text = parameters[0].text;
 
-                    text = text.split("\nNegative prompt: ", 2);
 
-                    const pos = text[0];
+//             } else if (commandName == "analyze") {
 
-                    text = text[1].split("\nSteps: ", 2);
+//                 if (!command.includes("-in")) {
 
-                    const neg = text[0];
+//                     throw new Error("Missing -in argument.");
+//                 }
 
-                    text = text[1].split(", Sampler: Euler, Schedule type: Automatic, CFG scale: ", 2);
+//                 const metadata = await sharp(getCommandArgument(command, "in")).metadata();
 
-                    const steps = text[0];
+//                 const parameters = metadata.comments.filter((value) => { return value.keyword == "parameters"; });
 
-                    text = text[1].split(", Seed: ", 2);
+//                 if (parameters.length > 0) {
 
-                    const cfg = Number(text[0]); // conveniently converts 7.0 to 7 for us
+//                     let text = parameters[0].text;
 
-                    text = text[1].split(", Size: ", 2);
+//                     text = text.split("\nNegative prompt: ", 2);
 
-                    const seed = text[0];
+//                     const pos = text[0];
 
-                    text = text[1].split(", Model hash:", 2);
+//                     text = text[1].split("\nSteps: ", 2);
 
-                    const size = text[0];
+//                     const neg = text[0];
 
-                    console.log(`draw -pos ${ pos } -neg ${ neg } -size ${ size } -seed ${ seed } -steps ${ steps } -cfg ${ cfg }`);
-                }
+//                     text = text[1].split(", Sampler: Euler, Schedule type: Automatic, CFG scale: ", 2);
 
-            } else if (commandName == "draw") {
+//                     const steps = text[0];
 
-                // check for -in (done first because it may add new arguments)
-                const inFile = getCommandArgument(command, "in");
+//                     text = text[1].split(", Seed: ", 2);
 
-                if (inFile && fs.existsSync(inFile)) {
+//                     const cfg = Number(text[0]); // conveniently converts 7.0 to 7 for us
 
-                    command += " " + fs.readFileSync(inFile, "utf8");
-                }
+//                     text = text[1].split(", Size: ", 2);
 
-                // validate
-                if (!command.includes("-gradio") || !command.includes("-pos")) {
+//                     const seed = text[0];
 
-                    throw new Error("Missing -gradio or -pos arguments.");
-                }
+//                     text = text[1].split(", Model hash:", 2);
 
-                // get arguments
-                const gradio = getCommandArgument(command, "gradio");
-                const pos = getCommandArgument(command, "pos");
-                const neg = getCommandArgument(command, "neg");
+//                     const size = text[0];
 
-                const steps = (() => {
-                    let steps = getCommandArgument(command, "steps");
-                    return steps && Number(steps) != NaN && Number(steps) >= 1 ? Math.floor(Number(steps)) : 50;
-                })();
+//                     console.log(`draw -pos ${ pos } -neg ${ neg } -size ${ size } -seed ${ seed } -steps ${ steps } -cfg ${ cfg }`);
+//                 }
 
-                const cfg = (() => {
-                    let cfg = getCommandArgument(command, "cfg");
-                    return cfg && Number(cfg) != NaN && Number(cfg) >= 1 ? Number(cfg) : 7.0;
-                })();
+
+
+
+
+
+
+
+                // // validate
+                // if (!command.includes("-gradio") || !command.includes("-pos")) {
+
+                //     throw new Error("Missing -gradio or -pos arguments.");
+                // }
+
+                // // get arguments
+                // const gradio = getCommandArgument(command, "gradio");
+                // const pos = getCommandArgument(command, "pos");
+                // const neg = getCommandArgument(command, "neg");
+
+                // const steps = (() => {
+                //     let steps = getCommandArgument(command, "steps");
+                //     return steps && Number(steps) != NaN && Number(steps) >= 1 ? Math.floor(Number(steps)) : 50;
+                // })();
+
+                // const cfg = (() => {
+                //     let cfg = getCommandArgument(command, "cfg");
+                //     return cfg && Number(cfg) != NaN && Number(cfg) >= 1 ? Number(cfg) : 7.0;
+                // })();
                 
-                const [ width, height ] = (() => {
-                    let size = getCommandArgument(command, "size");
+                // const [ width, height ] = (() => {
+                //     let size = getCommandArgument(command, "size");
 
-                    if (!size) {
-                        return [ 1200, 1200 ];
-                    }
+                //     if (!size) {
+                //         return [ 1200, 1200 ];
+                //     }
 
-                    size = size.split("x");
+                //     size = size.split("x");
 
-                    if (size.length != 2 || Number(size[0]) == NaN || Number(size[1]) == NaN) {
-                        return [ 1200, 1200 ];
-                    }
+                //     if (size.length != 2 || Number(size[0]) == NaN || Number(size[1]) == NaN) {
+                //         return [ 1200, 1200 ];
+                //     }
 
-                    return [ Math.max(640, Number(size[0])),  Math.max(640, Number(size[1])) ];
-                })();
+                //     return [ Math.max(640, Number(size[0])),  Math.max(640, Number(size[1])) ];
+                // })();
 
-                const count = (() => {
-                    let count = getCommandArgument(command, "count");
-                    return count && Number(count) != NaN && Number(count) >= 1 ? Math.floor(Number(count)) : 1;
-                })();
+                // const count = (() => {
+                //     let count = getCommandArgument(command, "count");
+                //     return count && Number(count) != NaN && Number(count) >= 1 ? Math.floor(Number(count)) : 1;
+                // })();
 
-                const seed = (() => {
-                    let seed = getCommandArgument(command, "seed");
-                    return seed ? seed : -1;
-                })();
+                // const seed = (() => {
+                //     let seed = getCommandArgument(command, "seed");
+                //     return seed ? seed : -1;
+                // })();
 
-                // pretty print all arguments
-                console.log(`
-\x1b[2mgradio link:\x1b[0m https://${ gradio }.gradio.live/
-\x1b[2mpositive:   \x1b[0m ${ pos }
-\x1b[2mnegative:   \x1b[0m ${ neg }
-\x1b[2msize:       \x1b[0m ${ width }x${ height }
-\x1b[2mcount:      \x1b[0m ${ count }
-\x1b[2mseed:       \x1b[0m ${ seed }
-\x1b[2msteps:      \x1b[0m ${ steps }
-\x1b[2mcfg:        \x1b[0m ${ cfg }
-                `);
+                // // attempt to generate (will fail if API cannot be polled)
+                // for (let i = 0; i < count; i++) {
 
-                // attempt to generate (will fail if API cannot be polled)
-                for (let i = 0; i < count; i++) {
+                //     console.log(`${ i }/${ count } images complete.`);
 
-                    console.log(`${ i }/${ count } images complete.`);
+                //     await generateImage(
+                //         gradio,
+                //         {
+                //             pos:    pos,
+                //             neg:    neg,
+                //             seed:   seed,
+                //             steps:  steps,
+                //             cfg:    cfg,
+                //             width:  width,
+                //             height: height
+                //         }
+                //     );
+                // }
 
-                    await generateImage(
-                        gradio,
-                        {
-                            pos:    pos,
-                            neg:    neg,
-                            seed:   seed,
-                            steps:  steps,
-                            cfg:    cfg,
-                            width:  width,
-                            height: height
-                        }
-                    );
-                }
+                // console.log(`${ count }/${ count } images complete.`);
 
-                console.log(`${ count }/${ count } images complete.`);
 
-            } else {
-                
-                throw new Error("Unrecognized command. Type \"help\" for help.");
-            }
 
-        } catch (err) {
 
-            console.log("\x1b[31m" + err + "\x1b[0m");
-        }
-    }
-
-})();
-
-function getCommandArgument(command, flag) {
-
-    if (!command.match(new RegExp("[ \n]-" + flag)))
-        return undefined;
-
-    let flagIndex = command.match(new RegExp("[ \n]-" + flag)).index + flag.length + 3; // +3 to accomodate "[ \n]-" and the space following the flag
-
-    // find the next argument after this one
-    let terminalIndex = command.substring(flagIndex).match(new RegExp("[ \n]-"));
-
-    if (terminalIndex) {
-        terminalIndex = terminalIndex.index + flagIndex;
-    } else {
-        terminalIndex = command.length;
-    }
-
-    return command.substring(flagIndex, terminalIndex).trim().replaceAll("\n", " "); //.replaceAll("\t", "");
-}
 
 async function generateImage(gradioID, prompt) {
 

@@ -1,11 +1,13 @@
--pos <lora:HYPv1-4:0.5> <lora:jaykuma_style:0.5> masterpiece, best quality, amazing quality, very aesthetic, high resolution, ultra-detailed, absurdres, newest, soft light, color detail, light steps, intricate colors, vibrant colors, (EyesHD:1.2), ultra-detailed, sharp focus, vibrant colors, ray tracing, best lighting, detailed illustration, detailed background, cinematic,1woman, amazing quality, highres, score_9, score_8_up, score_7_up newest, detailed, pastel,
+-pos <lora:HYPv1-4:0.5> <lora:DetailedFur:1> <lora:jaykuma_style:0.5> <lora:Mega_Scally_for_Illustrious_XL:0.5>
 
-<lora:Mega_Scally_for_Illustrious_XL:0.5> ((anthro, scalie, crocodile, black scales, milf, black fishnet stockings, black tshirt, huge diamond necklace, cleavage, jean shorts, tight jean shorts, long hair, ponytail, wavy hair, red hair roots, goth, black hair, long tail, heavy eyeliner)), (bedroom, on bed),
+anthro, scalie, crocodile, black scales, milf, black tshirt, cleavage, jean shorts, tight jean shorts, long hair, ponytail, wavy hair, red hair roots, goth, black hair, long tail, thick tail, heavy eyeliner, tsurime, grin, fang, smile, happy, smug, bedroom, on bed,
 
-full body, (view from above), on all fours, kneeling, resting breasts on ground, hands on ground, breasts together, solo, 1woman, eye_focus, Jaykuma, (gigantic breasts, hyper ass), skindentation, (looking up at viewer), tsurime, eyeliner, grin, smile, happy, smug, dutch angle, side view, front view
+solo, 1woman, adult female, full body, dutch angle, side view, front view, looking up, (looking up at viewer), on all fours, kneeling, resting breasts on ground, hands on ground, breasts together, Jaykuma, (gigantic breasts, hyper ass), tight clothes, nipple outline, skindentation,
 
--neg worst quality, worst aesthetic, low quality, bad quality, lowres, unfinished, undetailed, bad detailed, bad face, bad eyes, undetailed eyes, missing pupil, bad teeth, bad hands, bad feet, extra hands, extra digits, fewer digits, extra arms, extra legs, extra feet, extra head, long chin, deformed, disfigured, malformed, amputee, several limbs, missing limbs, blurry, blurry face, monochrome, abstract, watermark, text, scan artifacts, jpeg artifacts, lossy-lossless, ai generated, print, nipples, genitals, naked, sweat, arms going through breasts, bracelet, piercings
+mature, full-length portrait, eye_focus, big eyes, perfect eyes, scenery porn, uhd, absurd res, flat colours, (masterpiece, detailed, perfect lighting, extremely detailed, huge filesize, perfect face, perfect body, ultra quality:1.3), (blender (software):0.2), soft shading, realistic lighting, backlighting, by bahnbahn, (thick white outline:1.4), (thick white border:1.4),
+
+-neg (arms going through breasts), lowres, text, error, cropped, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, out of frame, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck, username, watermark, signature, patreon logo, human, muscles, small eyes, hair, ears, fins, simple coloring, simple shading, frontlighting, compression artifacts, [sketch : painting (artwork) : traditional media (artwork) : 1], simple face, creepy face, pupils, (close up, headshot, cum:1.3), extra legs, extra feet, veins
 
 -steps 30
--cfg 5.5
+-cfg 6
 -size 1600x1200
