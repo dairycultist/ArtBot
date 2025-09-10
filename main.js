@@ -136,8 +136,8 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`).then((res) => {
                 neg: document.getElementById("neg").value,
                 size: document.getElementById("width").value + "x" + document.getElementById("height").value,
                 seed: document.getElementById("seed").value.trim() == "" ? Math.floor(Math.random() * 10000000) : document.getElementById("seed").value,
-                steps: undefined,
-                cfg: undefined
+                steps: document.getElementById("steps").value,
+                cfg: document.getElementById("cfg").value
             }).toString();
         
             document.getElementById("insert").innerHTML = \`<img src="/draw?\${ query }">\` + document.getElementById("insert").innerHTML;
@@ -169,6 +169,10 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`).then((res) => {
         <tr>
             <th><label for="seed">Seed:</label></th>
             <td><input type="text" id="seed" placeholder="random"></td>
+            <th><label for="steps">Steps:</label></th>
+            <td><input type="text" id="steps" placeholder="50"></td>
+            <th><label for="cfg">CFG:</label></th>
+            <td><input type="text" id="cfg" placeholder="7"></td>
         </tr>
     </table>
 
@@ -176,9 +180,6 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`).then((res) => {
     <button type="button" onclick="queueGeneration();">Queue Generation</button>
 
     <div id="insert"></div>
-
-    // steps (blank for 50)
-    // cfg (blank for 7)
 
 </body>
 </html>
