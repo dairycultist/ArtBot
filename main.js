@@ -4,6 +4,12 @@ const sharp = require("sharp");                 // npm install sharp
 
 // [SAVE PROMPT] button + [LOAD PROMPT] dropdown + saved_prompts/ directory
 // images/ directory
+// file input that analyzes its metadata and loads the prompt (for easy saving!)
+
+// idk
+// loras (lists loras)
+// model [list|use MODEL]
+// stash DIRECTORY | uploads all images in the DIRECTORY to stash as separate posts with tags automatically added based on the prompt (what about description? title?)
 
 createServer((req, res) => {
 
@@ -138,9 +144,7 @@ createServer((req, res) => {
         </tr>
     </table>
 
-    <div id="insert">
-
-    </div>
+    <div id="insert"></div>
 
 </body>
 </html>
@@ -148,67 +152,6 @@ createServer((req, res) => {
     }
 
 }).listen(3000, "localhost", () => { console.log(`Copy this into your browser => http://localhost:3000/`); });
-
-
-
-
-
-// analyze
-//     -in IMAGE_PATH          \x1b[2mprints a draw command reconstructed from this image's metadata\x1b[0m
-//     [-out PATH.txt]         \x1b[2m(not implemented yet) if provided, instead of printing the draw command, outputs it into the specified file\x1b[0m
-
-// loras (lists loras)
-// model [list|use MODEL]
-// stash DIRECTORY | uploads all images in the DIRECTORY to stash as separate posts with tags automatically added based on the prompt (what about description? title?)
-
-
-
-
-//             } else if (commandName == "analyze") {
-
-//                 if (!command.includes("-in")) {
-
-//                     throw new Error("Missing -in argument.");
-//                 }
-
-//                 const metadata = await sharp(getCommandArgument(command, "in")).metadata();
-
-//                 const parameters = metadata.comments.filter((value) => { return value.keyword == "parameters"; });
-
-//                 if (parameters.length > 0) {
-
-//                     let text = parameters[0].text;
-
-//                     text = text.split("\nNegative prompt: ", 2);
-
-//                     const pos = text[0];
-
-//                     text = text[1].split("\nSteps: ", 2);
-
-//                     const neg = text[0];
-
-//                     text = text[1].split(", Sampler: Euler, Schedule type: Automatic, CFG scale: ", 2);
-
-//                     const steps = text[0];
-
-//                     text = text[1].split(", Seed: ", 2);
-
-//                     const cfg = Number(text[0]); // conveniently converts 7.0 to 7 for us
-
-//                     text = text[1].split(", Size: ", 2);
-
-//                     const seed = text[0];
-
-//                     text = text[1].split(", Model hash:", 2);
-
-//                     const size = text[0];
-
-//                     console.log(`draw -pos ${ pos } -neg ${ neg } -size ${ size } -seed ${ seed } -steps ${ steps } -cfg ${ cfg }`);
-//                 }
-
-
-
-
 
 async function generateImage(gradioID, prompt) {
 
@@ -248,6 +191,8 @@ async function generateImage(gradioID, prompt) {
     return image_buffer;
 }
 
+
+
 // code for getting loras
 // // if a gradio ID isn't even set, there's no chance the API request will work
 // if (!gradioID) {
@@ -277,3 +222,45 @@ async function generateImage(gradioID, prompt) {
 // .catch(error => {
 //     interaction.reply({ content: `There was a problem with the fetch operation: ${ error }`, flags: MessageFlags.Ephemeral });
 // });
+
+
+
+// code for analyzing an image's metadata
+// if (!command.includes("-in")) {
+
+//     throw new Error("Missing -in argument.");
+// }
+
+// const metadata = await sharp(getCommandArgument(command, "in")).metadata();
+
+// const parameters = metadata.comments.filter((value) => { return value.keyword == "parameters"; });
+
+// if (parameters.length > 0) {
+
+//     let text = parameters[0].text;
+
+//     text = text.split("\nNegative prompt: ", 2);
+
+//     const pos = text[0];
+
+//     text = text[1].split("\nSteps: ", 2);
+
+//     const neg = text[0];
+
+//     text = text[1].split(", Sampler: Euler, Schedule type: Automatic, CFG scale: ", 2);
+
+//     const steps = text[0];
+
+//     text = text[1].split(", Seed: ", 2);
+
+//     const cfg = Number(text[0]); // conveniently converts 7.0 to 7 for us
+
+//     text = text[1].split(", Size: ", 2);
+
+//     const seed = text[0];
+
+//     text = text[1].split(", Model hash:", 2);
+
+//     const size = text[0];
+
+//     console.log(`draw -pos ${ pos } -neg ${ neg } -size ${ size } -seed ${ seed } -steps ${ steps } -cfg ${ cfg }`);
