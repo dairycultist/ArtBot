@@ -11,6 +11,10 @@ const sharp = require("sharp");                 // npm install sharp
 // model [list|use MODEL]
 // stash DIRECTORY | uploads all images in the DIRECTORY to stash as separate posts with tags automatically added based on the prompt (what about description? title?)
 
+const gradioID = require("readline-sync").question("Enter gradio ID: ");
+
+console.log(`\x1b[2mgradio link:\x1b[0m https://${ gradioID }.gradio.live/`);
+
 createServer((req, res) => {
 
     console.log(req.method + " " + req.url);
@@ -20,14 +24,13 @@ createServer((req, res) => {
         const params = new URLSearchParams(req.url.split("?", 2)[1]);
 
         // validate
-        if (!params.get("gradio") || !params.get("pos")) {
+        if (!params.get("pos")) {
 
-            // missing gradio or pos arguments
+            // missing pos argument
             return;
         }
 
         // get arguments
-        const gradio = params.get("gradio");
         const pos = params.get("pos");
         const neg = params.get("neg") ? params.get("neg") : undefined;
 
@@ -56,7 +59,6 @@ createServer((req, res) => {
 
         // pretty print all arguments
         console.log(`
-\x1b[2mgradio link:\x1b[0m https://${ gradio }.gradio.live/
 \x1b[2mpositive:   \x1b[0m ${ pos }
 \x1b[2mnegative:   \x1b[0m ${ neg }
 \x1b[2msize:       \x1b[0m ${ width }x${ height }
@@ -69,7 +71,6 @@ createServer((req, res) => {
 
         // attempt to generate (will fail if API cannot be polled)
         generateImage(
-            gradio,
             {
                 pos:    pos,
                 neg:    neg,
@@ -94,13 +95,10 @@ createServer((req, res) => {
 
     } else {
 
-        //     -pos POSITIVE_PROMPT
-        //     [-neg NEGATIVE_PROMPT]
-        //     [-size WIDTHxHEIGHT]    \x1b[2mdefault is 1200x1200. minimum size is 640x640\x1b[0m
-        //     [-count COUNT]          \x1b[2mdefault is 1\x1b[0m
-        //     [-seed SEED]            \x1b[2mdefault is -1 (random)\x1b[0m
-        //     [-steps STEPS]          \x1b[2mdefault is 50\x1b[0m
-        //     [-cfg CFG]              \x1b[2mdefault is 7\x1b[0m
+        // size (blank for 1200x1200, minimum 640x640)
+        // seed (blank for random)
+        // steps (blank for 50)
+        // cfg (blank for 7)
 
         res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
         res.end(`
@@ -119,9 +117,12 @@ createServer((req, res) => {
         function queueGeneration() {
 
             const query = new URLSearchParams({
-                gradio: document.getElementById("gradio").value,
-                pos: "otter, anthro, obese, exhausted",
-                seed: Math.floor(Math.random() * 10000000)
+                pos: document.getElementById("pos").value,
+                neg: undefined,
+                size: undefined,
+                seed: Math.floor(Math.random() * 10000000),
+                steps: undefined,
+                cfg: undefined
             }).toString();
         
             document.getElementById("insert").innerHTML += \`<img src="/draw?\${ query }">\`;
@@ -133,9 +134,15 @@ createServer((req, res) => {
 
     <table>
         <tr>
+            <th><label for="pos">Positive:</label></th>
+            <td><textarea id="pos" name="pos" rows="4" cols="50"></textarea></td>
+        </tr>
+        <!--
+        <tr>
             <th><label for="gradio">Gradio ID:</label></th>
             <td>https://<input type="text" id="gradio" name="gradio">.gradio.live/</td>
         </tr>
+        -->
         <tr>
             <th></th>
             <td>
@@ -153,7 +160,7 @@ createServer((req, res) => {
 
 }).listen(3000, "localhost", () => { console.log(`Copy this into your browser => http://localhost:3000/`); });
 
-async function generateImage(gradioID, prompt) {
+async function generateImage(prompt) {
 
     // do API request (text to image endpoint <GRADIO_LIVE_URL>/docs#/default/text2imgapi_sdapi_v1_txt2img_post)
     // we don't batch multiple since it has a chance of returning 504
