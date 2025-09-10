@@ -4,7 +4,6 @@ const sharp = require("sharp");                 // npm install sharp
 const opener = require("opener");               // npm install opener
 
 // [SAVE PROMPT] button + [LOAD PROMPT] dropdown + saved_prompts/ directory
-// images/ directory
 // file input that analyzes its metadata and loads the prompt (for easy saving!)
 
 // idk
@@ -228,7 +227,9 @@ async function generateImage(prompt) {
     const image_buffer = Buffer.from(json.images[0], "base64");
 
     // save file with name based on seed
-    fs.writeFileSync(`img_${ seed }.png`, image_buffer);
+    if (!fs.existsSync("output"))
+        fs.mkdirSync("output");
+    fs.writeFileSync(`output/img_${ seed }.png`, image_buffer);
 
     return image_buffer;
 }
