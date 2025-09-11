@@ -148,11 +148,12 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
         body { font-family: sans-serif; }
         th { text-align: left; }
         img { height: 100%; }
+        #insert { display: flex; flex-wrap: wrap; gap: 8px; }
         #queuegeneration { border-radius: 4px; border: none; cursor: pointer; background: green; font: inherit; color: white; font-weight: 700; padding: 1em 2em; }
         table { width: 50em; }
         table textarea, table input[type="text"] { padding: 4px 8px; border-radius: 4px; width: 100%; box-sizing: border-box; }
         .textdivider { display: inline-block; width: 1px; height: 2em; background: grey; vertical-align: middle; }
-        .imagebox { height: 400px; min-width: 20px; background: #eee; border: 1px solid #aaa; }
+        .imagebox { height: 400px; min-width: 20px; background: #eee; border: 1px solid #aaa; display: flex; align-items: center; color: grey; font-size: smaller; }
     </style>
     <script>
 
@@ -243,7 +244,7 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
     <br>
     <button id="queuegeneration" type="button" onclick="queueGeneration();">Queue Generation</button>
     <br><br>
-    <div id="insert" style="display: flex; flex-wrap: wrap;"></div>
+    <div id="insert"></div>
 </body>
 </html>
             `);
