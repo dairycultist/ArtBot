@@ -124,7 +124,7 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
             ).then((filename) => {
 
                 res.writeHead(200, { "Content-Type": "text/plain" });
-                res.end(filename);
+                res.end("/" + filename);
                 console.log("Success");
 
             }).catch((e) => {
@@ -147,11 +147,12 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
     <style>
         body { font-family: sans-serif; }
         th { text-align: left; }
-        img { height: 400px; min-width: 100px; background: #eee; border: 1px solid #aaa; }
+        img { height: 100%; }
         #queuegeneration { border-radius: 4px; border: none; cursor: pointer; background: green; font: inherit; color: white; font-weight: 700; padding: 1em 2em; }
         table { width: 50em; }
         table textarea, table input[type="text"] { padding: 4px 8px; border-radius: 4px; width: 100%; box-sizing: border-box; }
         .textdivider { display: inline-block; width: 1px; height: 2em; background: grey; vertical-align: middle; }
+        .imagebox { height: 400px; min-width: 20px; background: #eee; border: 1px solid #aaa; }
     </style>
     <script>
 
@@ -176,17 +177,19 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
                 cfg: document.getElementById("cfg").value.trim()
             }).toString();
 
+            const uniquifier = "id" + Math.floor(Math.random() * 1000000);
+
+            document.getElementById("insert").innerHTML = \`<div class="imagebox" id="\${ uniquifier }">Drawing...</div>\` + document.getElementById("insert").innerHTML;
+
             fetch("/draw?" + query)
-            .then(res => {
+            .then(res => res.text())
+            .then(text => {
 
-                if (res.status != 200)
-                    return "https://e7.pngegg.com/pngimages/10/205/png-clipart-computer-icons-error-information-error-angle-triangle-thumbnail.png";
-
-                return res.text();
-            })
-            .then(filename => {
-
-                document.getElementById("insert").innerHTML = \`<img src="\${ filename }">\` + document.getElementById("insert").innerHTML;
+                if (text.charAt(0) == '/') {
+                    document.getElementById(uniquifier).innerHTML = \`<img src="\${ text }">\`;
+                } else {
+                    document.getElementById(uniquifier).innerHTML = "Error: " + text;
+                }
             });
         }
 
@@ -240,7 +243,7 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
     <br>
     <button id="queuegeneration" type="button" onclick="queueGeneration();">Queue Generation</button>
     <br><br>
-    <div id="insert"></div>
+    <div id="insert" style="display: flex; flex-wrap: wrap;"></div>
 </body>
 </html>
             `);
