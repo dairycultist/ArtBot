@@ -26,7 +26,29 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
 
         console.log("\x1b[32m" + req.method + "\x1b[0m \x1b[2m" + req.url + "\x1b[0m");
 
-        if (req.method == "GET" && req.url.startsWith("/output/")) {
+        if (req.method == "GET" && req.url == "/loras") {
+
+            // fetch loras
+            fetch(`https://${ gradioID }.gradio.live/sdapi/v1/loras`)
+            .then(response => {
+
+                if (!response.ok)
+                    return [];
+                return response.json();
+            })
+            .then(json => {
+
+                let construct = "";
+
+                for (const lora of json) {
+                    construct += `&lt;lora:${ lora.alias }:1&gt;<br>`;
+                }
+
+                res.writeHead(200, { "Content-Type": "text/plain" });
+                res.end(construct);
+            });
+
+        } else if (req.method == "GET" && req.url.startsWith("/output/")) {
 
             res.writeHead(200, { "Content-Type": "image/png" });
             res.end(fs.readFileSync("." + req.url));
@@ -114,6 +136,7 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
 
         } else {
 
+            // reply
             res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
             res.end(`
 <!DOCTYPE html>
@@ -130,6 +153,16 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
         table textarea, table input[type="text"] { padding: 4px 8px; border-radius: 4px; width: 100%; box-sizing: border-box; }
     </style>
     <script>
+
+        function getLoras() {
+        
+            fetch("/loras")
+            .then(res => res.text())
+            .then(loras => {
+
+                document.getElementById("loras").innerHTML = loras;
+            });
+        }
 
         function queueGeneration() {
 
@@ -158,7 +191,7 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
 
     </script>
 </head>
-<body>
+<body onload="getLoras();">
 
     <select id="loadprompt">
         <option value="option1">Option 1</option>
@@ -202,9 +235,10 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
     </table>
 
     <br>
+    <div id="loras"></div>
+    <br>
     <button id="queuegeneration" type="button" onclick="queueGeneration();">Queue Generation</button>
     <br>
-
     <div id="insert"></div>
 </body>
 </html>
@@ -264,36 +298,6 @@ async function generateImage(prompt) {
 }
 
 
-
-// code for getting loras
-// // if a gradio ID isn't even set, there's no chance the API request will work
-// if (!gradioID) {
-
-//     await interaction.reply({ content: "Drawing is currently offline. Ping the owner to have them set it up.", flags: MessageFlags.Ephemeral });
-//     return;
-// }
-
-// // fetch loras
-// fetch(`https://${ gradioID }.gradio.live/sdapi/v1/loras`)
-// .then(response => {
-//     if (!response.ok) {
-//         throw new Error(response.status + " " + response.statusText);
-//     }
-//     return response.json();
-// })
-// .then(json => {
-
-//     let construct = "";
-
-//     for (const lora of json) {
-//         construct += `\`<lora:${ lora.alias }:1>\`\n`;
-//     }
-
-//     interaction.reply({ content: construct, flags: MessageFlags.Ephemeral });
-// })
-// .catch(error => {
-//     interaction.reply({ content: `There was a problem with the fetch operation: ${ error }`, flags: MessageFlags.Ephemeral });
-// });
 
 
 
