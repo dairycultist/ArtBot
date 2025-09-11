@@ -134,12 +134,12 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
         function queueGeneration() {
 
             const query = new URLSearchParams({
-                pos: document.getElementById("pos").value,
-                neg: document.getElementById("neg").value,
-                size: document.getElementById("width").value + "x" + document.getElementById("height").value,
-                seed: document.getElementById("seed").value.trim() == "" ? Math.floor(Math.random() * 10000000) : document.getElementById("seed").value,
-                steps: document.getElementById("steps").value,
-                cfg: document.getElementById("cfg").value
+                pos: document.getElementById("pos").value.trim(),
+                neg: document.getElementById("neg").value.trim(),
+                size: document.getElementById("width").value.trim() + "x" + document.getElementById("height").value.trim(),
+                seed: document.getElementById("seed").value.trim(),
+                steps: document.getElementById("steps").value.trim(),
+                cfg: document.getElementById("cfg").value.trim()
             }).toString();
 
             fetch("/draw?" + query)
