@@ -1,9 +1,9 @@
 const fs = require("fs");
 const { createServer } = require("node:http");
-const sharp = require("sharp");                 // npm install sharp
+// const sharp = require("sharp");                 // npm install sharp
 const opener = require("opener");               // npm install opener
 
-// [SAVE PROMPT] button + [LOAD PROMPT] dropdown + saved_prompts/ directory
+// [SAVE PROMPT] button + [LOAD PROMPT] dropdown
 // file input that analyzes its metadata and loads the prompt (for easy saving!)
 
 // idk
@@ -26,7 +26,12 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
 
         console.log("\x1b[32m" + req.method + "\x1b[0m \x1b[2m" + req.url + "\x1b[0m");
 
-        if (req.method == "GET" && req.url.startsWith("/draw")) {
+        if (req.method == "GET" && req.url.startsWith("/output/")) {
+
+            res.writeHead(200, { "Content-Type": "image/png" });
+            res.end(fs.readFileSync("." + req.url));
+
+        } else if (req.method == "GET" && req.url.startsWith("/draw")) {
 
             const params = new URLSearchParams(req.url.split("?", 2)[1]);
 
@@ -93,16 +98,16 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
                     width:  width,
                     height: height
                 }
-            ).then((buffer) => {
+            ).then((filename) => {
 
-                res.writeHead(200, { "Content-Type": "image/png" });
-                res.end(buffer);
+                res.writeHead(200, { "Content-Type": "text/plain" });
+                res.end(filename);
                 console.log("Success");
 
             }).catch((e) => {
 
-                res.writeHead(404, { "Content-Type": "text/plain" });
-                res.end("error");
+                res.writeHead(200, { "Content-Type": "text/plain" });
+                res.end("https://e7.pngegg.com/pngimages/10/205/png-clipart-computer-icons-error-information-error-angle-triangle-thumbnail.png");
                 console.log("Error: " + e);
             });
 
@@ -135,8 +140,13 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
                 steps: document.getElementById("steps").value,
                 cfg: document.getElementById("cfg").value
             }).toString();
-        
-            document.getElementById("insert").innerHTML = \`<img src="/draw?\${ query }">\` + document.getElementById("insert").innerHTML;
+
+            fetch("/draw?" + query)
+            .then(res => res.text())
+            .then(filename => {
+
+                document.getElementById("insert").innerHTML = \`<img src="\${ filename }">\` + document.getElementById("insert").innerHTML;
+            });
         }
 
     </script>
@@ -186,9 +196,9 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
 
     <br>
     <button id="queuegeneration" type="button" onclick="queueGeneration();">Queue Generation</button>
+    <br>
 
     <div id="insert"></div>
-
 </body>
 </html>
             `);
@@ -236,14 +246,14 @@ async function generateImage(prompt) {
 
     const json = await response.json(); // json.info = metadata
     const seed = json.info.match(/"seed": ([0-9]+),/)[1];
-    const image_buffer = Buffer.from(json.images[0], "base64");
+    const filename = `output/img_${ seed }.png`;
 
     // save file with name based on seed
     if (!fs.existsSync("output"))
         fs.mkdirSync("output");
-    fs.writeFileSync(`output/img_${ seed }.png`, image_buffer);
+    fs.writeFileSync(filename, Buffer.from(json.images[0], "base64"));
 
-    return image_buffer;
+    return filename;
 }
 
 
