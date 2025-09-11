@@ -41,7 +41,7 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
                 let construct = "";
 
                 for (const lora of json) {
-                    construct += `&lt;lora:${ lora.alias }:1&gt;<br>`;
+                    construct += `&lt;lora:${ lora.alias }:1.0&gt;<br>`;
                 }
 
                 res.writeHead(200, { "Content-Type": "text/plain" });
@@ -151,6 +151,7 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
         #queuegeneration { border-radius: 4px; border: none; cursor: pointer; background: green; font: inherit; color: white; font-weight: 700; padding: 1em 2em; }
         table { width: 50em; }
         table textarea, table input[type="text"] { padding: 4px 8px; border-radius: 4px; width: 100%; box-sizing: border-box; }
+        .textdivider { display: inline-block; width: 1px; height: 2em; background: grey; vertical-align: middle; }
     </style>
     <script>
 
@@ -193,17 +194,17 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
 </head>
 <body onload="getLoras();">
 
+    <button type="button" onclick="">Load prompt...</button>
     <select id="loadprompt">
         <option value="option1">Option 1</option>
         <option value="option2">Option 2</option>
         <option value="option3">Option 3</option>
     </select>
-    <button type="button" onclick="">Load prompt</button>
 
-    <span style="display: inline-block; width: 1px; height: 2em; background: grey; vertical-align: middle;"></span>
+    <span class="textdivider"></span>
 
+    <button type="button" onclick="">Save prompt as...</button>
     <input type="text" id="saveprompt" placeholder="prompt_name">
-    <button type="button" onclick="">Save prompt as</button>
 
     <table>
         <tr>
@@ -235,10 +236,10 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
     </table>
 
     <br>
-    <div id="loras"></div>
+    <div id="loras" style="font-family: monospace;"></div>
     <br>
     <button id="queuegeneration" type="button" onclick="queueGeneration();">Queue Generation</button>
-    <br>
+    <br><br>
     <div id="insert"></div>
 </body>
 </html>
