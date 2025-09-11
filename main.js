@@ -38,7 +38,8 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
             // validate
             if (!params.get("pos")) {
 
-                // missing pos argument
+                res.writeHead(400, { "Content-Type": "text/plain" });
+                res.end("Missing pos argument.");
                 return;
             }
 
@@ -106,8 +107,8 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
 
             }).catch((e) => {
 
-                res.writeHead(200, { "Content-Type": "text/plain" });
-                res.end("https://e7.pngegg.com/pngimages/10/205/png-clipart-computer-icons-error-information-error-angle-triangle-thumbnail.png");
+                res.writeHead(400, { "Content-Type": "text/plain" });
+                res.end("Generation failed unexpectedly.");
                 console.log("Error: " + e);
             });
 
@@ -142,7 +143,13 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
             }).toString();
 
             fetch("/draw?" + query)
-            .then(res => res.text())
+            .then(res => {
+
+                if (res.status != 200)
+                    return "https://e7.pngegg.com/pngimages/10/205/png-clipart-computer-icons-error-information-error-angle-triangle-thumbnail.png";
+
+                return res.text();
+            })
             .then(filename => {
 
                 document.getElementById("insert").innerHTML = \`<img src="\${ filename }">\` + document.getElementById("insert").innerHTML;
