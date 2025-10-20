@@ -1,32 +1,53 @@
-// seed => seeded character/clothing/emotion prompt + fixed style prompt + fixed array of proportions,
-// view, pose (e.g. prog, char sheet, "gen mode") => { output image matrix + title based on seed }
-
 const fs = require("fs");
-const { createServer } = require("node:http");
-// const sharp = require("sharp");                 // npm install sharp
-const ask = require('readline-sync');
+const ask = require("readline-sync");
+const seedrandom = require("seedrandom"); // npm install seedrandom
 
 const gradioID = ask.question("Enter gradio ID: ");
 
 // verify gradioID is valid by pinging, if not valid then quit program
 fetch(`https://${ gradioID }.gradio.live/internal/ping`)
-.then((res) => {
+.then(async (res) => {
 
     if (res.status != 200)
         throw new Error("");
 
-    console.log(`\x1b[2mgradio link:\x1b[0m https://${ gradioID }.gradio.live/`);
-
-	generateImage({
-		pos: "catgirl, bikini, huge breasts"
-	});
+	while (true) {
+		await doAllTheWork(ask.question("Enter a seed string: "));
+	}
 })
 .catch((e) => {
 
     console.error("Invalid gradio ID!");
 });
 
-async function generateImage(prompt) {
+async function doAllTheWork(seed) {
+
+	const getRandom = seedrandom(seed);
+
+	// seeded character/clothing/emotion prompt + fixed style prompt + fixed array of proportions, view, pose (e.g. prog, char sheet, "gen mode")
+	let pos = "(rei \(sanbonzakura\):0.85), mx2j, sola \(solo0730\), ";
+
+	pos += [ "red hair", "blue hair", "blonde hair", "pink hair", "black hair" ][Math.floor(5 * getRandom())] + ", ";
+	pos += [ "long hair", "short hair", "ponytail" ][Math.floor(3 * getRandom())] + ", ";
+	pos += getRandom() > 0.5 ? "tsurime, " : "tareme, ";
+	pos += [ "smug", "smile", "grin", "sad", "pout", "angry" ][Math.floor(6 * getRandom())] + ", ";
+	pos += [ "red", "blue", "yellow", "pink", "white", "black" ][Math.floor(6 * getRandom())] + " " + [ "tight t-shirt", "jacket", "hoodie", "loose t-shirt", "crop top", "tube top", "bra", "bikini top" ][Math.floor(8 * getRandom())] + ", ";
+	pos += [ "red", "blue", "yellow", "pink", "white", "black" ][Math.floor(6 * getRandom())] + " " + [ "jean shorts", "yoga pants", "tights", "miniskirt", "bikini bottom" ][Math.floor(5 * getRandom())] + ", ";
+
+	pos += "standing, gigantic breasts, front view, upper body";
+
+	// output a folder with the name as the seed, containing: output images + output images matrix
+	await generateImage(`output/${ seed }/img_1.png`, {
+		pos: pos,
+		neg: "ugly, blurry",
+		steps: 30,
+		cfg: 6,
+		width: 1080,
+		height: 1080
+	});
+}
+
+async function generateImage(path, prompt) {
 
     // do API request (text to image endpoint <GRADIO_LIVE_URL>/docs#/default/text2imgapi_sdapi_v1_txt2img_post)
     // we don't batch multiple since it has a chance of returning 504
@@ -54,14 +75,14 @@ async function generateImage(prompt) {
         throw new Error(response.status);
     };
 
-    const json = await response.json(); // json.info = metadata
-    const seed = json.info.match(/"seed": ([0-9]+),/)[1];
-    const filename = `output/img_${ seed }.png`;
+	// json.info = metadata
+	// json.images = array of base64 images
+	const json = await response.json();
 
-    // save file with name based on seed
-    if (!fs.existsSync("output"))
-        fs.mkdirSync("output");
-    fs.writeFileSync(filename, Buffer.from(json.images[0], "base64"));
+    // save file
+	const directoryPath = path.substring(0, path.lastIndexOf("/"));
+    if (!fs.existsSync(directoryPath))
+		fs.mkdirSync(directoryPath, { recursive: true });
 
-    return filename;
+    fs.writeFileSync(path, Buffer.from(json.images[0], "base64"));
 }
