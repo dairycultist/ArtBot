@@ -34,57 +34,36 @@ async function doAllTheWork(seed) {
 
 	const getRandom = seedrandom(seed);
 
-	// seeded character/clothing/emotion prompt + fixed style prompt + fixed array of proportions, view, pose (e.g. prog, char sheet, "gen mode")
-	let pos = "<lora:Immobile_USSBBW_Concept_Lora_for_Illustrious-XL:0.05> <lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:1> <lora:Weather_shine_pupils_mix:0.5> <lora:KrekkovLycoXLV2:0.5> (rei \(sanbonzakura\):0.85), mx2j, sola \(solo0730\), ";
+	const getRandomOf = (array) => {
 
-	pos += [ "red hair", "blue hair", "blonde hair", "pink hair", "black hair" ][Math.floor(5 * getRandom())] + ", ";
-	pos += [ "long hair", "short hair", "ponytail" ][Math.floor(3 * getRandom())] + ", ";
+		return array[Math.floor(array.length * getRandom())];
+	};
+
+	// fixed style prompt
+	let pos = 
+		`<lora:Immobile_USSBBW_Concept_Lora_for_Illustrious-XL:0.05> <lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:1>
+		<lora:Weather_shine_pupils_mix:1> <lora:KrekkovLycoXLV2:0.5> perfect anatomy, perfect hands, masterpiece, soft lighting, (1woman, betterwithsalt), `;
+
+	// seeded character/clothing/emotion prompt
+	pos += getRandomOf([ "red hair", "blue hair", "blonde hair", "pink hair", "black hair" ]) + ", ";
+	pos += getRandomOf([ "long hair", "short hair", "ponytail" ]) + ", ";
 	pos += getRandom() > 0.5 ? "tsurime, " : "tareme, ";
-	pos += [ "smug", "smile", "grin", "sad", "pout", "angry" ][Math.floor(6 * getRandom())] + ", ";
-	pos += [ "red", "blue", "yellow", "pink", "white", "black" ][Math.floor(6 * getRandom())] + " " + [ "tight t-shirt", "jacket", "hoodie", "loose t-shirt", "crop top", "tube top", "bra", "bikini top" ][Math.floor(8 * getRandom())] + ", ";
-	pos += [ "red", "blue", "yellow", "pink", "white", "black" ][Math.floor(6 * getRandom())] + " " + [ "jean shorts", "yoga pants", "tights", "miniskirt", "bikini bottom" ][Math.floor(5 * getRandom())] + ", ";
+	pos += getRandomOf([ "smug", "smile", "grin", "sad", "pout", "angry" ]) + ", ";
+	pos += getRandomOf([ "red", "blue", "yellow", "pink", "white", "black" ]) + " " + getRandomOf([ "tight t-shirt", "jacket", "hoodie", "loose t-shirt", "crop top", "tube top", "bra", "bikini top" ]) + ", ";
+	pos += getRandomOf([ "red", "blue", "yellow", "pink", "white", "black" ]) + " " + getRandomOf([ "jean shorts", "yoga pants", "tights", "miniskirt", "bikini bottom" ]) + ", ";
 
-	pos += "standing, front view, upper body";
+	// "composition mode": fixed (TODO variable array of) proportions, view, pose (e.g. progression, character sheet)
+	pos += "standing, looking at viewer, hands on hips, front view, upper body, wide hips, squishy belly, breasts, soft breasts, soft belly, chubby, chubby face, wide shoulders, exposed belly";
 
 	// output images (and output images matrix?)
 	await generateImage(`output/${ seed }_1.png`, {
-		pos: pos + "small breasts",
+		pos: pos,
 		neg: "ugly, blurry, nose, sweat",
 		seed: seed,
 		steps: 30,
 		cfg: 6,
-		width: 1080,
-		height: 1080
-	});
-
-	await generateImage(`output/${ seed }_2.png`, {
-		pos: pos + "large breasts",
-		neg: "ugly, blurry, nose, sweat",
-		seed: seed,
-		steps: 30,
-		cfg: 6,
-		width: 1080,
-		height: 1080
-	});
-
-	await generateImage(`output/${ seed }_3.png`, {
-		pos: pos + "huge breasts",
-		neg: "ugly, blurry, nose, sweat",
-		seed: seed,
-		steps: 30,
-		cfg: 6,
-		width: 1080,
-		height: 1080
-	});
-	
-	await generateImage(`output/${ seed }_4.png`, {
-		pos: pos + "gigantic breasts",
-		neg: "ugly, blurry, nose, sweat",
-		seed: seed,
-		steps: 30,
-		cfg: 6,
-		width: 1080,
-		height: 1080
+		width: 1200,
+		height: 1200
 	});
 }
 
