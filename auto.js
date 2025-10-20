@@ -44,6 +44,9 @@ async function doAllTheWork(seed) {
 		`<lora:Immobile_USSBBW_Concept_Lora_for_Illustrious-XL:0.05> <lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:1>
 		<lora:Weather_shine_pupils_mix:1> <lora:KrekkovLycoXLV2:0.5> perfect anatomy, perfect hands, masterpiece, soft lighting, (1woman, betterwithsalt), `;
 
+	// "composition mode": fixed (TODO variable array of) proportions, view, pose (e.g. progression, character sheet)
+	pos += "white background, standing, looking at viewer, dynamic pose, front view, full body, wide hips, squishy belly, breasts, soft breasts, soft belly, chubby, chubby face, wide shoulders, exposed belly";
+
 	// seeded character/clothing/emotion prompt
 	pos += getRandomOf([ "red hair", "blue hair", "blonde hair", "pink hair", "black hair" ]) + ", ";
 	pos += getRandomOf([ "long hair", "short hair", "ponytail" ]) + ", ";
@@ -52,10 +55,7 @@ async function doAllTheWork(seed) {
 	pos += getRandomOf([ "red", "blue", "yellow", "pink", "white", "black" ]) + " " + getRandomOf([ "tight t-shirt", "jacket", "hoodie", "loose t-shirt", "crop top", "tube top", "bra", "bikini top" ]) + ", ";
 	pos += getRandomOf([ "red", "blue", "yellow", "pink", "white", "black" ]) + " " + getRandomOf([ "jean shorts", "yoga pants", "tights", "miniskirt", "bikini bottom" ]) + ", ";
 
-	// "composition mode": fixed (TODO variable array of) proportions, view, pose (e.g. progression, character sheet)
-	pos += "standing, looking at viewer, hands on hips, front view, upper body, wide hips, squishy belly, breasts, soft breasts, soft belly, chubby, chubby face, wide shoulders, exposed belly";
-
-	// output images (and output images matrix?)
+	// output images (TODO output images matrix via https://www.npmjs.com/package/jimp)
 	await generateImage(`output/${ seed }_1.png`, {
 		pos: pos,
 		neg: "ugly, blurry, nose, sweat",
@@ -63,7 +63,7 @@ async function doAllTheWork(seed) {
 		steps: 30,
 		cfg: 6,
 		width: 1200,
-		height: 1200
+		height: 1600
 	});
 }
 
