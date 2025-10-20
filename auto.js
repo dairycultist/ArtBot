@@ -1,9 +1,7 @@
 const fs = require("fs");
 const ask = require("readline-sync");
-const seedrandom = require("seedrandom"); // npm install seedrandom
-const { Jimp } = require("jimp"); // npm install --save jimp
-
-// https://jimp-dev.github.io/jimp/guides/getting-started/
+const seedrandom = require("seedrandom"); 	// npm install seedrandom
+const { Jimp } = require("jimp"); 			// npm install jimp
 
 const gradioID = ask.question("Enter gradio ID: ");
 
@@ -12,7 +10,7 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
 .then(async (res) => {
 
     if (res.status != 200)
-        throw new Error("");
+        throw new Error("Invalid gradio ID!");
 
 	let count = NaN;
 
@@ -30,7 +28,8 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
 })
 .catch((e) => {
 
-    console.error("\x1b[0mInvalid gradio ID! " + e);
+	console.log("\x1b[0m");
+    console.error(e + "\x1b[0m");
 });
 
 async function generatePost(seed) {
@@ -46,6 +45,8 @@ async function generatePost(seed) {
 		"<lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5> (1woman, white background:1.4), " +
 
 		"standing, dynamic pose, full body, " +
+
+		(getRandom() > 0.5 ? "" : "<lora:DetailedFur:0.5> anthro, wolf fluffy fur, ") +
 
 		(getRandom() > 0.8 ? "" : "witch hat, ") +
 
@@ -92,8 +93,7 @@ async function generatePost(seed) {
 
 async function generateImage(path, prompt) {
 
-    // do API request (text to image endpoint <GRADIO_LIVE_URL>/docs#/default/text2imgapi_sdapi_v1_txt2img_post)
-    // we don't batch multiple since it has a chance of returning 504
+    // do txt2img API request (can't let the request hang for too long or else we get a 504!)
     const response = await fetch(`https://${ gradioID }.gradio.live/sdapi/v1/txt2img`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -101,13 +101,13 @@ async function generateImage(path, prompt) {
             "prompt":           prompt.pos,
             "negative_prompt":  prompt.neg,
             "seed":             prompt.seed,
-            // sampler_name: null,
-            // scheduler: null,
+            sampler_name:		"DPM++ 2M SDE",
+			// "sampler_index": "Euler",
+            scheduler:			"Automatic",
             "steps":            prompt.steps,
             "cfg_scale":        prompt.cfg,
             "width":            prompt.width,
             "height":           prompt.height,
-            // "sampler_index": "Euler",
             "send_images":      true,
             "save_images":      false
         })
