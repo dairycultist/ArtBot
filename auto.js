@@ -42,7 +42,7 @@ async function generatePost(seed) {
 	const basePos = 
 		"<lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5> (1woman, white background:1.4), " +
 
-		"standing, dynamic pose, front view, full body, " +
+		"standing, dynamic pose, full body, " +
 
 		(getRandom() > 0.8 ? "" : "witch hat, ") +
 
@@ -69,7 +69,7 @@ async function generatePost(seed) {
 	});
 
 	await generateImage(`output/${ seed }_2.png`, {
-		pos: "view from behind, looking away, fat ass, round ass, " + basePos,
+		pos: "(view from behind, looking away), fat ass, round ass, " + basePos,
 		neg: "ugly, blurry, nose, sweat, monochrome",
 		seed: seed,
 		steps: 30,
