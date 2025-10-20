@@ -12,15 +12,18 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
     if (res.status != 200)
         throw new Error("Invalid gradio ID!");
 
-	let count = NaN;
+	let count;
 
 	do {
+
 		count = Number(ask.question("Enter amount of posts to generate: "));
+
 	} while (isNaN(count) || count < 1);
 
 	count = Math.floor(count);
 
 	for (let i = 0; i < count; i++) {
+
 		process.stdout.write("\x1b[2m" + (i + 1) + "... ");
 		await generatePost(Math.floor(Math.random() * 100000));
 		console.log("\x1b[0m\x1b[32mDONE\x1b[0m");
@@ -62,7 +65,7 @@ async function generatePost(seed) {
 		getRandomOf([ "sandals", "sneakers", "barefoot", "heels" ]) + ", ";
 
 	// output images (minding the composition!)
-	const image1 = await generateImage(`output/${ seed }_1.png`, {
+	const image1 = await generateImage({
 		pos: "front view, looking at viewer, chubby face, squishy belly, soft belly, exposed belly, " + (getRandom() > 0.5 ? "tsurime, " : "tareme, ") + getRandomOf([ "smug", "smile", "grin", "sad", "pout", "angry" ]) + ", " + basePos,
 		neg: "ugly, blurry, nose, sweat, monochrome",
 		seed: seed,
@@ -72,7 +75,7 @@ async function generatePost(seed) {
 		height: 1600
 	});
 
-	const image2 = await generateImage(`output/${ seed }_2.png`, {
+	const image2 = await generateImage({
 		pos: "(view from behind, looking away), fat ass, round ass, " + basePos,
 		neg: "ugly, blurry, nose, sweat, monochrome",
 		seed: seed,
@@ -91,7 +94,7 @@ async function generatePost(seed) {
 	matrix.write(`output/${ seed }_matrix.png`);
 }
 
-async function generateImage(path, prompt) {
+async function generateImage(prompt) {
 
     // do txt2img API request (can't let the request hang for too long or else we get a 504!)
     const response = await fetch(`https://${ gradioID }.gradio.live/sdapi/v1/txt2img`, {
@@ -101,26 +104,22 @@ async function generateImage(path, prompt) {
             "prompt":           prompt.pos,
             "negative_prompt":  prompt.neg,
             "seed":             prompt.seed,
-            sampler_name:		"DPM++ 2M SDE",
-			// "sampler_index": "Euler",
-            scheduler:			"Automatic",
-            "steps":            prompt.steps,
+			"steps":            prompt.steps,
             "cfg_scale":        prompt.cfg,
             "width":            prompt.width,
             "height":           prompt.height,
+            "sampler_name":		"DPM++ 2M SDE",
+			// "sampler_index": "Euler",
+            "scheduler":		"Automatic",
             "send_images":      true,
             "save_images":      false
         })
     });
 
-    // process response
-    if (!response.ok) {
+    if (!response.ok)
         throw new Error(response.status);
-    };
 
-	// json.info = metadata
-	// json.images = array of base64 images
-	const json = await response.json();
+	const json = await response.json(); // json.info = metadata
 
     return await Jimp.read(Buffer.from(json.images[0], "base64"));
 }
