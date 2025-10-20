@@ -44,25 +44,21 @@ async function generatePost(seed) {
 
 	const getRandomOf = array => array[Math.floor(array.length * getRandom())];
 
-	const basePos = 
-		"<lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5> (1woman, white background:1.4), " +
+	let basePos = "<lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5> (1woman, white background:1.4), standing, dynamic pose, full body, huge breasts, soft breasts, chubby, wide shoulders, wide hips, ";
 
-		"standing, dynamic pose, full body, " +
+	if (getRandom() > 0.5)
+		basePos += "<lora:DetailedFur:0.5> anthro, wolf fluffy fur, ";
 
-		(getRandom() > 0.5 ? "" : "<lora:DetailedFur:0.5> anthro, wolf fluffy fur, ") +
+	if (getRandom() > 0.2)
+		basePos += "witch hat, ";
 
-		(getRandom() > 0.8 ? "" : "witch hat, ") +
-
-		getRandomOf([ "red hair", "blue hair", "blonde hair", "pink hair", "black hair" ]) + ", " + getRandomOf([ "long hair", "short hair", "ponytail" ]) + ", " +
+	basePos += getRandomOf([ "red hair", "blue hair", "blonde hair", "pink hair", "black hair" ]) + ", " + getRandomOf([ "long hair", "short hair", "ponytail" ]) + ", ";
 	
-		"huge breasts, soft breasts, chubby, wide shoulders, " +
-		getRandomOf([ "red", "blue", "yellow", "pink", "white", "black" ]) + " " +
-		getRandomOf([ "tight t-shirt", "jacket", "hoodie", "loose t-shirt", "crop top", "tube top", "bra", "bikini top" ]) + ", " +
+	basePos += getRandomOf([ "red", "blue", "yellow", "pink", "white", "black" ]) + " " + getRandomOf([ "tight t-shirt", "jacket", "hoodie", "loose t-shirt", "crop top", "tube top", "bra", "bikini top" ]) + ", ";
 
-		"wide hips, " +
-		getRandomOf([ "red", "blue", "yellow", "pink", "white", "black" ]) + " " + getRandomOf([ "jean shorts", "yoga pants", "tights", "miniskirt", "bikini bottom" ]) + ", "
-		
-		getRandomOf([ "sandals", "sneakers", "barefoot", "heels" ]) + ", ";
+	basePos += getRandomOf([ "red", "blue", "yellow", "pink", "white", "black" ]) + " " + getRandomOf([ "jean shorts", "yoga pants", "tights", "miniskirt", "bikini bottom" ]) + ", ";
+	
+	basePos += getRandomOf([ "sandals", "sneakers", "barefoot", "heels" ]) + ", ";
 
 	// output images (minding the composition!)
 	const image1 = await generateImage({
