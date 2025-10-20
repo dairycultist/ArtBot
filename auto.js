@@ -11,8 +11,18 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
     if (res.status != 200)
         throw new Error("");
 
-	while (true) {
-		await doAllTheWork(ask.question("Enter a seed string: "));
+	let count = NaN;
+
+	do {
+		count = Number(ask.question("Enter amount of posts to generate: "));
+	} while (isNaN(count) || count < 1);
+
+	count = Math.floor(count);
+
+	for (let i = 0; i < count; i++) {
+		process.stdout.write("\x1b[2m" + (i + 1) + "... ");
+		await doAllTheWork(Math.floor(Math.random() * 100000));
+		console.log("\x1b[0m\x1b[32mDONE\x1b[0m");
 	}
 })
 .catch((e) => {
@@ -25,7 +35,7 @@ async function doAllTheWork(seed) {
 	const getRandom = seedrandom(seed);
 
 	// seeded character/clothing/emotion prompt + fixed style prompt + fixed array of proportions, view, pose (e.g. prog, char sheet, "gen mode")
-	let pos = "(rei \(sanbonzakura\):0.85), mx2j, sola \(solo0730\), ";
+	let pos = "<lora:Immobile_USSBBW_Concept_Lora_for_Illustrious-XL:0.05> <lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:1> <lora:Weather_shine_pupils_mix:0.5> <lora:KrekkovLycoXLV2:0.5> (rei \(sanbonzakura\):0.85), mx2j, sola \(solo0730\), ";
 
 	pos += [ "red hair", "blue hair", "blonde hair", "pink hair", "black hair" ][Math.floor(5 * getRandom())] + ", ";
 	pos += [ "long hair", "short hair", "ponytail" ][Math.floor(3 * getRandom())] + ", ";
@@ -34,12 +44,43 @@ async function doAllTheWork(seed) {
 	pos += [ "red", "blue", "yellow", "pink", "white", "black" ][Math.floor(6 * getRandom())] + " " + [ "tight t-shirt", "jacket", "hoodie", "loose t-shirt", "crop top", "tube top", "bra", "bikini top" ][Math.floor(8 * getRandom())] + ", ";
 	pos += [ "red", "blue", "yellow", "pink", "white", "black" ][Math.floor(6 * getRandom())] + " " + [ "jean shorts", "yoga pants", "tights", "miniskirt", "bikini bottom" ][Math.floor(5 * getRandom())] + ", ";
 
-	pos += "standing, gigantic breasts, front view, upper body";
+	pos += "standing, front view, upper body";
 
-	// output a folder with the name as the seed, containing: output images + output images matrix
-	await generateImage(`output/${ seed }/img_1.png`, {
-		pos: pos,
-		neg: "ugly, blurry",
+	// output images (and output images matrix?)
+	await generateImage(`output/${ seed }_1.png`, {
+		pos: pos + "small breasts",
+		neg: "ugly, blurry, nose, sweat",
+		seed: seed,
+		steps: 30,
+		cfg: 6,
+		width: 1080,
+		height: 1080
+	});
+
+	await generateImage(`output/${ seed }_2.png`, {
+		pos: pos + "large breasts",
+		neg: "ugly, blurry, nose, sweat",
+		seed: seed,
+		steps: 30,
+		cfg: 6,
+		width: 1080,
+		height: 1080
+	});
+
+	await generateImage(`output/${ seed }_3.png`, {
+		pos: pos + "huge breasts",
+		neg: "ugly, blurry, nose, sweat",
+		seed: seed,
+		steps: 30,
+		cfg: 6,
+		width: 1080,
+		height: 1080
+	});
+	
+	await generateImage(`output/${ seed }_4.png`, {
+		pos: pos + "gigantic breasts",
+		neg: "ugly, blurry, nose, sweat",
+		seed: seed,
 		steps: 30,
 		cfg: 6,
 		width: 1080,
