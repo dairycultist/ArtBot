@@ -35,6 +35,9 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
 
 async function generatePost(seed) {
 
+    if (!fs.existsSync("output"))
+		fs.mkdirSync("output");
+
 	const getRandom = seedrandom(seed);
 
 	const getRandomOf = array => array[Math.floor(array.length * getRandom())];
@@ -58,7 +61,7 @@ async function generatePost(seed) {
 		getRandomOf([ "sandals", "sneakers", "barefoot", "heels" ]) + ", ";
 
 	// output images (minding the composition!)
-	await generateImage(`output/${ seed }_1.png`, {
+	const image1 = await generateImage(`output/${ seed }_1.png`, {
 		pos: "front view, looking at viewer, chubby face, squishy belly, soft belly, exposed belly, " + (getRandom() > 0.5 ? "tsurime, " : "tareme, ") + getRandomOf([ "smug", "smile", "grin", "sad", "pout", "angry" ]) + ", " + basePos,
 		neg: "ugly, blurry, nose, sweat, monochrome",
 		seed: seed,
@@ -68,7 +71,7 @@ async function generatePost(seed) {
 		height: 1600
 	});
 
-	await generateImage(`output/${ seed }_2.png`, {
+	const image2 = await generateImage(`output/${ seed }_2.png`, {
 		pos: "(view from behind, looking away), fat ass, round ass, " + basePos,
 		neg: "ugly, blurry, nose, sweat, monochrome",
 		seed: seed,
@@ -80,9 +83,6 @@ async function generatePost(seed) {
 
 	// stitch together matrix
 	const matrix = new Jimp({ width: 2000, height: 1600, color: 0xFFFFFFFF });
-
-	const image1 = await Jimp.read(`output/${ seed }_1.png`);
-	const image2 = await Jimp.read(`output/${ seed }_2.png`);
 
 	matrix.composite(image1, 0, 0);
 	matrix.composite(image2, 1000, 0);
@@ -122,10 +122,5 @@ async function generateImage(path, prompt) {
 	// json.images = array of base64 images
 	const json = await response.json();
 
-    // save file
-	const directoryPath = path.substring(0, path.lastIndexOf("/"));
-    if (!fs.existsSync(directoryPath))
-		fs.mkdirSync(directoryPath, { recursive: true });
-
-    fs.writeFileSync(path, Buffer.from(json.images[0], "base64"));
+    return await Jimp.read(Buffer.from(json.images[0], "base64"));
 }
