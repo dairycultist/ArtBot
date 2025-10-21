@@ -49,15 +49,28 @@ async function generatePost(seed) {
 	for (let i = 0; i < 2; i++)
 		colors.push(getRandomOf([ "red", "blue", "green", "yellow", "pink", "white", "grey", "black" ]));
 
-	let basePos = "<lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5> (1woman, white background:1.4), standing, dynamic pose, full body, huge breasts, soft breasts, wide hips, ";
+	let basePos = "<lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5> (1woman, white background:1.4), soft colors, standing, dynamic pose, full body, huge breasts, soft breasts, wide hips, ";
+	let frontPos = "front view, looking at viewer, " + getRandomOf([ "smug", "smile", "grin", "sad", "pout", "angry" ]) + ", ";
+	let backPos = "(view from behind, looking away), fat ass, round ass, ";
 
-	basePos += getRandomOf(["chubby", "slim", "obese, wide shoulders"]) + ", ";
+	if (getRandom() > 0.5) {
+
+		basePos += getRandomOf(["chubby", "obese, wide shoulders, fat rolls"]) + ", ";
+		frontPos += "chubby face, squishy belly, soft belly, exposed belly";
+	} else {
+
+		basePos += "slim";
+	}
+
+	basePos += getRandomOf(["tsurime", "tareme"]) + ", ";
 
 	if (getRandom() > 0.5)
 		basePos += getRandomOf(["goth", "emo", "milf", "gyaru", "priestess"]) + ", ";
 
 	if (getRandom() > 0.5)
 		basePos += "<lora:DetailedFur:0.5> (anthro, wolf, fluffy fur:1.2), " + getRandomOf(colors) + " fur, ";
+	else
+		basePos += getRandomOf([ "light skin", "dark skin", "tan skin" ]) + ", ";
 
 	if (getRandom() > 0.8)
 		basePos += "witch hat, ";
@@ -77,7 +90,7 @@ async function generatePost(seed) {
 
 	// output images (minding the composition!)
 	const image1 = await generateImage({
-		pos: "front view, looking at viewer, chubby face, squishy belly, soft belly, exposed belly, " + (getRandom() > 0.5 ? "tsurime, " : "tareme, ") + getRandomOf([ "smug", "smile", "grin", "sad", "pout", "angry" ]) + ", " + basePos,
+		pos: frontPos + basePos,
 		neg: "ugly, blurry, nose, sweat, monochrome",
 		seed: seed,
 		steps: 30,
@@ -87,7 +100,7 @@ async function generatePost(seed) {
 	});
 
 	const image2 = await generateImage({
-		pos: "(view from behind, looking away), fat ass, round ass, " + basePos,
+		pos: backPos + basePos,
 		neg: "ugly, blurry, nose, sweat, monochrome",
 		seed: seed,
 		steps: 30,
