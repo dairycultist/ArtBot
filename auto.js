@@ -44,6 +44,11 @@ async function generatePost(seed) {
 
 	const getRandomOf = array => array[Math.floor(array.length * getRandom())];
 
+	const colors = [];
+
+	colors.push(getRandomOf([ "red", "blue", "green", "yellow", "pink", "white", "black" ]));
+	colors.push(getRandomOf([ "red", "blue", "green", "yellow", "pink", "white", "black" ]));
+
 	let basePos = "<lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5> (1woman, white background:1.4), standing, dynamic pose, full body, huge breasts, soft breasts, wide hips, ";
 
 	basePos += getRandomOf(["chubby", "slim", "obese, wide shoulders"]) + ", ";
@@ -57,18 +62,18 @@ async function generatePost(seed) {
 	if (getRandom() > 0.8)
 		basePos += "witch hat, ";
 
-	basePos += getRandomOf([ "red hair", "blue hair", "blonde hair", "pink hair", "black hair" ]) + ", ";
+	basePos += getRandomOf(colors.concat("blonde")) + "hair, ";
 
 	basePos += getRandomOf([ "long hair", "short hair", "ponytail" ]) + ", ";
 	
-	basePos += getRandomOf([ "red", "blue", "green", "yellow", "pink", "white", "black" ]) + " " + getRandomOf([ "tight t-shirt", "jacket", "hoodie", "loose t-shirt", "crop top", "tube top", "bra", "bikini top" ]) + ", ";
+	basePos += getRandomOf(colors) + " " + getRandomOf([ "tight t-shirt", "jacket", "hoodie", "loose t-shirt", "crop top", "tube top", "lace bra", "bikini top" ]) + ", ";
 
-	basePos += getRandomOf([ "red", "blue", "green", "yellow", "pink", "white", "black" ]) + " " + getRandomOf([ "jean shorts", "yoga pants", "tights", "miniskirt", "bikini bottom" ]) + ", ";
+	basePos += getRandomOf(colors) + " " + getRandomOf([ "jean shorts", "yoga pants", "tights", "miniskirt", "bikini bottom" ]) + ", ";
 	
-	basePos += getRandomOf([ "sandals", "sneakers", "barefoot", "heels" ]) + ", ";
+	basePos += getRandomOf(colors) + " " + getRandomOf([ "sandals", "sneakers", "barefoot", "heels" ]) + ", ";
 
 	if (getRandom() > 0.5)
-		basePos += "holding " + getRandomOf([ "teddy bear", "balloon", "sword", "gun", "coffee" ]) + ", ";
+		basePos += "holding " + getRandomOf([ "teddy bear", getRandomOf(colors) + " balloon", "sword", "gun", "coffee" ]) + ", ";
 
 	// output images (minding the composition!)
 	const image1 = await generateImage({
