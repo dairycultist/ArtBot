@@ -44,6 +44,7 @@ async function generatePost(seed) {
 
 	const getRandomOf = array => array[Math.floor(array.length * getRandom())];
 
+	// create prompts
 	const colors = [];
 
 	for (let i = 0; i < 2; i++)
@@ -51,12 +52,13 @@ async function generatePost(seed) {
 
 	let basePos = "<lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5> (1woman, white background:1.4), soft colors, perfect shading, shine, standing, dynamic pose, full body, huge breasts, soft breasts, wide hips, ";
 	let frontPos = "front view, looking at viewer, ";
-	let backPos = "(view from behind), looking away, ";
+	let backPos = "(view from behind), ";
 
 	if (getRandom() > 0.5) {
 
 		basePos += getRandomOf(["chubby", "obese, wide shoulders, fat rolls"]) + ", ";
 		frontPos += "chubby face, squishy belly, soft belly, exposed belly";
+
 	} else {
 
 		basePos += "slim";
@@ -70,12 +72,12 @@ async function generatePost(seed) {
 		basePos += getRandomOf(["goth", "emo", "milf", "gyaru", "priestess", "bimbo", "gamer"]) + ", ";
 
 	if (getRandom() > 0.5)
-		basePos += "<lora:DetailedFur:0.5> (anthro, wolf, fluffy fur:1.2), " + getRandomOf(colors) + " fur, ";
+		basePos += "<lora:DetailedFur:0.5> (anthro, wolf girl, fluffy fur, long furry tail:1.2), (" + getRandomOf(colors) + " fur), ";
 	else
 		basePos += getRandomOf([ "light skin", "dark skin", "tan skin" ]) + ", ";
 
 	if (getRandom() > 0.8)
-		basePos += "witch hat, ";
+		basePos += getRandomOf([ "witch hat", "chef hat" ]) + ", ";
 
 	basePos += getRandomOf(colors.concat("blonde")) + " hair, ";
 
