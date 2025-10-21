@@ -40,28 +40,27 @@ async function generatePost(seed) {
     if (!fs.existsSync("output"))
 		fs.mkdirSync("output");
 
-	const getRandom = seedrandom(seed);
-
+	const getRandom   = seedrandom(seed);
 	const getRandomOf = array => array[Math.floor(array.length * getRandom())];
 
-	// create prompts
+	// create prompts for composition
 	const colors = [];
 
 	for (let i = 0; i < 2; i++)
-		colors.push(getRandomOf([ "red", "blue", "green", "yellow", "pink", "white", "grey", "black" ]));
+		colors.push(getRandomOf([ "red", "light blue", "dark blue", "light green", "dark green", "yellow", "orange", "pink", "white", "grey", "black", "brown" ]));
 
-	let basePos = "<lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5> (1woman, white background:1.4), soft colors, perfect shading, shine, standing, dynamic pose, full body, huge breasts, soft breasts, wide hips, ";
-	let frontPos = "front view, looking at viewer, ";
-	let backPos = "(view from behind), ";
+	let basePos = "<lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5> (1woman, white background:1.4), shine, standing straight, full body, huge breasts, soft breasts, wide hips, ";
+	let frontPos = "front view, looking at viewer, soft colors, perfect shading, ";
+	let backPos = "(view from behind, looking back at viewer), (soft colors, perfect shading:1.2), ";
 
 	if (getRandom() > 0.5) {
 
 		basePos += getRandomOf(["chubby", "obese, wide shoulders, fat rolls"]) + ", ";
-		frontPos += "chubby face, squishy belly, soft belly, exposed belly";
+		frontPos += "chubby face, squishy belly, soft belly, exposed belly, ";
 
 	} else {
 
-		basePos += "slim";
+		basePos += "slim, ";
 	}
 
 	basePos += getRandomOf(["tsurime", "tareme"]) + ", ";
@@ -72,12 +71,9 @@ async function generatePost(seed) {
 		basePos += getRandomOf(["goth", "emo", "milf", "gyaru", "priestess", "bimbo", "gamer"]) + ", ";
 
 	if (getRandom() > 0.5)
-		basePos += "<lora:DetailedFur:0.5> (anthro, wolf girl, fluffy fur, long furry tail:1.2), (" + getRandomOf(colors) + " fur), ";
+		basePos += "<lora:DetailedFur:0.5> (anthro, wolf girl, fluffy fur, long furry tail, " + getRandomOf(colors) + " fur:1.2), ";
 	else
 		basePos += getRandomOf([ "light skin", "dark skin", "tan skin" ]) + ", ";
-
-	if (getRandom() > 0.8)
-		basePos += getRandomOf([ "witch hat", "chef hat" ]) + ", ";
 
 	basePos += getRandomOf(colors.concat("blonde")) + " hair, ";
 
@@ -85,17 +81,20 @@ async function generatePost(seed) {
 	
 	basePos += getRandomOf(colors) + " " + getRandomOf([ "tight t-shirt", "jacket", "hoodie", "loose t-shirt", "crop top", "tube top", "lace bra", "bikini top" ]) + ", ";
 
-	basePos += getRandomOf(colors) + " " + getRandomOf([ "jean shorts", "yoga pants", "tights", "miniskirt", "bikini bottom" ]) + ", ";
+	basePos += getRandomOf(colors) + " " + getRandomOf([ "jean shorts", "yoga pants", "tights", "pleated short skirt", "short pencilskirt", "bikini bottom" ]) + ", ";
 	
 	basePos += getRandomOf(colors) + " " + getRandomOf([ "sandals", "sneakers", "barefoot", "heels" ]) + ", ";
+
+	if (getRandom() > 0.8)
+		basePos += getRandomOf([ "witch hat", "chef hat", "crown" ]) + ", ";
 
 	if (getRandom() > 0.5)
 		basePos += "holding " + getRandomOf([ "teddy bear", getRandomOf(colors) + " balloon", "sword", "gun", "coffee" ]) + ", ";
 
-	// output images (minding the composition!)
+	// output images
 	const image1 = await generateImage({
 		pos: frontPos + basePos,
-		neg: "flat shading, ugly, blurry, nose, sweat, monochrome, earrings",
+		neg: "flat shading, ugly, blurry, nose, sweat, monochrome, earrings, artifacts",
 		seed: seed,
 		steps: 30,
 		cfg: 6,
@@ -105,7 +104,7 @@ async function generatePost(seed) {
 
 	const image2 = await generateImage({
 		pos: backPos + basePos,
-		neg: "flat shading, ugly, blurry, nose, sweat, monochrome, earrings",
+		neg: "flat shading, ugly, blurry, nose, sweat, monochrome, earrings, artifacts",
 		seed: seed + 1,
 		steps: 30,
 		cfg: 6,
