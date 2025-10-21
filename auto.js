@@ -46,8 +46,8 @@ async function generatePost(seed) {
 
 	const colors = [];
 
-	colors.push(getRandomOf([ "red", "blue", "green", "yellow", "pink", "white", "black" ]));
-	colors.push(getRandomOf([ "red", "blue", "green", "yellow", "pink", "white", "black" ]));
+	for (let i = 0; i < 2; i++)
+		colors.push(getRandomOf([ "red", "blue", "green", "yellow", "pink", "white", "grey", "black" ]));
 
 	let basePos = "<lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5> (1woman, white background:1.4), standing, dynamic pose, full body, huge breasts, soft breasts, wide hips, ";
 
@@ -57,12 +57,12 @@ async function generatePost(seed) {
 		basePos += getRandomOf(["goth", "emo", "milf", "gyaru", "priestess"]) + ", ";
 
 	if (getRandom() > 0.5)
-		basePos += "<lora:DetailedFur:0.5> (anthro, wolf, fluffy fur:1.2), ";
+		basePos += "<lora:DetailedFur:0.5> (anthro, wolf, fluffy fur:1.2), " + getRandomOf(colors) + " fur, ";
 
 	if (getRandom() > 0.8)
 		basePos += "witch hat, ";
 
-	basePos += getRandomOf(colors.concat("blonde")) + "hair, ";
+	basePos += getRandomOf(colors.concat("blonde")) + " hair, ";
 
 	basePos += getRandomOf([ "long hair", "short hair", "ponytail" ]) + ", ";
 	
