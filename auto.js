@@ -32,8 +32,16 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
 	for (let i = 0; i < count; i++) {
 
 		process.stdout.write("\x1b[2m" + (i + 1) + "... ");
-		await generatePost(Math.floor(Math.random() * 100000));
-		console.log("\x1b[0m\x1b[32mDONE\x1b[0m");
+
+		try {
+
+			await generatePost(Math.floor(Math.random() * 100000));
+			console.log("\x1b[0m\x1b[32mDONE\x1b[0m");
+
+		} catch (e) {
+
+			console.log("\x1b[0m\x1b[31mDONE\x1b[0m");
+		}
 	}
 })
 .catch((e) => {
@@ -57,13 +65,13 @@ async function generatePost(seed) {
 		colors.push(getRandomOf([ "red", "light blue", "dark blue", "light green", "dark green", "yellow", "orange", "pink", "white", "grey", "black", "brown" ]));
 
 	// <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5>
-	let basePos = "<lora:HYPv1-4:0.5> <lora:DetailedFur:1.0> <lora:LaBiuda_IL_Style:1.0> <lora:Weather_shine_pupils_mix:0.5> masterpiece, very aesthetic, absurdres, (1girl, 1woman, solo, full body, white background:1.1), (anthro, furry_female, fluffy fur, miucrem, snout:1.1), big woman, bedroom eyes, L4B1ud4, shine, standing straight, huge breasts, soft breasts, wide hips, ";
+	let basePos = "<lora:HYPv1-4:0.5> <lora:DetailedFur:1.0> <lora:LaBiuda_IL_Style:0.8> <lora:Weather_shine_pupils_mix:0.5> (solo, full body, white background:1.1), (anthro, furry_female, fluffy fur, snout:1.1), big woman, open eyes, L4B1ud4, standing straight, huge breasts, wide hips, ";
 	let frontPos = "front view, looking at viewer, soft colors, perfect shading, ";
-	let backPos = "(view from behind, looking back at viewer), (soft colors, perfect shading:1.2), ";
+	let backPos = "(view from behind, looking back at viewer, soft colors, perfect shading), ";
 
-	let baseNeg = "flat shading, earrings, monochrome, skin, human, human nose, human face, out of frame, lipstick, full lips, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw";
+	let baseNeg = "flat shading, earrings, monochrome, skin, human, human nose, human face, squinting, out of frame, lipstick, full lips, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw";
 
-	basePos += getRandomOf([ "long tail, wolf", "long tail, cat", "long tail, fox", "bunny" ]) + " girl, ";
+	basePos += getRandomOf([ "long tail, wolf", "long tail, cat", "long tail, fox", "long tail, scales, fluffy dragon", "bunny" ]) + " girl, ";
 	let furColor = getRandomOf(colors);
 	basePos += `(${furColor} fur, ${furColor} tail, ${furColor} ears:1.2), `;
 
