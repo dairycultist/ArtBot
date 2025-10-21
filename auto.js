@@ -2,6 +2,7 @@
 // Lora https://civitai.com/models/645787?modelVersionId=1671255
 // Lora https://civitai.com/models/1454012?modelVersionId=1644028
 // Lora https://civitai.com/models/488546/fluffy-fur-or-pony-and-illustrious
+// Lora https://civitai.com/models/140809/weathershinepupilsmix-weathermix
 // VAE https://civitai.com/models/1018808?modelVersionId=1142351
 
 const fs = require("fs");
@@ -56,13 +57,13 @@ async function generatePost(seed) {
 		colors.push(getRandomOf([ "red", "light blue", "dark blue", "light green", "dark green", "yellow", "orange", "pink", "white", "grey", "black", "brown" ]));
 
 	// <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5>
-	let basePos = "<lora:HYPv1-4:0.5> <lora:DetailedFur:1.0> <lora:LaBiuda_IL_Style:1> (1girl, 1woman, solo, full body, white background:1.4), (anthro, fluffy fur, long furry tail, snout:1.4), big woman, plump lips, L4B1ud4, shine, standing straight, huge breasts, soft breasts, wide hips, ";
+	let basePos = "<lora:HYPv1-4:0.5> <lora:DetailedFur:1.0> <lora:LaBiuda_IL_Style:0.5> <lora:Weather_shine_pupils_mix:0.5> (1girl, 1woman, solo, full body, white background:1.4), (anthro, fluffy fur, snout:1.4), big woman, plump lips, L4B1ud4, shine, standing straight, huge breasts, soft breasts, wide hips, ";
 	let frontPos = "front view, looking at viewer, soft colors, perfect shading, ";
 	let backPos = "(view from behind, looking back at viewer), (soft colors, perfect shading:1.2), ";
 
-	basePos += getRandomOf([ "wolf", "cat", "fox", "bunny" ]) + " girl, ";
+	basePos += getRandomOf([ "long tail, wolf", "long tail, cat", "long tail, fox", "bunny" ]) + " girl, ";
 	let furColor = getRandomOf(colors);
-	basePos += `(${furColor} fur, ${furColor} tail, ${furColor} ears), `;
+	basePos += `(${furColor} fur, ${furColor} tail, ${furColor} ears:1.2), `;
 
 	if (getRandom() > 0.5) {
 
@@ -97,29 +98,29 @@ async function generatePost(seed) {
 	// output images
 	const image1 = await generateImage({
 		pos: frontPos + basePos,
-		neg: "flat shading, earrings, monochrome, human, human nose, out of frame, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw",
+		neg: "flat shading, earrings, monochrome, skin, human, human nose, human face, out of frame, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw",
 		seed: seed,
 		steps: 30,
 		cfg: 6,
-		width: 1000,
+		width: 1024,
 		height: 1600
 	});
 
 	const image2 = await generateImage({
 		pos: backPos + basePos,
-		neg: "flat shading, earrings, monochrome, human, human nose, out of frame, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw",
+		neg: "flat shading, earrings, monochrome, skin, human, human nose, human face, out of frame, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw",
 		seed: seed + 1,
 		steps: 30,
 		cfg: 6,
-		width: 1000,
+		width: 1024,
 		height: 1600
 	});
 
 	// stitch together matrix
-	const matrix = new Jimp({ width: 2000, height: 1600, color: 0xFFFFFFFF });
+	const matrix = new Jimp({ width: 2048, height: 1600, color: 0xFFFFFFFF });
 
 	matrix.composite(image1,    0, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
-	matrix.composite(image2, 1000, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
+	matrix.composite(image2, 1024, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
 
 	matrix.write(`output/${ seed }_matrix.png`);
 }
