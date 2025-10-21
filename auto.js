@@ -56,11 +56,12 @@ async function generatePost(seed) {
 		colors.push(getRandomOf([ "red", "light blue", "dark blue", "light green", "dark green", "yellow", "orange", "pink", "white", "grey", "black", "brown" ]));
 
 	// <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5>
-	let basePos = "<lora:HYPv1-4:0.5> <lora:DetailedFur:0.5> <lora:LaBiuda_IL_Style:1> (1girl, 1woman, solo, white background:1.4), big woman, plump lips, L4B1ud4, shine, standing straight, full body, huge breasts, soft breasts, wide hips, ";
+	let basePos = "<lora:HYPv1-4:0.5> <lora:DetailedFur:1.0> <lora:LaBiuda_IL_Style:0.8> (1girl, 1woman, solo, full body, white background:1.4), (anthro, fluffy fur, long furry tail, snout:1.4), big woman, plump lips, L4B1ud4, shine, standing straight, huge breasts, soft breasts, wide hips, ";
 	let frontPos = "front view, looking at viewer, soft colors, perfect shading, ";
 	let backPos = "(view from behind, looking back at viewer), (soft colors, perfect shading:1.2), ";
 
-	basePos += "(anthro, " + getRandomOf([ "wolf", "cat", "bunny" ]) + " girl, fluffy fur, long furry tail, " + getRandomOf(colors) + " fur:1.2)";
+	basePos += getRandomOf([ "wolf", "cat", "fox", "bunny" ]) + " girl, ";
+	basePos += "(" + getRandomOf(colors) + " fur), ";
 
 	if (getRandom() > 0.5) {
 
@@ -80,13 +81,10 @@ async function generatePost(seed) {
 		basePos += getRandomOf(["goth", "emo", "milf", "gyaru", "priestess", "bimbo", "gamer"]) + ", ";
 
 	basePos += getRandomOf(colors.concat("blonde")) + " hair, ";
-
 	basePos += getRandomOf([ "long hair", "short hair", "ponytail" ]) + ", ";
 	
 	basePos += getRandomOf(colors) + " " + getRandomOf([ "tight t-shirt", "jacket", "hoodie", "loose t-shirt", "crop top", "tube top", "lace bra", "bikini top" ]) + ", ";
-
 	basePos += getRandomOf(colors) + " " + getRandomOf([ "jean shorts", "yoga pants", "tights", "pleated short skirt", "short pencilskirt", "bikini bottom" ]) + ", ";
-	
 	basePos += getRandomOf(colors) + " " + getRandomOf([ "sandals", "sneakers", "barefoot", "heels" ]) + ", ";
 
 	if (getRandom() > 0.8)
@@ -98,7 +96,7 @@ async function generatePost(seed) {
 	// output images
 	const image1 = await generateImage({
 		pos: frontPos + basePos,
-		neg: "flat shading, earrings, monochrome, Monochrome, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw",
+		neg: "flat shading, earrings, monochrome, human, human nose, out of frame, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw",
 		seed: seed,
 		steps: 30,
 		cfg: 6,
@@ -108,7 +106,7 @@ async function generatePost(seed) {
 
 	const image2 = await generateImage({
 		pos: backPos + basePos,
-		neg: "flat shading, earrings, monochrome, Monochrome, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw",
+		neg: "flat shading, earrings, monochrome, human, human nose, out of frame, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw",
 		seed: seed + 1,
 		steps: 30,
 		cfg: 6,
