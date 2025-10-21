@@ -49,9 +49,11 @@ async function generatePost(seed) {
 	for (let i = 0; i < 2; i++)
 		colors.push(getRandomOf([ "red", "light blue", "dark blue", "light green", "dark green", "yellow", "orange", "pink", "white", "grey", "black", "brown" ]));
 
-	let basePos = "<lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5> (1woman, white background:1.4), shine, standing straight, full body, huge breasts, soft breasts, wide hips, ";
+	let basePos = "<lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5> <lora:DetailedFur:0.5> (1woman, white background:1.4), shine, standing straight, full body, huge breasts, soft breasts, wide hips, ";
 	let frontPos = "front view, looking at viewer, soft colors, perfect shading, ";
 	let backPos = "(view from behind, looking back at viewer), (soft colors, perfect shading:1.2), ";
+
+	basePos += "(anthro, " + getRandomOf([ "wolf", "cat", "bunny" ]) + " girl, fluffy fur, long furry tail, " + getRandomOf(colors) + " fur:1.2)";
 
 	if (getRandom() > 0.5) {
 
@@ -69,11 +71,6 @@ async function generatePost(seed) {
 
 	if (getRandom() > 0.5)
 		basePos += getRandomOf(["goth", "emo", "milf", "gyaru", "priestess", "bimbo", "gamer"]) + ", ";
-
-	if (getRandom() > 0.5)
-		basePos += "<lora:DetailedFur:0.5> (anthro, wolf girl, fluffy fur, long furry tail, " + getRandomOf(colors) + " fur:1.2), ";
-	else
-		basePos += getRandomOf([ "light skin", "dark skin", "tan skin" ]) + ", ";
 
 	basePos += getRandomOf(colors.concat("blonde")) + " hair, ";
 
