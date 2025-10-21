@@ -49,9 +49,9 @@ async function generatePost(seed) {
 	for (let i = 0; i < 2; i++)
 		colors.push(getRandomOf([ "red", "blue", "green", "yellow", "pink", "white", "grey", "black" ]));
 
-	let basePos = "<lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5> (1woman, white background:1.4), soft colors, standing, dynamic pose, full body, huge breasts, soft breasts, wide hips, ";
-	let frontPos = "front view, looking at viewer, " + getRandomOf([ "smug", "smile", "grin", "sad", "pout", "angry" ]) + ", ";
-	let backPos = "(view from behind, looking away), fat ass, round ass, ";
+	let basePos = "<lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5> (1woman, white background:1.4), soft colors, perfect shading, shine, standing, dynamic pose, full body, huge breasts, soft breasts, wide hips, ";
+	let frontPos = "front view, looking at viewer, ";
+	let backPos = "(view from behind), looking away, ";
 
 	if (getRandom() > 0.5) {
 
@@ -64,8 +64,10 @@ async function generatePost(seed) {
 
 	basePos += getRandomOf(["tsurime", "tareme"]) + ", ";
 
+	basePos += getRandomOf([ "smug", "smile", "grin", "sad", "pout", "angry" ]) + ", ";
+
 	if (getRandom() > 0.5)
-		basePos += getRandomOf(["goth", "emo", "milf", "gyaru", "priestess"]) + ", ";
+		basePos += getRandomOf(["goth", "emo", "milf", "gyaru", "priestess", "bimbo", "gamer"]) + ", ";
 
 	if (getRandom() > 0.5)
 		basePos += "<lora:DetailedFur:0.5> (anthro, wolf, fluffy fur:1.2), " + getRandomOf(colors) + " fur, ";
@@ -91,7 +93,7 @@ async function generatePost(seed) {
 	// output images (minding the composition!)
 	const image1 = await generateImage({
 		pos: frontPos + basePos,
-		neg: "ugly, blurry, nose, sweat, monochrome",
+		neg: "flat shading, ugly, blurry, nose, sweat, monochrome, earrings",
 		seed: seed,
 		steps: 30,
 		cfg: 6,
@@ -101,8 +103,8 @@ async function generatePost(seed) {
 
 	const image2 = await generateImage({
 		pos: backPos + basePos,
-		neg: "ugly, blurry, nose, sweat, monochrome",
-		seed: seed,
+		neg: "flat shading, ugly, blurry, nose, sweat, monochrome, earrings",
+		seed: seed + 1,
 		steps: 30,
 		cfg: 6,
 		width: 1000,
@@ -112,8 +114,8 @@ async function generatePost(seed) {
 	// stitch together matrix
 	const matrix = new Jimp({ width: 2000, height: 1600, color: 0xFFFFFFFF });
 
-	matrix.composite(image1, 0, 0);
-	matrix.composite(image2, 1000, 0);
+	matrix.composite(image1,    0, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
+	matrix.composite(image2, 1000, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
 
 	matrix.write(`output/${ seed }_matrix.png`);
 }
