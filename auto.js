@@ -57,9 +57,11 @@ async function generatePost(seed) {
 		colors.push(getRandomOf([ "red", "light blue", "dark blue", "light green", "dark green", "yellow", "orange", "pink", "white", "grey", "black", "brown" ]));
 
 	// <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5>
-	let basePos = "<lora:HYPv1-4:0.5> <lora:DetailedFur:1.0> <lora:LaBiuda_IL_Style:0.5> <lora:Weather_shine_pupils_mix:0.5> (1girl, 1woman, solo, full body, white background:1.4), (anthro, fluffy fur, snout:1.4), big woman, plump lips, L4B1ud4, shine, standing straight, huge breasts, soft breasts, wide hips, ";
+	let basePos = "<lora:HYPv1-4:0.5> <lora:DetailedFur:1.0> <lora:LaBiuda_IL_Style:1.0> <lora:Weather_shine_pupils_mix:0.5> masterpiece, very aesthetic, absurdres, (1girl, 1woman, solo, full body, white background:1.1), (anthro, furry_female, fluffy fur, miucrem, snout:1.1), big woman, bedroom eyes, L4B1ud4, shine, standing straight, huge breasts, soft breasts, wide hips, ";
 	let frontPos = "front view, looking at viewer, soft colors, perfect shading, ";
 	let backPos = "(view from behind, looking back at viewer), (soft colors, perfect shading:1.2), ";
+
+	let baseNeg = "flat shading, earrings, monochrome, skin, human, human nose, human face, out of frame, lipstick, full lips, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw";
 
 	basePos += getRandomOf([ "long tail, wolf", "long tail, cat", "long tail, fox", "bunny" ]) + " girl, ";
 	let furColor = getRandomOf(colors);
@@ -72,8 +74,11 @@ async function generatePost(seed) {
 
 	} else {
 
-		basePos += "slim, ";
+		basePos += getRandom() > 0.5 ? "slim, " : "slim, gigantic breasts, ";
 	}
+
+	if (getRandom() > 0.5)
+		basePos += "cleavage, ";
 
 	basePos += getRandomOf(["tsurime", "tareme"]) + ", ";
 
@@ -98,7 +103,7 @@ async function generatePost(seed) {
 	// output images
 	const image1 = await generateImage({
 		pos: frontPos + basePos,
-		neg: "flat shading, earrings, monochrome, skin, human, human nose, human face, out of frame, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw",
+		neg: baseNeg,
 		seed: seed,
 		steps: 30,
 		cfg: 6,
@@ -108,7 +113,7 @@ async function generatePost(seed) {
 
 	const image2 = await generateImage({
 		pos: backPos + basePos,
-		neg: "flat shading, earrings, monochrome, skin, human, human nose, human face, out of frame, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw",
+		neg: baseNeg,
 		seed: seed + 1,
 		steps: 30,
 		cfg: 6,
