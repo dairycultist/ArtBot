@@ -1,3 +1,9 @@
+// WAI https://civitai.com/models/827184?modelVersionId=1761560
+// Lora https://civitai.com/models/645787?modelVersionId=1671255
+// Lora https://civitai.com/models/1454012?modelVersionId=1644028
+// Lora https://civitai.com/models/488546/fluffy-fur-or-pony-and-illustrious
+// VAE https://civitai.com/models/1018808?modelVersionId=1142351
+
 const fs = require("fs");
 const ask = require("readline-sync");
 const seedrandom = require("seedrandom"); 	// npm install seedrandom
@@ -49,7 +55,8 @@ async function generatePost(seed) {
 	for (let i = 0; i < 2; i++)
 		colors.push(getRandomOf([ "red", "light blue", "dark blue", "light green", "dark green", "yellow", "orange", "pink", "white", "grey", "black", "brown" ]));
 
-	let basePos = "<lora:HYPv1-4:0.5> <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5> <lora:DetailedFur:0.5> (1woman, white background:1.4), shine, standing straight, full body, huge breasts, soft breasts, wide hips, ";
+	// <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5>
+	let basePos = "<lora:HYPv1-4:0.5> <lora:DetailedFur:0.5> <lora:LaBiuda_IL_Style:1> (1girl, 1woman, solo, white background:1.4), big woman, plump lips, L4B1ud4, shine, standing straight, full body, huge breasts, soft breasts, wide hips, ";
 	let frontPos = "front view, looking at viewer, soft colors, perfect shading, ";
 	let backPos = "(view from behind, looking back at viewer), (soft colors, perfect shading:1.2), ";
 
@@ -91,7 +98,7 @@ async function generatePost(seed) {
 	// output images
 	const image1 = await generateImage({
 		pos: frontPos + basePos,
-		neg: "flat shading, ugly, blurry, nose, sweat, monochrome, earrings, artifacts",
+		neg: "flat shading, earrings, monochrome, Monochrome, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw",
 		seed: seed,
 		steps: 30,
 		cfg: 6,
@@ -101,7 +108,7 @@ async function generatePost(seed) {
 
 	const image2 = await generateImage({
 		pos: backPos + basePos,
-		neg: "flat shading, ugly, blurry, nose, sweat, monochrome, earrings, artifacts",
+		neg: "flat shading, earrings, monochrome, Monochrome, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw",
 		seed: seed + 1,
 		steps: 30,
 		cfg: 6,
