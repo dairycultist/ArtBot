@@ -4,7 +4,7 @@
 // Lora https://civitai.com/models/488546/fluffy-fur-or-pony-and-illustrious
 // Lora https://civitai.com/models/140809/weathershinepupilsmix-weathermix
 // Lora https://civitai.com/models/1820232/artem-vitt-style-or-anime-thick-outlines
-// VAE https://civitai.com/models/1018808?modelVersionId=1142351
+// Lora https://civitai.com/models/1429234/breast-implants-round-breasts-illustrious
 
 const fs = require("fs");
 const ask = require("readline-sync");
@@ -66,28 +66,19 @@ async function generatePost(seed) {
 		colors.push(getRandomOf([ "red", "light blue", "dark blue", "light green", "dark green", "yellow", "orange", "pink", "white", "grey", "black", "brown" ]));
 
 	// <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5>
-	let basePos = "<lora:HYPv1-4:0.5> <lora:DetailedFur:1.0> <lora:LaBiuda_IL_Style:0.65> <lora:Vitt:1> <lora:Weather_shine_pupils_mix:0.5> (solo, full body, white background), (anthro, furry_female, fluffy fur, snout:1.1), (vittstyle, thick outlines, bold outlines), perfect eyes, very detailed eyes, bright colors, perfect shading, soft shading, L4B1ud4, open eyes, standing straight, huge breasts, wide hips, bangs, ";
-	let frontPos = "front view, looking at viewer, ";
+	let basePos =
+		"<lora:HYPv1-4:0.8> <lora:Breast_Implants_V2.5:0.9> <lora:DetailedFur:1.0> <lora:Vitt:1> <lora:Weather_shine_pupils_mix:0.5> " +
+		"(solo, cowboy shot, view from below, white background), (anthro, furry_female, fluffy fur, snout:1.1), (vittstyle, thick outlines, bold outlines:1.2), " +
+		"perfect eyes, very detailed eyes, bright colors, perfect shading, soft shading, open eyes, standing straight, (gigantic breasts:1.3), (breast implants, breasts together, innerboob), " +
+		"hips, thighs, narrow waist, sexy, bangs, eyeliner, smug, smirk, bedroom eyes, ";
+	
+	let frontPos = "(front view), directly in front, looking at viewer, cleavage, shiny breasts, breast focus, ";
 	let backPos = "(view from behind, looking back at viewer:1.5), ";
 
-	let baseNeg = "flat shading, earrings, monochrome, skin, human, human nose, human face, squinting, out of frame, lipstick, full lips, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw";
+	let baseNeg = "flat shading, cramped, out of frame, areolas, earrings, monochrome, skin, human, human nose, human face, squinting, lipstick, full lips, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw";
 
 	basePos += getRandomOf([ "long tail, wolf", "long tail, cat", "long tail, fox", "long tail, scales, fluffy dragon", "bunny" ]) + " girl, ";
-	let furColor = colors[0];
-	basePos += `(${furColor} fur, ${furColor} tail, ${furColor} ears:1.2), `;
-
-	if (getRandom() > 0.5) {
-
-		basePos += getRandomOf(["chubby", "obese, wide shoulders, fat rolls"]) + ", ";
-		frontPos += "chubby face, squishy belly, soft belly, exposed belly, ";
-
-	} else {
-
-		basePos += getRandom() > 0.5 ? "slim, " : "slim, gigantic breasts, ";
-	}
-
-	if (getRandom() > 0.5)
-		basePos += "cleavage, ";
+	basePos += `(${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears, ${colors[0]} face, ${colors[0]} breasts:1.2), `;
 
 	basePos += getRandomOf(["tsurime", "tareme"]) + ", ";
 
@@ -96,23 +87,24 @@ async function generatePost(seed) {
 	if (getRandom() > 0.8)
 		basePos += "black sclera, ";
 
-	basePos += getRandomOf([ "smug", "smile", "grin", "sad", "pout", "angry" ]) + ", ";
-
 	if (getRandom() > 0.5)
 		basePos += getRandomOf(["goth", "emo", "milf", "gyaru", "priestess", "bimbo", "gamer"]) + ", ";
 
-	basePos += getRandomOf(colors.concat("blonde")) + " hair, ";
+	basePos += colors[1] + " hair, ";
 	basePos += getRandomOf([ "long hair", "short hair", "ponytail" ]) + ", ";
 	
-	basePos += getRandomOf(colors) + " " + getRandomOf([ "tight t-shirt", "jacket", "hoodie", "loose t-shirt", "crop top", "tube top", "lace bra", "bikini top" ]) + ", ";
-	basePos += colors[1] + " " + getRandomOf([ "jean shorts", "yoga pants", "tights", "pleated short skirt", "short pencilskirt", "bikini bottom" ]) + ", ";
-	basePos += colors[1] + " " + getRandomOf([ "sandals", "sneakers", "barefoot", "heels" ]) + ", ";
-
+	if (getRandom() > 0.8) {
+		basePos += getRandomOf(colors) + getRandomOf(["leotard, v-cut boob window, ", "wedding dress, ", "slingshot bikini, "]);
+	} else {
+		basePos += getRandomOf(colors) + " " + getRandomOf([ "tight t-shirt", "jacket", "hoodie", "button-up shirt, tight shirt, button gap", "loose t-shirt", "crop top", "tube top", "lace bra", "bikini top" ]) + ", ";
+		basePos += colors[1] + " " + getRandomOf([ "jean shorts", "yoga pants", "tights", "pleated short skirt", "short pencil skirt", "bikini bottom", "leather pants" ]) + ", ";
+	}
+	
 	if (getRandom() > 0.8)
 		basePos += getRandomOf([ "witch hat", "chef hat", "crown" ]) + ", ";
 
 	if (getRandom() > 0.5)
-		basePos += "holding one " + getRandomOf([ "teddy bear", getRandomOf(colors) + " balloon", "sword", "gun", "coffee" ]) + ", ";
+		basePos += "hands on hips, ";
 
 	// output images
 	const image1 = await generateImage({
@@ -121,7 +113,7 @@ async function generatePost(seed) {
 		seed: seed,
 		steps: 30,
 		cfg: 6,
-		width: 1024,
+		width: 1200,
 		height: 1760
 	});
 
@@ -131,15 +123,15 @@ async function generatePost(seed) {
 		seed: seed + 1,
 		steps: 30,
 		cfg: 6,
-		width: 1024,
+		width: 1200,
 		height: 1760
 	});
 
 	// stitch together matrix
-	const matrix = new Jimp({ width: 2048, height: 1600, color: 0xFFFFFFFF });
+	const matrix = new Jimp({ width: 2400, height: 1760, color: 0xFFFFFFFF });
 
 	matrix.composite(image1,    0, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
-	matrix.composite(image2, 1024, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
+	matrix.composite(image2, 1200, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
 
 	matrix.write(`output/${ seed }_matrix.png`);
 }
