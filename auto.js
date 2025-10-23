@@ -117,7 +117,9 @@ async function generatePost(seed) {
 		"<lora:HYPv1-4:0.5> <lora:DetailedFur:1> <lora:LaBiuda_IL_Style:0.5>",
 		"(small head:1.3), (solo, cowboy shot), (white background:1.3), (anthro, furry_female, fluffy fur:1.4), (standing straight)",
 		"bright colors, perfect shading, (soft shading, rimlight:1.4), hips, thick thighs, narrow waist, sexy, (tall, adult, big woman:1.2), (enormous breasts:1.2)",
-		"L4B1ud4, squinting, (tsurime, eyeliner, black eyeshadow, smug, wide smirk, bedroom eyes, calm:1.2), perfect eyes, very detailed eyes, bangs, large eyes, short snout",
+		"L4B1ud4, squinting",
+		new Rand("(tareme, blush, smile, happy, excited:1.2)", "(tsurime, eyeliner, black eyeshadow, smug, wide smirk, bedroom eyes, calm:1.2)"),
+		"perfect eyes, very detailed eyes, bangs, large eyes, short snout",
 
 		// content prompt
 		`(anthro ${ animal }, ${ animal } ears:1.2)`,
@@ -125,7 +127,7 @@ async function generatePost(seed) {
 		colors[1] + " hair",
 		new Rand("long hair", "short hair", "ponytail"),
 		new Rand(colors[1] + " v-neck shirt", colors[1] + " sports bra"),
-		new Rand("black leather pants", colors[1] + "pencil skirt")
+		new Rand("black leather pants", colors[1] + " pencil skirt", colors[1] + " sweatpants")
 	);
 
 	const frontPromptTree = new Concat(
