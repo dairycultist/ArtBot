@@ -128,16 +128,14 @@ async function generatePost(seed) {
 		"(view from behind, looking away:1.5), sideboob, hands at sides"
 	);
 
-	// new Rand(...["big bird", "small bird"])
-
 	/*
 	 * generate images
 	 */
-	let basePos = basePromptTree.evaluate(seedrandom(seed));
+	let basePos = basePromptTree.evaluate(getRandom);
 	let baseNeg = "cel shading, flat shading, skindentation, bursting breasts, side view, three-quarters view, closeup, close up, cramped, out of frame, areolas, sweaty, earrings, monochrome, skin, human, human nose, human face, watermark, grayscale, multiple people, more than one, 3 arms, deformed, bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw";
 
 	const frontImg = await generateImage({
-		pos: frontPromptTree.evaluate(seedrandom(seed)) + basePos,
+		pos: frontPromptTree.evaluate(getRandom) + basePos,
 		neg: baseNeg,
 		seed: seed,
 		steps: 30,
@@ -147,7 +145,7 @@ async function generatePost(seed) {
 	});
 
 	const backImg = await generateImage({
-		pos: backPromptTree.evaluate(seedrandom(seed)) + basePos,
+		pos: backPromptTree.evaluate(getRandom) + basePos,
 		neg: baseNeg,
 		seed: seed + 1,
 		steps: 30,
