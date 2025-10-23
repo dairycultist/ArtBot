@@ -68,23 +68,19 @@ async function generatePost(seed) {
 	let basePos =
 		"<lora:HYPv1-4:1> <lora:Breast_Implants_V2.5:1> <lora:DetailedFur:1> <lora:Vitt:1> " +
 		"(solo, cowboy shot, white background), (view from below:1.2), (anthro, furry_female, fluffy fur, snout:1.1), (vittstyle, thick outlines, bold outlines:1.2), " +
-		"perfect eyes, very detailed eyes, bright colors, perfect shading, soft shading, open eyes, standing straight, hyper breasts, (gigantic breasts:1.3), (breast implants), " +
+		"perfect eyes, very detailed eyes, bright colors, perfect shading, soft shading, open eyes, standing straight, " +
 		"hips, thick thighs, narrow waist, sexy, bangs, (eyeliner, black eyeshadow, grin, smug, smirk, bedroom eyes:1.2), ";
 	
-	let frontPos = "(front view), directly in front, looking down at viewer, (breasts together), innerboob, cleavage, shiny breasts, breast focus, ";
-	let backPos = "(view from behind, looking back at viewer:1.5), breasts from behind, sideboob, ";
+	let frontPos = "(front view), directly in front, looking down at viewer, hyper breasts, (gigantic breasts:1.3), (breast implants, perfectly round breasts), (breasts together), innerboob, cleavage, v-cut cleavage window, shiny breasts, breast focus, ";
+	let backPos = "(view from behind, looking back at viewer:1.5), backboob, ";
 
-	let baseNeg = "flat shading, cramped, out of frame, areolas, earrings, monochrome, skin, human, human nose, human face, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw";
+	let baseNeg = "skindentation, bursting breasts, flat shading, cramped, out of frame, areolas, sweaty, earrings, monochrome, skin, human, human nose, human face, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw";
 
 	basePos += getRandomOf([ "wolf", "cat", "fox", "scales, fluffy dragon", "bunny", "bear" ]) + " girl, ";
 	basePos += `${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears, ${colors[0]} face, (${colors[0]} breasts:1.5), `;
 
 	basePos += getRandomOf(["tsurime", "tareme"]) + ", ";
-
 	basePos += colors[1] + "eyes, ";
-
-	if (getRandom() > 0.8)
-		basePos += "black sclera, ";
 
 	basePos += colors[1] + " hair, ";
 	basePos += getRandomOf([ "long hair", "short hair", "ponytail" ]) + ", ";
@@ -95,15 +91,15 @@ async function generatePost(seed) {
 			basePos += "white button-up shirt, black pencil skirt, lanyard, ";
 			frontPos += "(single button gap:1.2), ";
 		} else {
-			basePos += getRandomOf(colors) + getRandomOf(["leotard, v-cut boob window, ", "wedding dress, ", "slingshot bikini, "]);
+			basePos += getRandomOf(colors) + getRandomOf(["leotard, v-cut boob window, ", "wedding dress, ", "slingshot bikini, ", "lingerie, lace bra, bra straps, "]);
 		}
 
 	} else {
 		
-		basePos += getRandomOf(colors) + " " + getRandomOf([ "tight t-shirt", "jacket", "hoodie", "loose t-shirt", "crop top", "tube top", "lace bra", "bikini top" ]) + ", ";
+		basePos += getRandomOf(colors) + " " + getRandomOf([ "tight t-shirt", "jacket", "sweater", "hoodie", "loose t-shirt", "crop top", "tube top", "bikini top" ]) + ", ";
 		basePos += colors[1] + " " + getRandomOf([ "jean shorts", "yoga pants", "tights", "pleated short skirt", "short pencil skirt", "bikini bottom", "leather pants" ]) + ", ";
 
-		if (getRandom() > 0.8)
+		if (getRandom() > 0.5)
 			basePos += getRandomOf([ "witch hat", "chef hat", "crown" ]) + ", ";
 	}
 
