@@ -63,16 +63,16 @@ async function generatePost(seed) {
 	const colors = [];
 
 	for (let i = 0; i < 2; i++)
-		colors.push(getRandomOf([ "red", "light blue", "dark blue", "light green", "dark green", "yellow", "orange", "pink", "white", "grey", "black", "brown" ]));
+		colors.push(getRandomOf([ "white", "grey", "black", "brown", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink" ]));
 
 	let basePos =
-		"<lora:HYPv1-4:0.5> <lora:Breast_Implants_V2.5:1> <lora:DetailedFur:1> <lora:LaBiuda_IL_Style:0.5> " +
-		"(solo, cowboy shot), (white background:1.5), (anthro, furry_female, fluffy fur:1.4), (standing straight), " +
-		"lit from behind, light from behind, bright colors, perfect shading, (soft shading), hips, thick thighs, narrow waist, sexy, tall, adult, " +
+		"<lora:HYPv1-4:0.5> <lora:DetailedFur:1> <lora:LaBiuda_IL_Style:0.5> " +
+		"(small head:1.3), (solo, cowboy shot), (white background), (anthro, furry_female, fluffy fur:1.4), (standing straight), " +
+		"bright colors, perfect shading, (soft shading, rimlight:1.4), hips, thick thighs, narrow waist, sexy, (tall, adult, big woman:1.2), (enormous breasts:1.2), " +
 		"L4B1ud4, squinting, (tsurime, eyeliner, black eyeshadow, smug, wide smirk, bedroom eyes, calm:1.2), perfect eyes, very detailed eyes, bangs, large eyes, short snout, ";
 	
-	let frontPos = "(front view:1.5), looking at viewer, gigantic breasts, (breast implants, round breasts, breasts together:1.4), cleavage, shiny breasts, breast focus, ";
-	let backPos = "(view from behind, looking away:1.5), sideboob, (gigantic breasts:1.3), ";
+	let frontPos = "(front view:1.5), looking at viewer, (breasts together:1.4), cleavage, shiny breasts, breast focus, hands behind back, ";
+	let backPos = "(view from behind, looking away:1.5), sideboob, hands at sides, ";
 
 	let baseNeg = "cel shading, flat shading, skindentation, bursting breasts, side view, three-quarters view, closeup, close up, cramped, out of frame, areolas, sweaty, earrings, monochrome, skin, human, human nose, human face, watermark, grayscale, multiple people, more than one, 3 arms, deformed, bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw";
 
@@ -88,8 +88,7 @@ async function generatePost(seed) {
 	basePos += colors[1] + " hair, ";
 	basePos += getRandomOf([ "long hair", "short hair", "ponytail" ]) + ", ";
 
-	basePos += "tight red v-neck shirt, lanyard, black leather pants, hands behind back, ";
-	frontPos += "(single button gap:1.2), ";
+	basePos += "(red v-neck shirt, black leather pants), ";
 
 	/*
 	 * generate images
@@ -100,25 +99,25 @@ async function generatePost(seed) {
 		seed: seed,
 		steps: 30,
 		cfg: 6,
-		width: 1600,
+		width: 1200,
 		height: 1600
 	});
 
 	const backImg = await generateImage({
 		pos: backPos + basePos,
-		neg: "(front view, looking back at viewer, looking at viewer, turning head), " + baseNeg,
+		neg: baseNeg,
 		seed: seed + 1,
 		steps: 30,
 		cfg: 6,
-		width: 1600,
+		width: 1200,
 		height: 1600
 	});
 
 	// stitch together matrix
-	const matrix = new Jimp({ width: 3200, height: 1600, color: 0xFFFFFFFF });
+	const matrix = new Jimp({ width: 2400, height: 1600, color: 0xFFFFFFFF });
 
 	matrix.composite(frontImg,    0, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
-	matrix.composite( backImg, 1600, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
+	matrix.composite( backImg, 1200, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
 
 	matrix.write(`output/${ seed }_matrix.png`);
 }
