@@ -3,6 +3,7 @@
 // Lora https://civitai.com/models/1454012?modelVersionId=1644028
 // Lora https://civitai.com/models/488546/fluffy-fur-or-pony-and-illustrious
 // Lora https://civitai.com/models/140809/weathershinepupilsmix-weathermix
+// Lora https://civitai.com/models/1820232/artem-vitt-style-or-anime-thick-outlines
 // VAE https://civitai.com/models/1018808?modelVersionId=1142351
 
 const fs = require("fs");
@@ -40,7 +41,7 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
 
 		} catch (e) {
 
-			console.log("\x1b[0m\x1b[31mDONE\x1b[0m");
+			console.log("\x1b[0m\x1b[31mFAIL\x1b[0m");
 		}
 	}
 })
@@ -65,14 +66,14 @@ async function generatePost(seed) {
 		colors.push(getRandomOf([ "red", "light blue", "dark blue", "light green", "dark green", "yellow", "orange", "pink", "white", "grey", "black", "brown" ]));
 
 	// <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5>
-	let basePos = "<lora:HYPv1-4:0.5> <lora:DetailedFur:1.0> <lora:LaBiuda_IL_Style:0.8> <lora:Weather_shine_pupils_mix:0.5> (solo, full body, white background:1.1), (anthro, furry_female, fluffy fur, snout:1.1), big woman, open eyes, L4B1ud4, standing straight, huge breasts, wide hips, ";
-	let frontPos = "front view, looking at viewer, soft colors, perfect shading, ";
-	let backPos = "(view from behind, looking back at viewer, soft colors, perfect shading), ";
+	let basePos = "<lora:HYPv1-4:0.5> <lora:DetailedFur:1.0> <lora:LaBiuda_IL_Style:0.65> <lora:Vitt:1> <lora:Weather_shine_pupils_mix:0.5> (solo, full body, white background), (anthro, furry_female, fluffy fur, snout:1.1), (vittstyle, thick outlines, bold outlines), perfect eyes, very detailed eyes, bright colors, perfect shading, soft shading, L4B1ud4, open eyes, standing straight, huge breasts, wide hips, bangs, ";
+	let frontPos = "front view, looking at viewer, ";
+	let backPos = "(view from behind, looking back at viewer:1.5), ";
 
 	let baseNeg = "flat shading, earrings, monochrome, skin, human, human nose, human face, squinting, out of frame, lipstick, full lips, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw";
 
 	basePos += getRandomOf([ "long tail, wolf", "long tail, cat", "long tail, fox", "long tail, scales, fluffy dragon", "bunny" ]) + " girl, ";
-	let furColor = getRandomOf(colors);
+	let furColor = colors[0];
 	basePos += `(${furColor} fur, ${furColor} tail, ${furColor} ears:1.2), `;
 
 	if (getRandom() > 0.5) {
@@ -90,6 +91,11 @@ async function generatePost(seed) {
 
 	basePos += getRandomOf(["tsurime", "tareme"]) + ", ";
 
+	basePos += colors[1] + "eyes, ";
+
+	if (getRandom() > 0.8)
+		basePos += "black sclera, ";
+
 	basePos += getRandomOf([ "smug", "smile", "grin", "sad", "pout", "angry" ]) + ", ";
 
 	if (getRandom() > 0.5)
@@ -99,14 +105,14 @@ async function generatePost(seed) {
 	basePos += getRandomOf([ "long hair", "short hair", "ponytail" ]) + ", ";
 	
 	basePos += getRandomOf(colors) + " " + getRandomOf([ "tight t-shirt", "jacket", "hoodie", "loose t-shirt", "crop top", "tube top", "lace bra", "bikini top" ]) + ", ";
-	basePos += getRandomOf(colors) + " " + getRandomOf([ "jean shorts", "yoga pants", "tights", "pleated short skirt", "short pencilskirt", "bikini bottom" ]) + ", ";
-	basePos += getRandomOf(colors) + " " + getRandomOf([ "sandals", "sneakers", "barefoot", "heels" ]) + ", ";
+	basePos += colors[1] + " " + getRandomOf([ "jean shorts", "yoga pants", "tights", "pleated short skirt", "short pencilskirt", "bikini bottom" ]) + ", ";
+	basePos += colors[1] + " " + getRandomOf([ "sandals", "sneakers", "barefoot", "heels" ]) + ", ";
 
 	if (getRandom() > 0.8)
 		basePos += getRandomOf([ "witch hat", "chef hat", "crown" ]) + ", ";
 
 	if (getRandom() > 0.5)
-		basePos += "holding " + getRandomOf([ "teddy bear", getRandomOf(colors) + " balloon", "sword", "gun", "coffee" ]) + ", ";
+		basePos += "holding one " + getRandomOf([ "teddy bear", getRandomOf(colors) + " balloon", "sword", "gun", "coffee" ]) + ", ";
 
 	// output images
 	const image1 = await generateImage({
@@ -116,17 +122,17 @@ async function generatePost(seed) {
 		steps: 30,
 		cfg: 6,
 		width: 1024,
-		height: 1600
+		height: 1760
 	});
 
 	const image2 = await generateImage({
 		pos: backPos + basePos,
-		neg: baseNeg,
+		neg: "front view, " + baseNeg,
 		seed: seed + 1,
 		steps: 30,
 		cfg: 6,
 		width: 1024,
-		height: 1600
+		height: 1760
 	});
 
 	// stitch together matrix
