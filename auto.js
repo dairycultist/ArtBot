@@ -49,6 +49,47 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
     console.error(e + "\x1b[0m");
 });
 
+class Rand {
+
+	constructor(...parts) {
+		this.parts = parts;
+		this.type = "Rand";
+	}
+
+	evaluate(getRandom) {
+
+		const part = this.parts[Math.floor(this.parts.length * getRandom())];
+
+		if (part.type)
+			return part.evaluate(getRandom);
+
+		return part;
+	}
+}
+
+class Concat {
+
+	constructor(...parts) {
+		this.parts = parts;
+		this.type = "Concat";
+	}
+
+	evaluate(getRandom) {
+
+		let construct = "";
+
+		for (const part of this.parts) {
+
+			if (part.type)
+				construct += part.evaluate(getRandom) + ", ";
+			else
+				construct += part + ", ";
+		}
+
+		return construct.substring(0, construct.length - 2);
+	}
+}
+
 async function generatePost(seed) {
 
     if (!fs.existsSync("output"))
@@ -56,6 +97,10 @@ async function generatePost(seed) {
 
 	const getRandom   = seedrandom(seed);
 	const getRandomOf = array => array[Math.floor(array.length * getRandom())];
+
+	console.log(new Concat("cat", "dog", "bird").evaluate(getRandom));
+
+	return;
 
 	/*
 	 * create style prompt
