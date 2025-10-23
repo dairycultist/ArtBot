@@ -179,15 +179,11 @@ async function generatePost(seed) {
 		backRightEdgeWhiteness += backRightColor.r + backRightColor.g + backRightColor.b;
 	}
 
-	if (frontLeftEdgeWhiteness > frontRightEdgeWhiteness) {
-		backImg.flip({ horizontal: true });
-		console.log("left ");
-	}
+	if (frontLeftEdgeWhiteness > frontRightEdgeWhiteness)
+		frontImg.flip({ horizontal: true });
 
-	if (backRightEdgeWhiteness > backLeftEdgeWhiteness) {
+	if (backRightEdgeWhiteness > backLeftEdgeWhiteness)
 		backImg.flip({ horizontal: true });
-		console.log("right ");
-	}
 
 	// stitch together matrix
 	const matrix = new Jimp({ width: imgWidth * 2, height: imgHeight, color: 0xFFFFFFFF });
