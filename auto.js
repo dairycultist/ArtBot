@@ -8,6 +8,7 @@ const fs = require("fs");
 const ask = require("readline-sync");
 const seedrandom = require("seedrandom"); 	// npm install seedrandom
 const { Jimp } = require("jimp"); 			// npm install jimp
+const { intToRGBA } = require("@jimp/utils");
 
 const gradioID = ask.question("Enter gradio ID: ");
 
@@ -39,7 +40,7 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
 
 		} catch (e) {
 
-			console.log("\x1b[0m\x1b[31mFAIL\x1b[0m");
+			console.log("\x1b[0m\x1b[31mFAIL / " + e + "\x1b[0m");
 		}
 	}
 })
@@ -131,8 +132,11 @@ async function generatePost(seed) {
 	/*
 	 * generate images
 	 */
-	let basePos = basePromptTree.evaluate(getRandom);
-	let baseNeg = "cel shading, flat shading, skindentation, bursting breasts, side view, three-quarters view, closeup, close up, cramped, out of frame, areolas, sweaty, earrings, monochrome, skin, human, human nose, human face, watermark, grayscale, multiple people, more than one, 3 arms, deformed, bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw";
+	const basePos = basePromptTree.evaluate(getRandom);
+	const baseNeg = "cel shading, flat shading, skindentation, bursting breasts, side view, three-quarters view, closeup, close up, cramped, out of frame, areolas, sweaty, earrings, monochrome, skin, human, human nose, human face, watermark, grayscale, multiple people, more than one, 3 arms, deformed, bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw";
+
+	const imgWidth = 1200;
+	const imgHeight = 1600;
 
 	const frontImg = await generateImage({
 		pos: frontPromptTree.evaluate(getRandom) + basePos,
@@ -140,8 +144,8 @@ async function generatePost(seed) {
 		seed: seed,
 		steps: 30,
 		cfg: 6,
-		width: 1200,
-		height: 1600
+		width: imgWidth,
+		height: imgHeight
 	});
 
 	const backImg = await generateImage({
@@ -150,15 +154,46 @@ async function generatePost(seed) {
 		seed: seed + 1,
 		steps: 30,
 		cfg: 6,
-		width: 1200,
-		height: 1600
+		width: imgWidth,
+		height: imgHeight
 	});
 
-	// stitch together matrix
-	const matrix = new Jimp({ width: 2400, height: 1600, color: 0xFFFFFFFF });
+	// if right edge of backImg is whiter than left edge, flip backImg (opposite for frontImg)
+	let frontLeftEdgeWhiteness = 0;
+	let frontRightEdgeWhiteness = 0;
+	let backLeftEdgeWhiteness = 0;
+	let backRightEdgeWhiteness = 0;
 
-	matrix.composite(frontImg,    0, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
-	matrix.composite( backImg, 1200, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
+	for (let y=0; y<imgHeight; y++) {
+
+		const frontLeftColor = intToRGBA(frontImg.getPixelColor(0, y));
+		const frontRightColor = intToRGBA(frontImg.getPixelColor(imgWidth-1, y));
+
+		const backLeftColor = intToRGBA(backImg.getPixelColor(0, y));
+		const backRightColor = intToRGBA(backImg.getPixelColor(imgWidth-1, y));
+
+		frontLeftEdgeWhiteness += frontLeftColor.r + frontLeftColor.g + frontLeftColor.b;
+		frontRightEdgeWhiteness += frontRightColor.r + frontRightColor.g + frontRightColor.b;
+
+		backLeftEdgeWhiteness += backLeftColor.r + backLeftColor.g + backLeftColor.b;
+		backRightEdgeWhiteness += backRightColor.r + backRightColor.g + backRightColor.b;
+	}
+
+	if (frontLeftEdgeWhiteness > frontRightEdgeWhiteness) {
+		backImg.flip({ horizontal: true });
+		console.log("left ");
+	}
+
+	if (backRightEdgeWhiteness > backLeftEdgeWhiteness) {
+		backImg.flip({ horizontal: true });
+		console.log("right ");
+	}
+
+	// stitch together matrix
+	const matrix = new Jimp({ width: imgWidth * 2, height: imgHeight, color: 0xFFFFFFFF });
+
+	matrix.composite(frontImg,        0, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
+	matrix.composite( backImg, imgWidth, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
 
 	matrix.write(`output/${ seed }_matrix.png`);
 }
