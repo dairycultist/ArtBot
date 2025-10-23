@@ -91,6 +91,13 @@ class Concat { // may introduce "WeightedConcat"
 	}
 }
 
+function getWhiteness(color) {
+
+	color = intToRGBA(color);
+
+	return (color.r + color.g + color.b) / 3;
+}
+
 async function generatePost(seed) {
 
     if (!fs.existsSync("output"))
@@ -108,7 +115,7 @@ async function generatePost(seed) {
 
 		// style prompt
 		"<lora:HYPv1-4:0.5> <lora:DetailedFur:1> <lora:LaBiuda_IL_Style:0.5>",
-		"(small head:1.3), (solo, cowboy shot), (white background), (anthro, furry_female, fluffy fur:1.4), (standing straight)",
+		"(small head:1.3), (solo, cowboy shot), (white background:1.3), (anthro, furry_female, fluffy fur:1.4), (standing straight)",
 		"bright colors, perfect shading, (soft shading, rimlight:1.4), hips, thick thighs, narrow waist, sexy, (tall, adult, big woman:1.2), (enormous breasts:1.2)",
 		"L4B1ud4, squinting, (tsurime, eyeliner, black eyeshadow, smug, wide smirk, bedroom eyes, calm:1.2), perfect eyes, very detailed eyes, bangs, large eyes, short snout",
 
@@ -117,7 +124,8 @@ async function generatePost(seed) {
 		`${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears, (${colors[0]} skin, ${colors[0]} breasts:1.5)`,
 		colors[1] + " hair",
 		new Rand("long hair", "short hair", "ponytail"),
-		"(red v-neck shirt, black leather pants)"
+		new Rand(colors[1] + " v-neck shirt", colors[1] + " sports bra"),
+		new Rand("black leather pants", colors[1] + "pencil skirt")
 	);
 
 	const frontPromptTree = new Concat(
@@ -126,7 +134,7 @@ async function generatePost(seed) {
 	);
 
 	const backPromptTree = new Concat(
-		"(view from behind, looking away:1.5), sideboob, hands at sides"
+		"(view from behind, looking away:1.5), sideboob, hands at sides, (gigantic breasts:1.2)"
 	);
 
 	/*
@@ -159,24 +167,18 @@ async function generatePost(seed) {
 	});
 
 	// if right edge of backImg is whiter than left edge, flip backImg (opposite for frontImg)
-	let frontLeftEdgeWhiteness = 0;
+	let frontLeftEdgeWhiteness  = 0;
 	let frontRightEdgeWhiteness = 0;
-	let backLeftEdgeWhiteness = 0;
-	let backRightEdgeWhiteness = 0;
+	let backLeftEdgeWhiteness   = 0;
+	let backRightEdgeWhiteness  = 0;
 
 	for (let y=0; y<imgHeight; y++) {
 
-		const frontLeftColor = intToRGBA(frontImg.getPixelColor(0, y));
-		const frontRightColor = intToRGBA(frontImg.getPixelColor(imgWidth-1, y));
+		frontLeftEdgeWhiteness  += getWhiteness(frontImg.getPixelColor(0, y));
+		frontRightEdgeWhiteness += getWhiteness(frontImg.getPixelColor(imgWidth-1, y));
 
-		const backLeftColor = intToRGBA(backImg.getPixelColor(0, y));
-		const backRightColor = intToRGBA(backImg.getPixelColor(imgWidth-1, y));
-
-		frontLeftEdgeWhiteness += frontLeftColor.r + frontLeftColor.g + frontLeftColor.b;
-		frontRightEdgeWhiteness += frontRightColor.r + frontRightColor.g + frontRightColor.b;
-
-		backLeftEdgeWhiteness += backLeftColor.r + backLeftColor.g + backLeftColor.b;
-		backRightEdgeWhiteness += backRightColor.r + backRightColor.g + backRightColor.b;
+		backLeftEdgeWhiteness   += getWhiteness(backImg.getPixelColor(0, y));
+		backRightEdgeWhiteness  += getWhiteness(backImg.getPixelColor(imgWidth-1, y));
 	}
 
 	if (frontLeftEdgeWhiteness > frontRightEdgeWhiteness)
