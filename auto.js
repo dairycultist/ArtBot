@@ -1,8 +1,7 @@
 // WAI https://civitai.com/models/827184?modelVersionId=1761560
 // Lora https://civitai.com/models/645787?modelVersionId=1671255
 // Lora https://civitai.com/models/488546/fluffy-fur-or-pony-and-illustrious
-// Lora https://civitai.com/models/140809/weathershinepupilsmix-weathermix
-// Lora https://civitai.com/models/1820232/artem-vitt-style-or-anime-thick-outlines
+// Lora https://civitai.com/models/1454012?modelVersionId=1644028
 // Lora https://civitai.com/models/1429234/breast-implants-round-breasts-illustrious
 
 const fs = require("fs");
@@ -66,24 +65,28 @@ async function generatePost(seed) {
 
 	// <lora:SyMix_NoobAI_epred_v1_1__fromE7_v01a01:0.5>
 	let basePos =
-		"<lora:HYPv1-4:1> <lora:Breast_Implants_V2.5:1> <lora:DetailedFur:1> <lora:Vitt:1> " +
-		"(solo, cowboy shot, white background), (view from below:1.2), (anthro, furry_female, fluffy fur, snout:1.1), (vittstyle, thick outlines, bold outlines:1.2), " +
-		"perfect eyes, very detailed eyes, bright colors, perfect shading, soft shading, open eyes, standing straight, " +
-		"hips, thick thighs, narrow waist, sexy, bangs, (eyeliner, black eyeshadow, grin, smug, smirk, bedroom eyes:1.2), ";
+		"<lora:HYPv1-4:1> <lora:Breast_Implants_V2.5:1> <lora:DetailedFur:1> <lora:LaBiuda_IL_Style:0.5> " +
+		"(solo, cowboy shot), (white background:1.5), (anthro, furry_female, fluffy fur:1.4), dynamic pose, standing, " +
+		"lit from behind, light from behind, bright colors, perfect shading, (soft shading), hips, thick thighs, narrow waist, sexy, (gigantic breasts:1.3), tall, adult, " +
+		"L4B1ud4, squinting, (tsurime, eyeliner, black eyeshadow, smug, wide smirk, bedroom eyes, calm:1.2), perfect eyes, very detailed eyes, bangs, large eyes, large mouth, closed mouth, short snout, ";
 	
-	let frontPos = "(front view), directly in front, looking down at viewer, hyper breasts, (gigantic breasts:1.3), (breast implants, perfectly round breasts), (breasts together), innerboob, cleavage, v-cut cleavage window, shiny breasts, breast focus, ";
-	let backPos = "(view from behind, looking back at viewer:1.5), backboob, ";
+	let frontPos = "(front view), leaning back, directly in front, looking at viewer, (breast implants, round breasts, breasts together:1.2), v-cut, shiny breasts, breast focus, ";
+	let backPos = "(view from behind, directly behind, looking away, looking forward:1.5), sideboob, side of head, ";
 
-	let baseNeg = "skindentation, bursting breasts, flat shading, cramped, out of frame, areolas, sweaty, earrings, monochrome, skin, human, human nose, human face, watermark, grayscale, multiple people, more than one, 3 arms, deformed ,bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw";
+	let baseNeg = "cel shading, flat shading, skindentation, bursting breasts, side view, three-quarters view, closeup, close up, cramped, out of frame, areolas, sweaty, earrings, monochrome, skin, human, human nose, human face, watermark, grayscale, multiple people, more than one, 3 arms, deformed, bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw";
 
-	basePos += getRandomOf([ "wolf", "cat", "fox", "scales, fluffy dragon", "bunny", "bear" ]) + " girl, ";
-	basePos += `${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears, ${colors[0]} face, (${colors[0]} breasts:1.5), `;
+	const animal = getRandomOf([ "wolf", "cat", "fox", "bunny", "bear", "otter" ]);
 
-	basePos += getRandomOf(["tsurime", "tareme"]) + ", ";
-	basePos += colors[1] + "eyes, ";
+	basePos += `(anthro ${ animal }, ${ animal } ears:1.2), `;
+	basePos += `${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears, (${colors[0]} skin, ${colors[0]} breasts:1.5), `;
+
+	frontPos += colors[1] + "eyes, ";
 
 	basePos += colors[1] + " hair, ";
 	basePos += getRandomOf([ "long hair", "short hair", "ponytail" ]) + ", ";
+
+	if (getRandom() > 0.8)
+		basePos += "choker, ";
 
 	if (getRandom() > 0.8) {
 
@@ -91,7 +94,7 @@ async function generatePost(seed) {
 			basePos += "white button-up shirt, black pencil skirt, lanyard, ";
 			frontPos += "(single button gap:1.2), ";
 		} else {
-			basePos += getRandomOf(colors) + getRandomOf(["leotard, v-cut boob window, ", "wedding dress, ", "slingshot bikini, ", "lingerie, lace bra, bra straps, "]);
+			basePos += getRandomOf(colors) + getRandomOf(["leotard, ", "wedding dress, ", "slingshot bikini, ", "lingerie, lace bra, bra straps, "]);
 		}
 
 	} else {
@@ -112,25 +115,25 @@ async function generatePost(seed) {
 		seed: seed,
 		steps: 30,
 		cfg: 6,
-		width: 1200,
+		width: 1360,
 		height: 1760
 	});
 
 	const image2 = await generateImage({
 		pos: backPos + basePos,
-		neg: "front view, " + baseNeg,
+		neg: "front view, looking back at viewer, turning head, " + baseNeg,
 		seed: seed + 1,
 		steps: 30,
 		cfg: 6,
-		width: 1200,
+		width: 1360,
 		height: 1760
 	});
 
 	// stitch together matrix
-	const matrix = new Jimp({ width: 2400, height: 1760, color: 0xFFFFFFFF });
+	const matrix = new Jimp({ width: 2720, height: 1760, color: 0xFFFFFFFF });
 
 	matrix.composite(image1,    0, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
-	matrix.composite(image2, 1200, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
+	matrix.composite(image2, 1360, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
 
 	matrix.write(`output/${ seed }_matrix.png`);
 }
