@@ -67,7 +67,7 @@ class Rand {
 	}
 }
 
-class Concat {
+class Concat { // may introduce "WeightedConcat"
 
 	constructor(...parts) {
 		this.parts = parts;
@@ -95,51 +95,49 @@ async function generatePost(seed) {
     if (!fs.existsSync("output"))
 		fs.mkdirSync("output");
 
-	const getRandom   = seedrandom(seed);
-	const getRandomOf = array => array[Math.floor(array.length * getRandom())];
+	const getRandom = seedrandom(seed);
 
-	console.log(new Concat("cat", "dog", "bird").evaluate(getRandom));
-
-	return;
-
-	/*
-	 * create style prompt
-	 */
+	const animal = new Rand("wolf", "cat", "fox", "bunny", "bear", "otter").evaluate(getRandom);
 	const colors = [];
 
 	for (let i = 0; i < 2; i++)
-		colors.push(getRandomOf([ "white", "grey", "black", "brown", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink" ]));
+		colors.push(new Rand("white", "grey", "black", "brown", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink").evaluate(getRandom));
 
-	let basePos =
-		"<lora:HYPv1-4:0.5> <lora:DetailedFur:1> <lora:LaBiuda_IL_Style:0.5> " +
-		"(small head:1.3), (solo, cowboy shot), (white background), (anthro, furry_female, fluffy fur:1.4), (standing straight), " +
-		"bright colors, perfect shading, (soft shading, rimlight:1.4), hips, thick thighs, narrow waist, sexy, (tall, adult, big woman:1.2), (enormous breasts:1.2), " +
-		"L4B1ud4, squinting, (tsurime, eyeliner, black eyeshadow, smug, wide smirk, bedroom eyes, calm:1.2), perfect eyes, very detailed eyes, bangs, large eyes, short snout, ";
-	
-	let frontPos = "(front view:1.5), looking at viewer, (breasts together:1.4), cleavage, shiny breasts, breast focus, hands behind back, ";
-	let backPos = "(view from behind, looking away:1.5), sideboob, hands at sides, ";
+	const basePromptTree = new Concat(
 
-	let baseNeg = "cel shading, flat shading, skindentation, bursting breasts, side view, three-quarters view, closeup, close up, cramped, out of frame, areolas, sweaty, earrings, monochrome, skin, human, human nose, human face, watermark, grayscale, multiple people, more than one, 3 arms, deformed, bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw";
+		// style prompt
+		"<lora:HYPv1-4:0.5> <lora:DetailedFur:1> <lora:LaBiuda_IL_Style:0.5>",
+		"(small head:1.3), (solo, cowboy shot), (white background), (anthro, furry_female, fluffy fur:1.4), (standing straight)",
+		"bright colors, perfect shading, (soft shading, rimlight:1.4), hips, thick thighs, narrow waist, sexy, (tall, adult, big woman:1.2), (enormous breasts:1.2)",
+		"L4B1ud4, squinting, (tsurime, eyeliner, black eyeshadow, smug, wide smirk, bedroom eyes, calm:1.2), perfect eyes, very detailed eyes, bangs, large eyes, short snout",
 
-	/*
-	 * create content prompt
-	 */
-	const animal = getRandomOf([ "wolf", "cat", "fox", "bunny", "bear", "otter" ]);
+		// content prompt
+		`(anthro ${ animal }, ${ animal } ears:1.2)`,
+		`${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears, (${colors[0]} skin, ${colors[0]} breasts:1.5)`,
+		colors[1] + " hair",
+		new Rand("long hair", "short hair", "ponytail"),
+		"(red v-neck shirt, black leather pants)"
+	);
 
-	basePos += `(anthro ${ animal }, ${ animal } ears:1.2), `;
-	basePos += `${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears, (${colors[0]} skin, ${colors[0]} breasts:1.5), `;
+	const frontPromptTree = new Concat(
+		"(front view:1.5), looking at viewer, (breasts together:1.4), cleavage, shiny breasts, breast focus, hands behind back",
+		colors[1] + "eyes"
+	);
 
-	frontPos += colors[1] + "eyes, ";
-	basePos += colors[1] + " hair, ";
-	basePos += getRandomOf([ "long hair", "short hair", "ponytail" ]) + ", ";
+	const backPromptTree = new Concat(
+		"(view from behind, looking away:1.5), sideboob, hands at sides"
+	);
 
-	basePos += "(red v-neck shirt, black leather pants), ";
+	// new Rand(...["big bird", "small bird"])
 
 	/*
 	 * generate images
 	 */
+	let basePos = basePromptTree.evaluate(seedrandom(seed));
+	let baseNeg = "cel shading, flat shading, skindentation, bursting breasts, side view, three-quarters view, closeup, close up, cramped, out of frame, areolas, sweaty, earrings, monochrome, skin, human, human nose, human face, watermark, grayscale, multiple people, more than one, 3 arms, deformed, bad quality, amateur drawing, beginner drawing, bad anatomy, deformed hands, deformed feet, bright hair, missing fingers, extra digit, fewer digits, cropped, very displeasing, bad eyes, deformed eyes, extra marks, extra arms, eye bangs, eye shadow, eye bags, logo, nsfw";
+
 	const frontImg = await generateImage({
-		pos: frontPos + basePos,
+		pos: frontPromptTree.evaluate(seedrandom(seed)) + basePos,
 		neg: baseNeg,
 		seed: seed,
 		steps: 30,
@@ -149,7 +147,7 @@ async function generatePost(seed) {
 	});
 
 	const backImg = await generateImage({
-		pos: backPos + basePos,
+		pos: backPromptTree.evaluate(seedrandom(seed)) + basePos,
 		neg: baseNeg,
 		seed: seed + 1,
 		steps: 30,
