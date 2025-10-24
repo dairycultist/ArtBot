@@ -126,7 +126,7 @@ async function generatePost(seed) {
 		`${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears, (${colors[0]} skin, ${colors[0]} breasts:1.5)`,
 		colors[1] + " hair",
 		new Rand("long hair", "short hair", "ponytail"),
-		new Rand(colors[1] + " v-neck shirt", colors[1] + " sports bra"),
+		new Rand(colors[1] + " v-neck shirt", colors[1] + " sports bra", colors[1] + " hoodie", colors[1] + " sweater"),
 		new Rand("black leather pants", colors[1] + " pencil skirt", colors[1] + " sweatpants")
 	);
 
