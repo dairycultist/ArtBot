@@ -115,31 +115,28 @@ async function generatePost(seed) {
 
 		"<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.6> <lora:HYPv1-4:0.5> 1girl, masterpiece, best quality, amazing quality, very aesthetic, absurdres",
 
+		"gigantic breasts, huge breasts, thick thighs, tight white tshirt, black leggings, venusbody, chubby, bbw, midriff exposed, cowboy shot, standing, white background, soft smile, hands on hips",
+
 		`fluffy fur, anthro ${ animal }, ${ animal } ears`,
+		`${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears, ${colors[0]} breasts`,
 
-		"gigantic breasts, huge breasts, thick thighs, tight white tshirt, black leggings, blonde, venusbody, chubby, bbw, midriff exposed, cowboy shot, standing, white background, looking at viewer, soft smile, hands on hips",
+		colors[1] + " hair",
+		new Rand("long hair", "short hair", "ponytail"),
 
-		// "(small head:1.3), (solo, cowboy shot), (white background:1.3), (anthro, furry_female, fluffy fur:1.4), (standing straight)",
-		// "bright colors, perfect shading, (soft shading, rimlight:1.4), hips, thick thighs, narrow waist, sexy, (tall, adult, big woman:1.2), (enormous breasts:1.2)",
-		// "L4B1ud4, squinting",
-		// new Rand("(tareme, blush, smile, happy, excited:1.2)", "(tsurime, eyeliner, black eyeshadow, smug, wide smirk, bedroom eyes, calm:1.2)"),
-		// "perfect eyes, very detailed eyes, bangs, large eyes, short snout",
+		new Rand("tareme", "tsurime"),
 
 		// // content prompt
-		// `${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears, (${colors[0]} skin, ${colors[0]} breasts:1.5)`,
-		// colors[1] + " hair",
-		// new Rand("long hair", "short hair", "ponytail"),
 		// new Rand(colors[1] + " v-neck shirt", colors[1] + " sports bra", colors[1] + " hoodie", colors[1] + " sweater"),
 		// new Rand("black leather pants", colors[1] + " pencil skirt", colors[1] + " sweatpants")
 	);
 
 	const frontPromptTree = new Concat(
-		"(front view:1.5), looking at viewer, (breasts together:1.4), cleavage, shiny breasts, breast focus, hands behind back",
+		"front view, looking at viewer",
 		colors[1] + "eyes"
 	);
 
 	const backPromptTree = new Concat(
-		"(view from behind, looking away:1.5), sideboob, hands at sides, (gigantic breasts:1.2)"
+		"(view from behind, looking away:1.5), sideboob, (gigantic breasts:1.2)"
 	);
 
 	/*
@@ -152,7 +149,7 @@ async function generatePost(seed) {
 	const imgHeight = 1600;
 
 	const frontImg = await generateImage({
-		pos: basePos, // frontPromptTree.evaluate(getRandom) + basePos,
+		pos: frontPromptTree.evaluate(getRandom) + basePos,
 		neg: baseNeg,
 		seed: seed,
 		steps: 30,
