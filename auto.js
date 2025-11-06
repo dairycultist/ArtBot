@@ -1,8 +1,8 @@
-// WAI https://civitai.com/models/827184?modelVersionId=1761560
-// Lora https://civitai.com/models/645787?modelVersionId=1671255
-// Lora https://civitai.com/models/488546/fluffy-fur-or-pony-and-illustrious
-// Lora https://civitai.com/models/1454012?modelVersionId=1644028
-// Lora https://civitai.com/models/1429234/breast-implants-round-breasts-illustrious
+// Nova Furry XL (Checkpoint) https://civitai.com/models/503815/nova-furry-xl
+// Hyper Girls (Lora) https://civitai.com/models/645787?modelVersionId=1671255
+
+// mmmm if we're trying to pump out 400-600 images every few hours
+// some things you have to settle for
 
 const fs = require("fs");
 const ask = require("readline-sync");
