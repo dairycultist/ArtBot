@@ -114,10 +114,10 @@ async function generatePost(seed) {
 
 	const basePromptTree = new Concat(
 
-		"<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.6> <lora:HYPv1-4:0.5> 1girl",
+		"<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.5> <lora:HYPv1-4:0.5> 1girl",
 		"masterpiece, best quality, amazing quality, very aesthetic, absurdres",
 
-		"gigantic breasts, thick thighs, venusbody, chubby, bbw, round belly, cowboy shot, standing, white background, soft smile, arms at sides, looking at viewer",
+		"gigantic breasts, thick thighs, venusbody, adult, mature, chubby, bbw, round belly, cowboy shot, standing, white background, soft smile, arms at sides, looking at viewer",
 
 		new Rand(
 			`fluffy fur, anthro ${ animal }, ${ animal } ears, ${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears`,
@@ -129,7 +129,7 @@ async function generatePost(seed) {
 		new Rand("straight hair", "wavy hair", "curly hair"),
 
 		new Rand("tareme", "tsurime"),
-		colors[1] + "eyes",
+		new Rand(colors[0], colors[1]) + "eyes",
 
 		"tight white tshirt, black leggings, midriff exposed"
 
@@ -138,18 +138,18 @@ async function generatePost(seed) {
 	);
 
 	const frontPromptTree = new Concat(
-		"front view, wide hips, leaning back, wide navel"
+		"front view, wide hips, leaning back, (wide navel), (pregnant, big belly:0.2)"
 	);
 
 	const backPromptTree = new Concat(
-		"side view, fat ass"
+		"side view, fat ass, big belly"
 	);
 
 	/*
 	 * generate images
 	 */
 	const basePos = basePromptTree.evaluate(getRandom);
-	const baseNeg = "(belly folds, deep navel, love handles), (text, male:1.1), bra, lowres, worst quality, bad quality, bad anatomy, jpeg artifacts, signature, watermark";
+	const baseNeg = "(belly folds, deep navel, love handles), (text, male:1.1), leaning on table, lowres, worst quality, bad quality, bad anatomy, jpeg artifacts, signature, watermark";
 
 	const imgWidth = 1200;
 	const imgHeight = 1600;
