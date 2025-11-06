@@ -35,8 +35,9 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
 
 		try {
 
-			await generatePost(Math.floor(Math.random() * 100000));
-			console.log("\x1b[0m\x1b[32mDONE\x1b[0m");
+			const seed = Math.floor(Math.random() * 100000);
+			await generatePost(seed);
+			console.log("\x1b[0m\x1b[32mDONE\x1b[2m (" + seed + ")\x1b[0m");
 
 		} catch (e) {
 
@@ -61,7 +62,7 @@ class Rand {
 
 		const part = this.parts[Math.floor(this.parts.length * getRandom())];
 
-		if (part.type)
+		if (part && part.type)
 			return part.evaluate(getRandom);
 
 		return part;
@@ -81,9 +82,9 @@ class Concat { // may introduce "WeightedConcat"
 
 		for (const part of this.parts) {
 
-			if (part.type)
+			if (part && part.type)
 				construct += part.evaluate(getRandom) + ", ";
-			else
+			else if (part)
 				construct += part + ", ";
 		}
 
@@ -113,30 +114,31 @@ async function generatePost(seed) {
 
 	const basePromptTree = new Concat(
 
-		"<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.6> <lora:HYPv1-4:0.5> 1girl, masterpiece, best quality, amazing quality, very aesthetic, absurdres",
+		"<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.6> <lora:HYPv1-4:0.5> 1girl, masterpiece, best quality, amazing quality, very aesthetic, absurdres, leaning back, dynamic pose",
 
-		"gigantic breasts, huge breasts, thick thighs, tight white tshirt, black leggings, venusbody, chubby, bbw, midriff exposed, cowboy shot, standing, white background, soft smile, hands on hips",
+		"gigantic breasts, huge breasts, thick thighs, tight white tshirt, black leggings, venusbody, chubby, bbw, midriff exposed, cowboy shot, standing, white background, soft smile, arms at sides",
 
-		`fluffy fur, anthro ${ animal }, ${ animal } ears`,
-		`${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears, ${colors[0]} breasts`,
+		new Rand(
+			new Concat(`fluffy fur, anthro ${ animal }, ${ animal } ears`, `${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears`),
+			undefined
+		),
 
 		colors[1] + " hair",
 		new Rand("long hair", "short hair", "ponytail"),
 
 		new Rand("tareme", "tsurime"),
+		colors[1] + "eyes",
 
-		// // content prompt
 		// new Rand(colors[1] + " v-neck shirt", colors[1] + " sports bra", colors[1] + " hoodie", colors[1] + " sweater"),
 		// new Rand("black leather pants", colors[1] + " pencil skirt", colors[1] + " sweatpants")
 	);
 
 	const frontPromptTree = new Concat(
-		"front view, looking at viewer",
-		colors[1] + "eyes"
+		"front view, looking at viewer"
 	);
 
 	const backPromptTree = new Concat(
-		"(view from behind, looking away:1.5), sideboob, (gigantic breasts:1.2)"
+		"view from behind, looking away"
 	);
 
 	/*
