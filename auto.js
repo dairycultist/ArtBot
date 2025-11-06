@@ -114,9 +114,9 @@ async function generatePost(seed) {
 
 	const basePromptTree = new Concat(
 
-		"<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.6> <lora:HYPv1-4:0.5> 1girl, masterpiece, best quality, amazing quality, very aesthetic, absurdres, leaning back, dynamic pose",
+		"<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.6> <lora:HYPv1-4:0.5> 1girl, masterpiece, best quality, amazing quality, very aesthetic, absurdres",
 
-		"gigantic breasts, huge breasts, thick thighs, tight white tshirt, black leggings, venusbody, chubby, bbw, midriff exposed, cowboy shot, standing, white background, soft smile, arms at sides",
+		"gigantic breasts, huge breasts, thick thighs, venusbody, chubby, bbw, cowboy shot, standing, leaning back, white background, soft smile, arms at sides",
 
 		new Rand(
 			new Concat(`fluffy fur, anthro ${ animal }, ${ animal } ears`, `${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears`),
@@ -125,9 +125,12 @@ async function generatePost(seed) {
 
 		colors[1] + " hair",
 		new Rand("long hair", "short hair", "ponytail"),
+		new Rand("straight hair", "wavy hair", "curly hair"),
 
 		new Rand("tareme", "tsurime"),
 		colors[1] + "eyes",
+
+		"tight white tshirt, black leggings, midriff exposed"
 
 		// new Rand(colors[1] + " v-neck shirt", colors[1] + " sports bra", colors[1] + " hoodie", colors[1] + " sweater"),
 		// new Rand("black leather pants", colors[1] + " pencil skirt", colors[1] + " sweatpants")
@@ -138,7 +141,7 @@ async function generatePost(seed) {
 	);
 
 	const backPromptTree = new Concat(
-		"view from behind, looking away"
+		"(view from behind, looking away:1.5)"
 	);
 
 	/*
