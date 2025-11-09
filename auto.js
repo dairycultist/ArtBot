@@ -99,6 +99,45 @@ function getWhiteness(color) {
 	return (color.r + color.g + color.b) / 3;
 }
 
+// const basePromptTree = new Concat(
+
+// 	"<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.5> 1girl",
+// 	"masterpiece, best quality, amazing quality, very aesthetic, absurdres",
+
+// 	"adult, mature, cowboy shot, standing, white background",
+
+// 	new Rand(
+// 		`fluffy fur, anthro ${ animal }, ${ animal } ears, ${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears`,
+// 		undefined
+// 	),
+
+// 	colors[1] + " hair",
+// 	new Rand("long hair", "short hair", "ponytail"),
+// 	new Rand("straight hair", "wavy hair", "curly hair"),
+
+// 	new Rand("tareme", "tsurime"),
+// 	new Rand(colors[0], colors[1]) + "eyes",
+
+// 	"tight white tshirt, black leggings, midriff exposed"
+
+// 	// new Rand(colors[1] + " v-neck shirt", colors[1] + " sports bra", colors[1] + " hoodie", colors[1] + " sweater"),
+// 	// new Rand("black leather pants", colors[1] + " pencil skirt", colors[1] + " sweatpants")
+// );
+
+// const frontPromptTree = new Concat(
+// 	"front view, wide hips, leaning back, slim, soft smile, looking at viewer, arms at sides"
+// );
+
+// const backPromptTree = new Concat(
+// 	"<lora:HYPv1-4:0.5> front view, wide hips, leaning forward, motion lines, (wide navel), gigantic breasts, thick thighs, venusbody, chubby, bbw, round belly, grabbing belly, looking down, shocked, (belly folds, deep navel, love handles)"
+// );
+
+// /*
+// 	* generate images
+// 	*/
+// const basePos = basePromptTree.evaluate(getRandom);
+// const baseNeg = "(text, male:1.1), leaning on table, lowres, worst quality, bad quality, bad anatomy, jpeg artifacts, signature, watermark";
+
 async function generatePost(seed) {
 
     if (!fs.existsSync("output"))
