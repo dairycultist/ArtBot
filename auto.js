@@ -238,12 +238,29 @@ async function generatePost(seed) {
 	// 	backImg.flip({ horizontal: true });
 
 	// stitch together matrix
-	const matrix = new Jimp({ width: prompt.images[0].width + prompt.images[1].width, height: prompt.sharedHeight, color: 0xFFFFFFFF });
+	stitch_images(`output/${ seed }_matrix.png`, [ frontImg, backImg ]);
+}
 
-	matrix.composite(frontImg,       				 0, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
-	matrix.composite( backImg, 	prompt.images[0].width, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
+// assumes all images are the same height
+async function stitch_images(path, images_arr) {
 
-	matrix.write(`output/${ seed }_matrix.png`);
+	let width = 0;
+	let height = images_arr[0].bitmap.height;
+
+	for (const img of images_arr)
+		width += img.bitmap.width;
+
+	const matrix = new Jimp({ width: width, height: height, color: 0xFFFFFFFF });
+
+	let x_offset = 0;
+
+	for (const img of images_arr) {
+
+		matrix.composite(img, x_offset, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
+		x_offset += img.bitmap.width;
+	}
+
+	matrix.write(path);
 }
 
 async function generateImage(prompt) {
