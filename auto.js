@@ -151,94 +151,97 @@ async function generatePost(seed) {
 	for (let i = 0; i < 2; i++)
 		colors.push(new Rand("white", "grey", "black", "brown", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink").evaluate(getRandom));
 
-	const basePromptTree = new Concat(
+	const prompt = {
+		sharedPos: new Concat(
 
-		"<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.5> <lora:HYPv1-4:0.5> 1girl",
-		"masterpiece, best quality, amazing quality, very aesthetic, absurdres",
+			"<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.5> <lora:HYPv1-4:0.5> 1girl",
+			"masterpiece, best quality, amazing quality, very aesthetic, absurdres",
 
-		"gigantic breasts, thick thighs, venusbody, adult, mature, chubby, bbw, round belly, cowboy shot, standing, white background, soft smile, arms at sides, looking at viewer",
+			"gigantic breasts, thick thighs, venusbody, adult, mature, chubby, bbw, round belly, cowboy shot, standing, white background, soft smile, arms at sides, looking at viewer",
 
-		new Rand(
-			`fluffy fur, anthro ${ animal }, ${ animal } ears, ${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears`,
-			undefined
-		),
+			new Rand(
+				`fluffy fur, anthro ${ animal }, ${ animal } ears, ${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears`,
+				undefined
+			),
 
-		colors[1] + " hair",
-		new Rand("long hair", "short hair", "ponytail"),
-		new Rand("straight hair", "wavy hair", "curly hair"),
+			colors[1] + " hair",
+			new Rand("long hair", "short hair", "ponytail"),
+			new Rand("straight hair", "wavy hair", "curly hair"),
 
-		new Rand("tareme", "tsurime"),
-		new Rand(colors[0], colors[1]) + "eyes",
+			new Rand("tareme", "tsurime"),
+			new Rand(colors[0], colors[1]) + "eyes",
 
-		"tight white tshirt, black leggings, midriff exposed"
+			"tight white tshirt, black leggings, midriff exposed"
 
-		// new Rand(colors[1] + " v-neck shirt", colors[1] + " sports bra", colors[1] + " hoodie", colors[1] + " sweater"),
-		// new Rand("black leather pants", colors[1] + " pencil skirt", colors[1] + " sweatpants")
-	);
-
-	const frontPromptTree = new Concat(
-		"front view, wide hips, leaning back, (wide navel), (pregnant, big belly:0.2)"
-	);
-
-	const backPromptTree = new Concat(
-		"side view, fat ass, big belly"
-	);
+			// new Rand(colors[1] + " v-neck shirt", colors[1] + " sports bra", colors[1] + " hoodie", colors[1] + " sweater"),
+			// new Rand("black leather pants", colors[1] + " pencil skirt", colors[1] + " sweatpants")
+		).evaluate(getRandom),
+		sharedNeg: "(belly folds, deep navel, love handles), (text, male:1.1), leaning on table, lowres, worst quality, bad quality, bad anatomy, jpeg artifacts, signature, watermark",
+		sharedHeight: 1600,
+		images: [
+			{
+				width: 1200,
+				pos: "front view, wide hips, leaning back, (wide navel), (pregnant, big belly:0.2)",
+				neg: ""
+			},
+			{
+				width: 1200,
+				pos: "side view, fat ass, big belly",
+				neg: ""
+			}
+		]
+	};
 
 	/*
 	 * generate images
 	 */
-	const basePos = basePromptTree.evaluate(getRandom);
-	const baseNeg = "(belly folds, deep navel, love handles), (text, male:1.1), leaning on table, lowres, worst quality, bad quality, bad anatomy, jpeg artifacts, signature, watermark";
-
-	const imgWidth = 1200;
-	const imgHeight = 1600;
 
 	const frontImg = await generateImage({
-		pos: frontPromptTree.evaluate(getRandom) + basePos,
-		neg: baseNeg,
+		pos: prompt.images[0].pos + ", " + prompt.sharedPos,
+		neg: prompt.sharedNeg,
 		seed: seed,
 		steps: 30,
 		cfg: 6,
-		width: imgWidth,
-		height: imgHeight
+		width: prompt.images[0].width,
+		height: prompt.sharedHeight
 	});
 
 	const backImg = await generateImage({
-		pos: backPromptTree.evaluate(getRandom) + basePos,
-		neg: baseNeg,
+		pos: prompt.images[1].pos + ", " + prompt.sharedPos,
+		neg: prompt.sharedNeg,
 		seed: seed + 1,
 		steps: 30,
 		cfg: 6,
-		width: imgWidth,
-		height: imgHeight
+		width: prompt.images[1].width,
+		height: prompt.sharedHeight
 	});
 
 	// if right edge of backImg is whiter than left edge, flip backImg (opposite for frontImg)
-	let frontLeftEdgeWhiteness  = 0;
-	let frontRightEdgeWhiteness = 0;
-	let backLeftEdgeWhiteness   = 0;
-	let backRightEdgeWhiteness  = 0;
+	// let frontLeftEdgeWhiteness  = 0;
+	// let frontRightEdgeWhiteness = 0;
+	// let backLeftEdgeWhiteness   = 0;
+	// let backRightEdgeWhiteness  = 0;
 
-	for (let y=0; y<imgHeight; y++) {
+	// for (let y=0; y<imgHeight; y++) {
 
-		frontLeftEdgeWhiteness  += getWhiteness(frontImg.getPixelColor(0, y));
-		frontRightEdgeWhiteness += getWhiteness(frontImg.getPixelColor(imgWidth-1, y));
+	// 	frontLeftEdgeWhiteness  += getWhiteness(frontImg.getPixelColor(0, y));
+	// 	frontRightEdgeWhiteness += getWhiteness(frontImg.getPixelColor(imgWidth-1, y));
 
-		backLeftEdgeWhiteness   += getWhiteness(backImg.getPixelColor(0, y));
-		backRightEdgeWhiteness  += getWhiteness(backImg.getPixelColor(imgWidth-1, y));
-	}
+	// 	backLeftEdgeWhiteness   += getWhiteness(backImg.getPixelColor(0, y));
+	// 	backRightEdgeWhiteness  += getWhiteness(backImg.getPixelColor(imgWidth-1, y));
+	// }
 
-	if (frontLeftEdgeWhiteness > frontRightEdgeWhiteness)
-		frontImg.flip({ horizontal: true });
+	// if (frontLeftEdgeWhiteness > frontRightEdgeWhiteness)
+	// 	frontImg.flip({ horizontal: true });
 
-	if (backRightEdgeWhiteness > backLeftEdgeWhiteness)
-		backImg.flip({ horizontal: true });
+	// if (backRightEdgeWhiteness > backLeftEdgeWhiteness)
+	// 	backImg.flip({ horizontal: true });
 
 	// stitch together matrix
-	const matrix = new Jimp({ width: imgWidth * 2, height: imgHeight, color: 0xFFFFFFFF });
+	const matrix = new Jimp({ width: prompt.images[0].width + prompt.images[1].width, height: prompt.sharedHeight, color: 0xFFFFFFFF });
 
-	matrix.composite(frontImg,        0, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
-	matrix.composite( backImg, imgWidth, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
+	matrix.composite(frontImg,       				 0, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
+	matrix.composite( backImg, 	prompt.images[0].width, 0, { mode: Jimp.BLEND_SOURCE_OVER, opacitySource: 1 });
 
 	matrix.write(`output/${ seed }_matrix.png`);
 }
