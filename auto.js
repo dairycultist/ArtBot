@@ -145,13 +145,15 @@ async function generatePost(seed) {
 
 	const getRandom = seedrandom(seed);
 
-	const animal = new Rand("wolf", "cat", "fox", "bunny", "bear", "otter").evaluate(getRandom);
 	const colors = [];
 
 	for (let i = 0; i < 2; i++)
 		colors.push(new Rand("white", "grey", "black", "brown", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink").evaluate(getRandom));
 
 	const prompt = {
+		randomizedVariables: {
+			animal: ["wolf", "cat", "fox", "bunny", "bear", "otter"]
+		},
 		sharedPos: new Concat(
 
 			"<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.5> <lora:HYPv1-4:0.5> 1girl",
@@ -160,7 +162,7 @@ async function generatePost(seed) {
 			"gigantic breasts, thick thighs, venusbody, adult, mature, chubby, bbw, round belly, cowboy shot, standing, white background, soft smile, arms at sides, looking at viewer",
 
 			new Rand(
-				`fluffy fur, anthro ${ animal }, ${ animal } ears, ${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears`,
+				`fluffy fur, anthro [[animal]], [[animal]] ears, ${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears`,
 				undefined
 			),
 
@@ -191,6 +193,17 @@ async function generatePost(seed) {
 			}
 		]
 	};
+
+	/*
+	 * collapse and substitute variables
+	 */
+
+	for (const key in prompt.randomizedVariables) {
+		
+		const value = prompt.randomizedVariables[key][Math.floor(prompt.randomizedVariables[key].length * Math.random() * 0.999)];
+
+		prompt.sharedPos = prompt.sharedPos.replaceAll(`[[${ key }]]`, value);
+	}
 
 	/*
 	 * generate images
