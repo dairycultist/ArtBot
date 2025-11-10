@@ -53,13 +53,6 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
     console.error(e + "\x1b[0m");
 });
 
-function getWhiteness(color) {
-
-	color = intToRGBA(color);
-
-	return (color.r + color.g + color.b) / 3;
-}
-
 // const basePromptTree = new Concat(
 
 // 	"<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.5> 1girl",
@@ -134,27 +127,6 @@ async function generatePost(prompt, seed) {
 			height: prompt.sharedHeight
 		}));
 	}
-
-	// if right edge of backImg is whiter than left edge, flip backImg (opposite for frontImg)
-	// let frontLeftEdgeWhiteness  = 0;
-	// let frontRightEdgeWhiteness = 0;
-	// let backLeftEdgeWhiteness   = 0;
-	// let backRightEdgeWhiteness  = 0;
-
-	// for (let y=0; y<imgHeight; y++) {
-
-	// 	frontLeftEdgeWhiteness  += getWhiteness(frontImg.getPixelColor(0, y));
-	// 	frontRightEdgeWhiteness += getWhiteness(frontImg.getPixelColor(imgWidth-1, y));
-
-	// 	backLeftEdgeWhiteness   += getWhiteness(backImg.getPixelColor(0, y));
-	// 	backRightEdgeWhiteness  += getWhiteness(backImg.getPixelColor(imgWidth-1, y));
-	// }
-
-	// if (frontLeftEdgeWhiteness > frontRightEdgeWhiteness)
-	// 	frontImg.flip({ horizontal: true });
-
-	// if (backRightEdgeWhiteness > backLeftEdgeWhiteness)
-	// 	backImg.flip({ horizontal: true });
 
 	// stitch together matrix
 	stitch_images(`output/${ seed }_matrix.png`, images);
