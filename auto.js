@@ -106,7 +106,7 @@ async function generatePost(seed) {
 
 	const prompt = {
 		randomizedVariables: {
-			human_or_furry: ["fluffy fur, anthro [[animal]], [[animal]] ears, [[color0]] fur, [[color0]] tail, [[color0]] ears, ", ""], // must appear before animal+color as to be inserted first
+			human_or_furry: ["fluffy fur, anthro [[animal]], [[animal]] ears, [[color0]] fur, [[color0]] tail, [[color0]] ears,", ""], // must appear before animal+color as to be inserted first
 			animal: ["wolf", "cat", "fox", "bunny", "bear", "otter"],
 			color0: ["white", "grey", "black", "brown", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"],
 			color1: ["white", "grey", "black", "brown", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"],
@@ -128,7 +128,7 @@ async function generatePost(seed) {
 			[[eye_type]], [[color1]] eyes,
 
 			"tight white tshirt, black leggings, midriff exposed"
-		`.replaceAll("\t", ""),
+		`.replaceAll("\t", "").replaceAll("\n", " "),
 		// new Rand(colors[1] + " v-neck shirt", colors[1] + " sports bra", colors[1] + " hoodie", colors[1] + " sweater"),
 		// new Rand("black leather pants", colors[1] + " pencil skirt", colors[1] + " sweatpants")
 		sharedNeg: "(belly folds, deep navel, love handles), (text, male:1.1), leaning on table, lowres, worst quality, bad quality, bad anatomy, jpeg artifacts, signature, watermark",
@@ -151,9 +151,9 @@ async function generatePost(seed) {
 	 * collapse and substitute variables
 	 */
 
-	for (const key in prompt.randomizedVariables) {
-		
-		const value = prompt.randomizedVariables[key][Math.floor(prompt.randomizedVariables[key].length * getRandom())];
+	for (const [key, choices] of Object.entries(prompt.randomizedVariables)) {
+
+		const value = choices[Math.floor(choices.length * getRandom())];
 
 		prompt.sharedPos = prompt.sharedPos.replaceAll(`[[${ key }]]`, value);
 	}
