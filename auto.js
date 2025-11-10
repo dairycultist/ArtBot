@@ -51,47 +51,6 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
     console.error(e + "\x1b[0m");
 });
 
-class Rand {
-
-	constructor(...parts) {
-		this.parts = parts;
-		this.type = "Rand";
-	}
-
-	evaluate(getRandom) {
-
-		const part = this.parts[Math.floor(this.parts.length * getRandom())];
-
-		if (part && part.type)
-			return part.evaluate(getRandom);
-
-		return part;
-	}
-}
-
-class Concat { // may introduce "WeightedConcat"
-
-	constructor(...parts) {
-		this.parts = parts;
-		this.type = "Concat";
-	}
-
-	evaluate(getRandom) {
-
-		let construct = "";
-
-		for (const part of this.parts) {
-
-			if (part && part.type)
-				construct += part.evaluate(getRandom) + ", ";
-			else if (part)
-				construct += part + ", ";
-		}
-
-		return construct.substring(0, construct.length - 2);
-	}
-}
-
 function getWhiteness(color) {
 
 	color = intToRGBA(color);
@@ -145,39 +104,33 @@ async function generatePost(seed) {
 
 	const getRandom = seedrandom(seed);
 
-	const colors = [];
-
-	for (let i = 0; i < 2; i++)
-		colors.push(new Rand("white", "grey", "black", "brown", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink").evaluate(getRandom));
-
 	const prompt = {
 		randomizedVariables: {
-			animal: ["wolf", "cat", "fox", "bunny", "bear", "otter"]
+			human_or_furry: ["fluffy fur, anthro [[animal]], [[animal]] ears, [[color0]] fur, [[color0]] tail, [[color0]] ears, ", ""], // must appear before animal+color as to be inserted first
+			animal: ["wolf", "cat", "fox", "bunny", "bear", "otter"],
+			color0: ["white", "grey", "black", "brown", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"],
+			color1: ["white", "grey", "black", "brown", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"],
+			hair_style: ["long hair", "short hair", "ponytail"],
+			hair_texture: ["straight hair", "wavy hair", "curly hair"],
+			eye_type: ["tareme", "tsurime"]
 		},
-		sharedPos: new Concat(
+		sharedPos: `
 
-			"<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.5> <lora:HYPv1-4:0.5> 1girl",
-			"masterpiece, best quality, amazing quality, very aesthetic, absurdres",
+			<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.5> <lora:HYPv1-4:0.5> 1girl,
+			masterpiece, best quality, amazing quality, very aesthetic, absurdres,
 
-			"gigantic breasts, thick thighs, venusbody, adult, mature, chubby, bbw, round belly, cowboy shot, standing, white background, soft smile, arms at sides, looking at viewer",
+			gigantic breasts, thick thighs, venusbody, adult, mature, chubby, bbw, round belly, cowboy shot, standing, white background, soft smile, arms at sides, looking at viewer,
 
-			new Rand(
-				`fluffy fur, anthro [[animal]], [[animal]] ears, ${colors[0]} fur, ${colors[0]} tail, ${colors[0]} ears`,
-				undefined
-			),
+			[[human_or_furry]]
 
-			colors[1] + " hair",
-			new Rand("long hair", "short hair", "ponytail"),
-			new Rand("straight hair", "wavy hair", "curly hair"),
+			[[color1]] hair, [[hair_style]], [[hair_texture]],
 
-			new Rand("tareme", "tsurime"),
-			new Rand(colors[0], colors[1]) + "eyes",
+			[[eye_type]], [[color1]] eyes,
 
 			"tight white tshirt, black leggings, midriff exposed"
-
-			// new Rand(colors[1] + " v-neck shirt", colors[1] + " sports bra", colors[1] + " hoodie", colors[1] + " sweater"),
-			// new Rand("black leather pants", colors[1] + " pencil skirt", colors[1] + " sweatpants")
-		).evaluate(getRandom),
+		`.replaceAll("\t", ""),
+		// new Rand(colors[1] + " v-neck shirt", colors[1] + " sports bra", colors[1] + " hoodie", colors[1] + " sweater"),
+		// new Rand("black leather pants", colors[1] + " pencil skirt", colors[1] + " sweatpants")
 		sharedNeg: "(belly folds, deep navel, love handles), (text, male:1.1), leaning on table, lowres, worst quality, bad quality, bad anatomy, jpeg artifacts, signature, watermark",
 		sharedHeight: 1600,
 		images: [
@@ -200,7 +153,7 @@ async function generatePost(seed) {
 
 	for (const key in prompt.randomizedVariables) {
 		
-		const value = prompt.randomizedVariables[key][Math.floor(prompt.randomizedVariables[key].length * Math.random() * 0.999)];
+		const value = prompt.randomizedVariables[key][Math.floor(prompt.randomizedVariables[key].length * getRandom())];
 
 		prompt.sharedPos = prompt.sharedPos.replaceAll(`[[${ key }]]`, value);
 	}
