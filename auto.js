@@ -29,6 +29,8 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
 
 	count = Math.floor(count);
 
+	const promptJsonString = fs.readFileSync(ask.question("Enter path of prompt JSON (ex. ./prompt.json): "), "utf8");
+
 	for (let i = 0; i < count; i++) {
 
 		process.stdout.write("\x1b[2m" + (i + 1) + "... ");
@@ -36,7 +38,7 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`)
 		try {
 
 			const seed = Math.floor(Math.random() * 100000);
-			await generatePost(seed);
+			await generatePost(JSON.parse(promptJsonString), seed);
 			console.log("\x1b[0m\x1b[32mDONE\x1b[2m (" + seed + ")\x1b[0m");
 
 		} catch (e) {
@@ -97,55 +99,12 @@ function getWhiteness(color) {
 // const basePos = basePromptTree.evaluate(getRandom);
 // const baseNeg = "(text, male:1.1), leaning on table, lowres, worst quality, bad quality, bad anatomy, jpeg artifacts, signature, watermark";
 
-async function generatePost(seed) {
+async function generatePost(prompt, seed) {
 
     if (!fs.existsSync("output"))
 		fs.mkdirSync("output");
 
 	const getRandom = seedrandom(seed);
-
-	const prompt = {
-		randomizedVariables: {
-			human_or_furry: ["fluffy fur, anthro [[animal]], [[animal]] ears, [[color0]] fur, [[color0]] tail, [[color0]] ears,", ""], // must appear before animal+color as to be inserted first
-			animal: ["wolf", "cat", "fox", "bunny", "bear", "otter"],
-			color0: ["white", "grey", "black", "brown", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"],
-			color1: ["white", "grey", "black", "brown", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"],
-			hair_style: ["long hair", "short hair", "ponytail"],
-			hair_texture: ["straight hair", "wavy hair", "curly hair"],
-			eye_type: ["tareme", "tsurime"]
-		},
-		sharedPos: `
-
-			<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.5> <lora:HYPv1-4:0.5> 1girl,
-			masterpiece, best quality, amazing quality, very aesthetic, absurdres,
-
-			gigantic breasts, thick thighs, venusbody, adult, mature, chubby, bbw, round belly, cowboy shot, standing, white background, soft smile, arms at sides, looking at viewer,
-
-			[[human_or_furry]]
-
-			[[color1]] hair, [[hair_style]], [[hair_texture]],
-
-			[[eye_type]], [[color1]] eyes,
-
-			"tight white tshirt, black leggings, midriff exposed"
-		`.replaceAll("\t", "").replaceAll("\n", " "),
-		// new Rand(colors[1] + " v-neck shirt", colors[1] + " sports bra", colors[1] + " hoodie", colors[1] + " sweater"),
-		// new Rand("black leather pants", colors[1] + " pencil skirt", colors[1] + " sweatpants")
-		sharedNeg: "(belly folds, deep navel, love handles), (text, male:1.1), leaning on table, lowres, worst quality, bad quality, bad anatomy, jpeg artifacts, signature, watermark",
-		sharedHeight: 1600,
-		images: [
-			{
-				width: 1200,
-				pos: "front view, wide hips, leaning back, (wide navel), (pregnant, big belly:0.2)",
-				neg: ""
-			},
-			{
-				width: 1200,
-				pos: "side view, fat ass, big belly",
-				neg: ""
-			}
-		]
-	};
 
 	/*
 	 * collapse and substitute variables
@@ -167,7 +126,7 @@ async function generatePost(seed) {
 
 		images.push(await generateImage({
 			pos: prompt.images[i].pos + ", " + prompt.sharedPos,
-			neg: prompt.sharedNeg,
+			neg: prompt.images[i].neg + ", " + prompt.sharedNeg,
 			seed: seed + i,
 			steps: 30,
 			cfg: 6,
