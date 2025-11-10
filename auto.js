@@ -195,26 +195,20 @@ async function generatePost(seed) {
 	/*
 	 * generate images
 	 */
+	let images = [];
 
-	const frontImg = await generateImage({
-		pos: prompt.images[0].pos + ", " + prompt.sharedPos,
-		neg: prompt.sharedNeg,
-		seed: seed,
-		steps: 30,
-		cfg: 6,
-		width: prompt.images[0].width,
-		height: prompt.sharedHeight
-	});
+	for (const i in prompt.images) {
 
-	const backImg = await generateImage({
-		pos: prompt.images[1].pos + ", " + prompt.sharedPos,
-		neg: prompt.sharedNeg,
-		seed: seed + 1,
-		steps: 30,
-		cfg: 6,
-		width: prompt.images[1].width,
-		height: prompt.sharedHeight
-	});
+		images.push(await generateImage({
+			pos: prompt.images[i].pos + ", " + prompt.sharedPos,
+			neg: prompt.sharedNeg,
+			seed: seed + i,
+			steps: 30,
+			cfg: 6,
+			width: prompt.images[i].width,
+			height: prompt.sharedHeight
+		}));
+	}
 
 	// if right edge of backImg is whiter than left edge, flip backImg (opposite for frontImg)
 	// let frontLeftEdgeWhiteness  = 0;
@@ -238,7 +232,7 @@ async function generatePost(seed) {
 	// 	backImg.flip({ horizontal: true });
 
 	// stitch together matrix
-	stitch_images(`output/${ seed }_matrix.png`, [ frontImg, backImg ]);
+	stitch_images(`output/${ seed }_matrix.png`, images);
 }
 
 // assumes all images are the same height
