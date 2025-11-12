@@ -1,14 +1,29 @@
 {
 	"randomizedVariables": {
-		"human_or_furry": ["fluffy fur, anthro [[animal]], [[animal]] ears, [[color0]] fur, [[color0]] tail, [[color0]] ears,", ""],
+		"outfit": [
+			"[[color1]] tshirt, black leggings, midriff exposed",
+			"[[color1]] tshirt, jeans, midriff exposed",
+			"[[color1]] tshirt, jean shorts, midriff exposed",
+			"[[color1]] jacket, grey sweatpants",
+			"[[color1]] hoodie, grey sweatpants",
+			"[[color1]] tunic",
+			"[[color1]] witch hat, [[color1]] robes, holding wand",
+			"[[color1]] witch hat, [[color1]] robes",
+			"black tube top, black bra straps, jean shorts",
+			"[[color1]] sweater, skinny jeans",
+			"loose clothing",
+			"tight clothing"
+		],
+		"human_or_furry": ["fluffy fur, anthro [[animal]], [[animal]] ears, [[color0]] fur, [[color0]] tail, [[color0]] ears,", "[[skintone]],"],
+		"skintone": ["dark skin", "tan skin", "light skin", "fair skin", "indian, dark skin", "african, dark skin"],
 		"animal": ["wolf", "cat", "fox", "bunny", "bear", "otter"],
-		"color0": ["white", "grey", "black", "brown", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"],
-		"color1": ["white", "grey", "black", "brown", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"],
+		"color0": ["white", "grey", "black", "brown", "tan", "silver", "gold", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"],
+		"color1": ["white", "grey", "black", "brown", "tan", "silver", "gold", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"],
 		"hair_style": ["long hair", "short hair", "ponytail"],
 		"hair_texture": ["straight hair", "wavy hair", "curly hair"],
 		"eye_type": ["tareme", "tsurime"]
 	},
-	"sharedPos": "<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.5> 1girl, masterpiece, best quality, amazing quality, very aesthetic, absurdres, adult, mature, cowboy shot, standing, white background, [[human_or_furry]] [[color1]] hair, [[hair_style]], [[hair_texture]], [[eye_type]], [[color1]] eyes, (tight white tshirt, black leggings, midriff exposed)",
+	"sharedPos": "<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.5> 1girl, masterpiece, best quality, amazing quality, very aesthetic, absurdres, adult, mature, cowboy shot, standing, white background, [[human_or_furry]] [[color1]] hair, [[hair_style]], [[hair_texture]], [[eye_type]], [[color1]] eyes, ([[outfit]])",
 	"sharedNeg": "(text, male:1.1), leaning on table, lowres, worst quality, bad quality, bad anatomy, jpeg artifacts, signature, watermark",
 	"sharedHeight": 1600,
 	"images": [
