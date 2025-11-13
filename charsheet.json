@@ -15,17 +15,16 @@
 			"loose clothing",
 			"tight clothing",
 			"black suit, [[color1]] necktie",
-			"[[color1]] bikini",
 			"[[color1]] eyepatch bikini"
 		],
 		"accessory": [
-			"devil horns",
+			"devil horns on forehead",
 			"bracelets",
 			"hair pin",
 			"choker",
 			"[[color0]] flower in hair"
 		],
-		"human_or_furry": ["fluffy fur, anthro [[animal]], [[animal]] ears, [[color0]] fur, [[color0]] tail, [[color0]] ears,", "[[skintone]],"],
+		"human_or_furry": ["fluffy fur, anthro [[animal]], [[animal]] ears, [[color0]] fur, [[color0]] tail, [[color0]] ears,", "[[skintone]],", "[[skintone]], [[animal]] ears, kemonomini,"],
 		"skintone": ["dark skin", "tan skin", "light skin", "fair skin", "indian, dark skin", "african, dark skin"],
 		"animal": ["wolf", "cat", "fox", "bunny", "bear", "otter", "dragon", "unicorn", "pony", "bat", "crocodile"],
 		"color0": ["rainbow", "white", "grey", "black", "brown", "tan", "silver", "gold", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"],
