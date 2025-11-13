@@ -8,8 +8,7 @@
 			"[[color1]] jacket, grey sweatpants",
 			"[[color1]] hoodie, grey sweatpants",
 			"[[color1]] tunic",
-			"[[color0]] and [[color1]] striped sweater, oversized sleeves, long sleeves, [[color0]] and [[color1]] striped thigh highs",
-			"[[color1]] witch hat, [[color1]] robes, holding wand",
+			"[[color0]] and [[color1]] striped sweater, oversized sweater, loose clothing, long sleeves, [[color0]] and [[color1]] striped thigh highs",
 			"[[color1]] witch hat, [[color1]] robes",
 			"black tube top, black bra straps, jean shorts",
 			"[[color1]] sweater, skinny jeans",
@@ -20,36 +19,36 @@
 			"[[color1]] eyepatch bikini"
 		],
 		"accessory": [
-			"horns",
+			"devil horns",
 			"bracelets",
 			"hair pin",
 			"choker",
-			"[[color0]] flower in hair",
-			"bat hair pin"
+			"[[color0]] flower in hair"
 		],
 		"human_or_furry": ["fluffy fur, anthro [[animal]], [[animal]] ears, [[color0]] fur, [[color0]] tail, [[color0]] ears,", "[[skintone]],"],
 		"skintone": ["dark skin", "tan skin", "light skin", "fair skin", "indian, dark skin", "african, dark skin"],
 		"animal": ["wolf", "cat", "fox", "bunny", "bear", "otter", "dragon", "unicorn", "pony", "bat", "crocodile"],
 		"color0": ["rainbow", "white", "grey", "black", "brown", "tan", "silver", "gold", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"],
 		"color1": ["rainbow", "white", "grey", "black", "brown", "tan", "silver", "gold", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"],
-		"hair_style": ["long hair", "short hair", "ponytail"],
+		"hair_style": ["long hair", "short hair", "ponytail", "hair in bun"],
 		"hair_texture": ["straight hair", "wavy hair", "curly hair"],
 		"eye_type": ["tareme", "tsurime"],
 		"expression": ["soft smile", "grin"],
-		"pose": ["arms at sides", "hands on hips"]
+		"pose": ["arms at sides", "hands on hips", "hands behind head"],
+		"figure": ["gigantic breasts, thick thighs, venusbody, chubby, bbw, round belly, wide hips, fat ass, (wide navel), (pregnant, big belly:0.2)", "slim, gigantic breasts, wide hips, thick thighs, skindentation, narrow waist"]
 	},
-	"sharedPos": "<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.5> <lora:HYPv1-4:0.5> 1girl, masterpiece, best quality, amazing quality, very aesthetic, absurdres, gigantic breasts, thick thighs, venusbody, adult, mature, chubby, bbw, round belly, cowboy shot, standing, white background, [[expression]], [[pose]], looking at viewer, [[human_or_furry]] [[color1]] hair, [[hair_style]], [[hair_texture]], [[eye_type]], [[color1]] eyes, [[outfit]], [[accessory]]",
+	"sharedPos": "<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.5> <lora:HYPv1-4:0.5> 1girl, masterpiece, best quality, amazing quality, very aesthetic, absurdres, adult, mature, [[figure]], cowboy shot, standing, white background, [[expression]], [[pose]], looking at viewer, [[human_or_furry]] [[color1]] hair, [[hair_style]], [[hair_texture]], [[eye_type]], [[color1]] eyes, [[outfit]], [[accessory]]",
 	"sharedNeg": "(belly folds, deep navel, love handles), (text, male:1.1), leaning on table, lowres, worst quality, bad quality, bad anatomy, jpeg artifacts, signature, watermark",
 	"sharedHeight": 1600,
 	"images": [
 		{
 			"width": 1200,
-			"pos": "front view, wide hips, leaning back, (wide navel), (pregnant, big belly:0.2)",
+			"pos": "front view, leaning back",
 			"neg": ""
 		},
 		{
 			"width": 1200,
-			"pos": "side view, fat ass, big belly",
+			"pos": "side view",
 			"neg": ""
 		}
 	]
