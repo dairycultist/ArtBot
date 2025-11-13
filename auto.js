@@ -88,7 +88,9 @@ async function generatePost(prompt, seed) {
 	}
 
 	// stitch together matrix
-	stitch_images(`output/${ seed }_matrix.png`, images);
+	const suffix = prompt.output_suffix ? prompt.output_suffix : "_matrix";
+
+	stitch_images(`output/${ seed }${ suffix }.png`, images);
 }
 
 // assumes all images are the same height
