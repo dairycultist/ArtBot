@@ -114,7 +114,7 @@ async function generatePost(prompt, seed) {
 	if (images.length == 2) {
 
 		orient_lighter_edge(images[0], true);
-		orient_lighter_edge(images[0], false);
+		orient_lighter_edge(images[1], false);
 	}
 
 	// stitch together matrix
