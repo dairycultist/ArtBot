@@ -8,6 +8,7 @@ const fs = require("fs");
 const ask = require("readline-sync");
 const seedrandom = require("seedrandom"); 	// npm install seedrandom
 const { Jimp } = require("jimp"); 			// npm install jimp
+const { intToRGBA } = require("@jimp/utils");
 
 const gradioID = ask.question("Enter gradio ID: ");
 
@@ -51,6 +52,28 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`) // verify gradioID is v
     console.error(e + "\x1b[0m");
 });
 
+function orient_lighter_edge(img, boolMakeRightLighter) {
+
+	function getWhiteness(color) {
+
+		color = intToRGBA(color);
+
+		return (color.r + color.g + color.b) / 3;
+	}
+
+	let leftEdgeWhiteness  = 0;
+	let rightEdgeWhiteness = 0;
+
+	for (let y = 0; y < img.bitmap.height; y++) {
+
+		leftEdgeWhiteness  += getWhiteness(img.getPixelColor(0, y));
+		rightEdgeWhiteness += getWhiteness(img.getPixelColor(img.bitmap.width - 1, y));
+	}
+
+	if (boolMakeRightLighter == leftEdgeWhiteness > rightEdgeWhiteness)
+		img.flip({ horizontal: true });
+}
+
 async function generatePost(prompt, seed) {
 
     if (!fs.existsSync("output"))
@@ -85,6 +108,13 @@ async function generatePost(prompt, seed) {
 			width: prompt.images[i].width,
 			height: prompt.sharedHeight
 		}));
+	}
+
+	// edge orientation for exactly 2 images
+	if (images.length == 2) {
+
+		orient_lighter_edge(images[0], true);
+		orient_lighter_edge(images[0], false);
 	}
 
 	// stitch together matrix
