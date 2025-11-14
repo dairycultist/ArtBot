@@ -7,37 +7,45 @@
 			"[[color1]] tshirt, jean shorts, midriff exposed",
 			"[[color1]] jacket, grey sweatpants",
 			"[[color1]] hoodie, grey sweatpants",
-			"[[color1]] tunic",
-			"[[color0]] and [[color1]] striped sweater, oversized sweater, loose clothing, long sleeves, [[color0]] and [[color1]] striped thigh highs",
+			"[[color1]] tunic, short pleated skirt",
+			"[[color0]] and [[color1]] striped sweater, oversized sweater, loose clothing, long sleeves, [[color0]] and [[color1]] striped thigh highs, pantsless",
 			"[[color1]] witch hat, [[color1]] robes",
-			"black tube top, black bra straps, jean shorts",
 			"[[color1]] sweater, skinny jeans",
-			"loose clothing",
-			"tight clothing",
 			"black suit, [[color1]] necktie",
-			"[[color1]] eyepatch bikini"
+			"[[color1]] eyepatch bikini",
+			"[[color1]] frilly maid outfit",
+			"[[color1]] tshirt, tight tshirt, underboob, [[color0]] pants"
 		],
 		"accessory": [
-			"devil horns on forehead",
 			"bracelets",
 			"hair pin",
 			"choker",
-			"[[color0]] flower in hair"
+			"[[color2]] flower in hair",
+			"big round glasses"
 		],
-		"human_or_furry": ["fluffy fur, anthro [[animal]], [[animal]] ears, [[color0]] fur, [[color0]] tail, [[color0]] ears,", "[[skintone]],", "[[skintone]], [[animal]] ears, kemonomini,"],
+		"human_or_furry": [
+			"fluffy fur, anthro [[animal]], [[animal]] ears, [[color0]] fur, [[color0]] tail, [[color1]] ears",
+			"[[skintone]]",
+			"[[skintone]], [[color1]] [[animal]] ears, kemonomini"
+		],
 		"skintone": ["dark skin", "tan skin", "light skin", "fair skin", "indian, dark skin", "african, dark skin"],
-		"animal": ["wolf", "cat", "fox", "bunny", "bear", "otter", "dragon", "unicorn", "pony", "bat", "crocodile"],
-		"color0": ["rainbow", "white", "grey", "black", "brown", "tan", "silver", "gold", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"],
-		"color1": ["rainbow", "white", "grey", "black", "brown", "tan", "silver", "gold", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"],
+		"animal": ["wolf", "cat", "fox", "bunny", "bear", "otter", "dragon", "unicorn", "pony"],
 		"hair_style": ["long hair", "short hair", "ponytail", "hair in bun"],
 		"hair_texture": ["straight hair", "wavy hair", "curly hair"],
 		"eye_type": ["tareme", "tsurime"],
 		"expression": ["soft smile", "grin"],
-		"pose": ["arms at sides", "hands on hips", "hands behind head"],
-		"figure": ["gigantic breasts, thick thighs, venusbody, chubby, bbw, round belly, wide hips, fat ass, (wide navel), (pregnant, big belly:0.2)", "slim, gigantic breasts, wide hips, thick thighs, skindentation, narrow waist"]
+		"pose": ["arms at sides", "hands on hips", "hands behind head", "hands in lap"],
+		"figure": [
+			"gigantic breasts, breasts together, thick thighs, venusbody, chubby, bbw, round belly, wide hips, fat ass, (wide navel), (pregnant, big belly:0.2)",
+			"slim, enormous breasts, pointy breasts, (wide hips, thick thighs), skindentation"
+		],
+
+		"color0": ["rainbow", "white", "grey", "black", "brown", "tan", "silver", "gold", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"],
+		"color1": ["rainbow", "white", "grey", "black", "brown", "tan", "silver", "gold", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"],
+		"color2": ["rainbow", "white", "grey", "black", "brown", "tan", "silver", "gold", "red", "orange", "yellow", "light green", "dark green", "light blue", "dark blue", "purple", "pink"]
 	},
-	"sharedPos": "<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.5> <lora:HYPv1-4:0.5> 1girl, masterpiece, best quality, amazing quality, very aesthetic, absurdres, adult, mature, [[figure]], cowboy shot, standing, white background, [[expression]], [[pose]], looking at viewer, [[human_or_furry]] [[color1]] hair, [[hair_style]], [[hair_texture]], [[eye_type]], [[color1]] eyes, [[outfit]], [[accessory]]",
-	"sharedNeg": "(belly folds, deep navel, love handles), (text, male:1.1), leaning on table, lowres, worst quality, bad quality, bad anatomy, jpeg artifacts, signature, watermark",
+	"sharedPos": "<lora:SyMix_NovaFurryXL_illusV10_v01a01:0.5> <lora:HYPv1-4:0.5> 1girl, masterpiece, best quality, amazing quality, very aesthetic, absurdres, adult, mature, [[figure]], cowboy shot, standing, white background, [[expression]], [[pose]], looking at viewer, [[human_or_furry]], [[color1]] hair, [[hair_style]], [[hair_texture]], [[eye_type]], [[color1]] eyes, [[outfit]], [[accessory]]",
+	"sharedNeg": "cel shading, thick outline, (belly folds, deep navel, love handles), (text, male:1.1), leaning on table, lowres, worst quality, bad quality, bad anatomy, jpeg artifacts, signature, watermark",
 	"sharedHeight": 1600,
 	"images": [
 		{
