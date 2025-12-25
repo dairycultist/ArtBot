@@ -1,8 +1,7 @@
 // Nova Furry XL (Checkpoint) https://civitai.com/models/503815/nova-furry-xl
 // Hyper Girls (Lora) https://civitai.com/models/645787?modelVersionId=1671255
 
-// mmmm if we're trying to pump out 400-600 images every few hours
-// some things you have to settle for
+// https://jimp-dev.github.io/jimp/guides/getting-started/
 
 const fs = require("fs");
 const ask = require("readline-sync");

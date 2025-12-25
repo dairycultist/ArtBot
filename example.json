@@ -1,0 +1,25 @@
+{
+	"output_suffix": "_example",
+	"randomizedVariables": {
+		"eye_type": ["tareme", "tsurime", "closed eyes"],
+		"figure": [
+			"gigantic breasts, narrow waist",
+			"fat belly, wide hips"
+		]
+	},
+	"sharedPos": "1girl, masterpiece, adult, smile, [[figure]], [[eye_type]]",
+	"sharedNeg": "blurry",
+	"sharedHeight": 1600,
+	"images": [
+		{
+			"width": 1200,
+			"pos": "front view, leaning back",
+			"neg": ""
+		},
+		{
+			"width": 1200,
+			"pos": "side view",
+			"neg": ""
+		}
+	]
+}
