@@ -5,8 +5,9 @@
 
 const fs = require("fs");
 const ask = require("readline-sync");
-const seedrandom = require("seedrandom"); 	// npm install seedrandom
-const { Jimp } = require("jimp"); 			// npm install jimp
+const seedrandom = require("seedrandom"); 			// npm install seedrandom
+const { Jimp } = require("jimp"); 					// npm install jimp
+const { exiftool } = require("exiftool-vendored");	// npm install exiftool-vendored
 const { intToRGBA } = require("@jimp/utils");
 
 const gradioID = ask.question("Enter gradio ID: ");
@@ -31,7 +32,7 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`) // verify gradioID is v
 
 	for (let i = 0; i < count; i++) {
 
-		process.stdout.write("\x1b[2m" + (i + 1) + "... ");
+		process.stdout.write("" + (i + 1) + "... "); // not console.log so it doesn't newline
 
 		try {
 
@@ -44,6 +45,8 @@ fetch(`https://${ gradioID }.gradio.live/internal/ping`) // verify gradioID is v
 			console.log("\x1b[0m\x1b[31mFAIL / " + e + "\x1b[0m");
 		}
 	}
+
+	await exiftool.end();
 })
 .catch((e) => {
 
@@ -119,11 +122,25 @@ async function generatePost(prompt, seed) {
 	// stitch together matrix
 	const suffix = prompt.output_suffix ? prompt.output_suffix : "_matrix";
 
-	stitch_images(`output/${ seed }${ suffix }.png`, images);
+	stitchImages(`output/${ seed }${ suffix }.png`, images);
+
+	// add metadata
+	await exiftool.write(`output/${ seed }${ suffix }.png`, {
+		Parameters:
+			`${ prompt.images[0].pos + ", " + prompt.sharedPos }\n` +
+			`Negative prompt: ${ prompt.images[0].neg + ", " + prompt.sharedNeg }\n` +
+			`Steps: ${ 30 }, ` +
+			`Sampler: ${ "DPM++ 2M SDE" }, ` +
+			`Schedule type: ${ "Automatic" }, ` +
+			`CFG scale: ${ 6 }, ` +
+			`Seed: ${ prompt.images[0].seed }, ` +
+			`Size: ${ prompt.images[0].width }x${ prompt.sharedHeight }, ` +
+			`Clip skip: 2`
+	});
 }
 
 // assumes all images are the same height
-async function stitch_images(path, images_arr) {
+async function stitchImages(path, images_arr) {
 
 	let width = 0;
 	let height = images_arr[0].bitmap.height;
