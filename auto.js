@@ -121,11 +121,12 @@ async function generatePost(prompt, seed) {
 
 	// stitch together matrix
 	const suffix = prompt.output_suffix ? prompt.output_suffix : "_matrix";
+	const output_path = `output/${ seed }${ suffix }.png`;
 
-	stitchImages(`output/${ seed }${ suffix }.png`, images);
+	stitchImages(output_path, images);
 
 	// add metadata
-	await exiftool.write(`output/${ seed }${ suffix }.png`, {
+	await exiftool.write(output_path, {
 		Parameters:
 			`${ prompt.images[0].pos + ", " + prompt.sharedPos }\n` +
 			`Negative prompt: ${ prompt.images[0].neg + ", " + prompt.sharedNeg }\n` +
@@ -137,6 +138,9 @@ async function generatePost(prompt, seed) {
 			`Size: ${ prompt.images[0].width }x${ prompt.sharedHeight }, ` +
 			`Clip skip: 2`
 	});
+
+	// delete .png_original file that gets generated
+	fs.unlinkSync(output_path + "_original");
 }
 
 // assumes all images are the same height
